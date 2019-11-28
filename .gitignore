@@ -29,7 +29,10 @@ build/
 .gradle
 local.properties
 *.iml
-
+#env 
+.env
+#yarn
+yarn.lock
 # node.js
 #
 node_modules/
