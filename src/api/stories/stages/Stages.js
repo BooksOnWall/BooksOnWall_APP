@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {  Animated, StyleSheet, View, Text, I18nManager } from 'react-native';
 import { FlatList, RectButton } from 'react-native-gesture-handler';
-import Swipeable from "react-native-gesture-handler/Swipeable";
 
 
 const styles = StyleSheet.create({

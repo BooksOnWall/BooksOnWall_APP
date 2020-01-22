@@ -156,17 +156,31 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-video')
+    implementation project(':react-native-sound')
+    implementation project(':react-native-keep-awake')
     implementation project(':@react-native-community_netinfo')
     implementation project(':@react-native-mapbox-gl_maps')
     implementation project(':react-native-localize')
+    implementation project(':react-native-fs')
+    implementation project(':rn-fetch-blob')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-vector-icons')
-    implementation project(':react-native-reanimated')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-screens')
+    implementation project(':react-native-reanimated')
+    implementation project(':react-native-permissions')
+    implementation project(':react-native-android-location-enabler')
+    implementation project(':@react-native-community_geolocation')
+    implementation project(':@react-native-community_masked-view')
+    implementation project(':react-native-safe-area-context')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.facebook.react:react-native:+'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.42.4'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.4'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
     implementation project(':arcore_client') // remove this if AR not required
     implementation project(':gvr_common')
     implementation project(path: ':viro_renderer')

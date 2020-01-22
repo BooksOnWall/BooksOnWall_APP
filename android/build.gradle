@@ -27,6 +27,7 @@ allprojects {
             url 'https://maven.google.com/'
         }
         google()
+     maven { url 'https://mapbox.bintray.com/mapbox' }
         jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm

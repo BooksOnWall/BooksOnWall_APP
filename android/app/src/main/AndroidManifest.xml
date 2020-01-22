@@ -2,6 +2,7 @@
   package="com.booksonwall">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -19,6 +20,7 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+     <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
             <category android:name="com.google.intent.category.CARDBOARD" />
         </intent-filter>
       </activity>

@@ -1,5 +1,6 @@
 import React , { Component } from 'react';
-import { Image, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
+import { TouchableOpacity,Image, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
 import I18n from "../../utils/i18n";
 import AppIntroSlider from 'react-native-app-intro-slider';
 const slides = [
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
 
 export default class Intro extends Component {
   static navigationOptions = {
-    header: null
+    headerShown: false,
   };
 
   renderItem = ({ item }) => {

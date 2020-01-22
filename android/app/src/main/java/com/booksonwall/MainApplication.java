@@ -3,20 +3,31 @@ package com.booksonwall;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.corbt.keepawake.KCKeepAwakePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.reactcommunity.rnlocalize.RNLocalizePackage;
+import com.rnfs.RNFSPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.swmansion.reanimated.ReanimatedPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
+import com.swmansion.reanimated.ReanimatedPackage;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
+import com.heanoria.library.reactnative.locationenabler.RNAndroidLocationEnablerPackage;
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+import org.reactnative.maskedview.RNCMaskedViewPackage;
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
 import com.viromedia.bridge.ReactViroPackage;
 import com.facebook.soloader.SoLoader;
+import com.booksonwall.Mapbox.MapboxNavigationViewPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,14 +44,25 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactVideoPackage(),
+            new RNSoundPackage(),
+            new KCKeepAwakePackage(),
             new NetInfoPackage(),
             new RCTMGLPackage(),
             new RNLocalizePackage(),
+            new RNFSPackage(),
+            new RNFetchBlobPackage(),
             new SplashScreenReactPackage(),
             new VectorIconsPackage(),
-            new ReanimatedPackage(),
             new RNGestureHandlerPackage(),
             new RNScreensPackage(),
+            new ReanimatedPackage(),
+            new RNPermissionsPackage(),
+            new RNAndroidLocationEnablerPackage(),
+            new GeolocationPackage(),
+            new RNCMaskedViewPackage(),
+            new SafeAreaContextPackage(),
+          new MapboxNavigationViewPackage(),
           new ReactViroPackage(ReactViroPackage.ViroPlatform.valueOf(BuildConfig.VR_PLATFORM))
       );
     }

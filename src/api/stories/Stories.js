@@ -1,178 +1,204 @@
-import React, { PureComponent } from 'react';
-import {
-  Platform,
-  Animated,
-  Linking,
-  StyleSheet,
-  Text,
-  View,
-  I18nManager,
-  ActivityIndicator,
-  TouchableOpacity } from 'react-native';
-import { FlatList, RectButton } from 'react-native-gesture-handler';
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import React, {Component} from 'react';
+import SafeAreaView from 'react-native-safe-area-view';
+import { Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
+import { Header,Card, ListItem, Icon, ThemeProvider } from 'react-native-elements';
+import Geolocation from '@react-native-community/geolocation';
+import { MAPBOX_KEY  } from 'react-native-dotenv';
+import  distance from '@turf/distance';
+import * as RNFS from 'react-native-fs';
+import Reactotron from 'reactotron-react-native';
+import Sound from 'react-native-sound';
+import KeepAwake from 'react-native-keep-awake';
 
-//import RNFetchBlob from 'react-native-fetch-blob';
-// import * as Permissions from 'expo-permissions';
-// import * as FileSystem from 'expo-file-system';
+function humanFileSize(bytes, si) {
+    var thresh = si ? 1000 : 1024;
+    if(Math.abs(bytes) < thresh) {
+        return bytes + ' B';
+    }
+    var units = si
+        ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+        : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+    var u = -1;
+    do {
+        bytes /= thresh;
+        ++u;
+    } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+    return bytes.toFixed(1)+' '+units[u];
+}
 
-const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-
-//  To toggle LTR/RTL uncomment the next line
-I18nManager.allowRTL(true);
-
-export default class Stories extends PureComponent {
+export default class Stories extends Component {
+  static navigationOptions = {
+    title: 'Story',
+    headerShown: false
+  };
   constructor(props) {
     super(props);
     this.state = {
-      Platform: Platform,
-      stories: [],
-      storiesURL: 'https://api.booksonwall.art/stories',
-      isLoading: true,
+      server: this.props.screenProps.server,
+      appName: this.props.screenProps.appName,
+      appDir: this.props.screenProps.AppDir,
+      stories: this.props.screenProps.stories,
+      granted: Platform.OS === 'ios',
+      transportIndex: 0,
+      dlIndex: null,
+      access_token: MAPBOX_KEY,
+      profile: 'mapbox/walking',
+      initialPosition: null,
+      lastPosition: null,
+      fromLat: null,
+      fromLong: null,
+      toLat: null ,
+      toLong: null,
+      distance: null
     };
-  }
-  static navigationOptions = {
-    title: 'Stories',
-  };
-  renderRightActions = (progress, dragX) => {
-    const scale = dragX.interpolate({
-        inputRange: [-80, 0],
-        outputRange: [1, 0],
-        extrapolate: 'clamp',
-      });
-    return (
-      <RectButton style={styles.rightAction} onPress={this.close}>
-        <AnimatedIcon
-          name="delete-forever"
-          size={30}
-          color="#fff"
-          />
-      </RectButton>
-    );
-  }
-  renderLeftActions = (progress, dragX) => {
-    const scale = dragX.interpolate({
-       inputRange: [0, 80],
-       outputRange: [0, 1],
-       extrapolate: 'clamp',
-     });
-    return (
-      <RectButton style={styles.leftAction} onPress={this.close}>
-        <AnimatedIcon
-          name="archive"
-          size={30}
-          color="#fff"
-        />
-      </RectButton>
-    );
+    this.getCurrentLocation = this.getCurrentLocation.bind(this);
+    this.storiesCheck = this.storiesCheck.bind(this);
   }
   componentDidMount = async () => {
     try {
-      if(Platform === 'web') {
-        return this.props.navigation.navigate('Intro');
-      }
-      this.setState({stories: this.props.screenProps.stories, isLoading: false});
-    }catch(e) {
-      console.log("Error fetching data-----------", e);
+      await KeepAwake.activate();
+      await this.getCurrentLocation();
+      await this.storiesCheck();
+    } catch(e) {
+      console.log(e);
     }
   }
-  close() {
+  componentWillUnmount = async () => KeepAwake.deactivate();
+  watchID: ?number = null;
 
+  getCurrentLocation = async () => {
+    try {
+      // Instead of navigator.geolocation, just use Geolocation.
+      await Geolocation.getCurrentPosition(
+        position => {
+          const initialPosition = position;
+          this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+          this.setState({initialPosition});
+        },
+        error => Alert.alert('Error', JSON.stringify(error)),
+        {timeout: 2000, maximumAge: 1000, enableHighAccuracy: true},
+      );
+      this.watchID = await Geolocation.watchPosition(position => {
+        const lastPosition = position;
+        this.setState({lastPosition});
+        this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        let from = {
+          "type": "Feature",
+          "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [this.state.fromLong, this.state.fromLat]
+            }
+          };
+          let to = {
+            "type": "Feature",
+            "properties": {},
+              "geometry": {
+                "type": "Point",
+                "coordinates": [this.state.toLong, this.state.toLat]
+              }
+            };
+          let units = "kilometers";
+          let dis = distance(from, to, units);
+          console.log('distance', dis);
+          if (dis) {
+            this.setState({distance: dis.toFixed(2)});
+          };
+      },
+      error => Alert.alert('Error', JSON.stringify(error)),
+      {timeout: 2000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+    );
+    } catch(e) {
+      console.log(e);
+    }
   }
+  storiesCheck = async () => {
+    let stories = this.state.stories;
+    try {
+      let st = [];
+      for (let story of stories) {
+        story.isInstalled = await this.isInstalled(story.id);
+        st.push(story);
+      }
+      console.table(st);
+      this.setState({stories: st});
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  isInstalled = async (sid) => {
+    console.log('sid', sid);
+    try {
+      return await RNFS.exists(this.state.appDir + '/' + sid)
+        .then( (exists) => {
+            return exists;
+        });
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   render() {
-    if (this.state.isLoading || this.state.Platform === 'web') {
+    const {stories, distance, access_token, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {navigate} = this.props.navigation;
+    if (!stories) {
       return (
-        <View style={styles.container}>
-          <ActivityIndicator />
-        </View>
+          <SafeAreaView style={styles.container}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </SafeAreaView>
       );
     }
     return (
-      <View style={styles.container}>
-      <FlatList
-        data={this.state.stories}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item, index }) => (
-          <Swipeable
-            friction={2}
-            leftThreshold={80}
-            rightThreshold={40}
-            renderLeftActions={this.renderLeftActions}
-            renderRightActions={this.renderRightActions}
-            >
-            <RectButton key={'s'+index} style={styles.rectButton} onPress={() => this.props.navigation.navigate('Story', {'story': item})}>
-              <Text style={styles.fromText}>{item.title}</Text>
-              <Text numberOfLines={2} style={styles.messageText}>
-                {item.aa.name}
-              </Text>
-              <Text style={styles.dateText}>
-                {item.updatedAt} {'❭'}
-              </Text>
-            </RectButton>
-          </Swipeable>
-        )}
-        keyExtractor={(item, index) => `message ${index}`}
-      />
-    </View>
+      <ThemeProvider>
+        <SafeAreaView style={styles.container}>
+          <Header
+            leftComponent={{ icon: 'menu', color: '#fff' }}
+            centerComponent={{ text: 'Stories', style: { color: '#fff' } }}
+            rightComponent={{ icon: 'home', color: '#fff' }}
+            />
+          <Card  style={styles.card}>
+              <ScrollView >
+                {
+                  stories.map((story, i) => (
+                    <ListItem
+                      key={i}
+                      leftIcon={{ name: (story.isInstalled) ? 'explore' : 'arrow-drop-down-circle' }}
+                      title={story.title}
+                      onPress={() => navigate('Story', {story: story})}
+                      bottomDivider
+                      chevron
+                    />
+                  ))
+                }
+              </ScrollView>
+            </Card>
+        </SafeAreaView>
+      </ThemeProvider>
     );
   }
 }
-
 const styles = StyleSheet.create({
-  leftAction: {
-    flex: 1,
-    backgroundColor: '#388e3c',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    flexDirection: I18nManager.isRTL ? 'row' : 'row-reverse'
-  },
-  actionIcon: {
-    width: 30,
-    marginHorizontal: 10
-  },
-  rightAction: {
-    alignItems: 'center',
-    flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row',
-    backgroundColor: '#dd2c00',
-    flex: 1,
-    justifyContent: 'flex-end'
-  },
   container: {
-    flex:1,
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
-    flexDirection: 'row',
-    flexWrap:'wrap',
-    justifyContent:'center',
-  },
-  rectButton: {
     flex: 1,
-    height: 80,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'space-between',
-    flexDirection: 'column',
-    backgroundColor: 'white',
+    marginHorizontal: 0,
+    justifyContent: 'flex-start',
+    alignItems: "stretch",
+    backgroundColor: '#F5FCFF',
   },
-  separator: {
-    backgroundColor: 'rgb(200, 199, 204)',
-    height: StyleSheet.hairlineWidth,
+  card : {
+    margin: 0,
+    padding: 0
   },
-  fromText: {
-    fontWeight: 'bold',
-    backgroundColor: 'transparent',
+  scrollView: {
+    marginHorizontal: 0,
   },
-  messageText: {
-    color: '#999',
-    backgroundColor: 'transparent',
+  bold: {
+    fontWeight: 'bold'
   },
-  dateText: {
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    right: 20,
-    top: 10,
-    color: '#999',
-    fontWeight: 'bold',
-  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "stretch",
+    backgroundColor: "whitesmoke"
+  }
 });
