@@ -165,7 +165,7 @@ export default class Story extends Component {
             };
           let units = "kilometers";
           let dis = distance(from, to, units);
-          Reactotron.log('distance', dis);
+          console.log('from story distance:', dis);
           if (dis) {
             this.setState({distance: dis.toFixed(2)});
           };
@@ -231,7 +231,7 @@ export default class Story extends Component {
     const storyAr = () => <Icon raised name='road' type='font-awesome' color='#f50' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
-    Reactotron.log('photo', photo);
+    console.log('photo', photo);
     // if (!distance || this.state.Platform === 'web') {
     //   return (
     //     <View style={styles.loader}>

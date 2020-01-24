@@ -79,7 +79,7 @@ export default class ToAR extends PureComponent {
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
-      <ViroARSceneNavigator  {...this.state.sharedProps} viroAppProps={params} initialScene={{ scene: InitialARScene }} />
+      <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={{ scene: InitialARScene }} />
     );
   }
 }
