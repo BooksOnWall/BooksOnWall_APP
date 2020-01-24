@@ -5,6 +5,7 @@ import en from "./locales/en";
 import fr from "./locales/fr";
 import es from "./locales/es";
 import pt from "./locales/pt";
+import it from "./locales/it";
 
 const locales = RNLocalize.getLocales();
 
@@ -17,7 +18,8 @@ I18n.translations = {
   en,
   fr,
   es,
-  pt
+  pt,
+  it
 };
 
 export default I18n;
