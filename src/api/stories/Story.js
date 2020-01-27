@@ -38,7 +38,7 @@ export default class Story extends Component {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
-      photo: 'file://'+this.props.screenProps.AppDir+'/'+ this.props.navigation.getParam('story').id + '/stages/'+ this.props.navigation.getParam('story').stages[0].id + '/' + this.props.navigation.getParam('story').stages[0].photo[0].name,
+      //photo: 'file://'+this.props.screenProps.AppDir+'/'+ this.props.navigation.getParam('story').id + '/stages/'+ this.props.navigation.getParam('story').stages[0].id + '/' + this.props.navigation.getParam('story').stages[0].photo[0].name,
       downloadProgress: 0,
       story: this.props.navigation.getParam('story'),
       granted: Platform.OS === 'ios',
@@ -54,6 +54,7 @@ export default class Story extends Component {
       toLong: null,
       distance: null
     };
+    console.table(this.state.story);
     this.updateTransportIndex = this.updateTransportIndex.bind(this);
     this.updateDlIndex = this.updateDlIndex.bind(this);
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
@@ -223,7 +224,7 @@ export default class Story extends Component {
   // storyDelete = () => <Text>Delete</Text>
   // storyInstall = () => <Text>Install</Text>
   render() {
-    const {photo, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = ['Auto', 'Pedestrian', 'Bicycle'];
     const storyPlay = () => <Icon raised name='play-circle' type='font-awesome' color='#f50' onPress={() => this.launchStory()} />;
     const storyDelete = () => <Icon raised name='trash' type='font-awesome' color='#f50' onPress={() => this.deleteStory(story.id)} />;
@@ -231,7 +232,7 @@ export default class Story extends Component {
     const storyAr = () => <Icon raised name='road' type='font-awesome' color='#f50' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
-    console.log('photo', photo);
+
     // if (!distance || this.state.Platform === 'web') {
     //   return (
     //     <View style={styles.loader}>

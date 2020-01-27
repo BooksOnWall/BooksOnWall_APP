@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   Platform,
   AppRegistry,
@@ -33,7 +33,7 @@ let AR_NAVIGATOR_TYPE = "AR";
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
 let defaultNavigatorType = "AR";
 
-export default class ToAR extends PureComponent {
+export default class ToAR extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,6 +76,7 @@ export default class ToAR extends PureComponent {
       onPictureMatch: this.state.stage.onPictureMatch,
       appDir: this.state.appDir
     };
+    console.table(params);
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?

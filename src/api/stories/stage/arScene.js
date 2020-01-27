@@ -9,6 +9,7 @@ import {
   ViroARScene,
   ViroARImageMarker,
   ViroVideo,
+  ViroMaterials,
   ViroText,
   ViroSound,
   ViroARTrackingTargets,
@@ -92,6 +93,8 @@ export default class ArScene extends Component {
           },
         });
        //}
+       // create materials
+
     } catch(e) {
       console.log(e);
     }
@@ -136,16 +139,25 @@ export default class ArScene extends Component {
         <ViroARImageMarker target={"targetOne"} >
             <ViroVideo
               source={{uri: this.state.videoPath}}
-              height={3}
-              width={3}
+              dragType="FixedToWorld"
+              onDrag={()=>{}}
+              visible={true}
               loop={this.state.videoLoop}
-              position={[0,2,-5]}
+              position={[0,-.1,0]}
+              rotation={[-90,0,0]}
+              opacity={1}
+              materials={["chromaKeyFilteredVideo"]}
             />
         </ViroARImageMarker>
       </ViroARScene>
     );
   }
 }
+ViroMaterials.createMaterials({
+  chromaKeyFilteredVideo : {
+    chromaKeyFilteringColor: "#000000"
+  },
+});
 
 var styles = StyleSheet.create({
   helloWorldTextStyle: {
