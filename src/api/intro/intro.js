@@ -8,28 +8,28 @@ const slides = [
     key: 'p1',
     title: I18n.t("Welcome","Welcome"),
     text: I18n.t("Invite","We invite you to explore a story."),
-    image: require('./img/bow-slider-bg_c01.jpg'),
+    image: require('../../../assets/intro/bow-slider-bg_c01.jpg'),
     backgroundColor: '#59b2ab',
   },
   {
     key: 'p2',
     title:  I18n.t("Each_story","Each story"),
     text: I18n.t("discover","has many walls to discover"),
-    image: require('./img/bow-slider-bg_c02.jpg'),
+    image: require('../../../assets/intro/bow-slider-bg_c02.jpg'),
     backgroundColor: '#febe29',
   },
   {
     key: 'p3',
     title: I18n.t("Each_wall","Each wall"),
     text: I18n.t("reveal","has many secrets to reveal"),
-    image: require('./img/bow-slider-bg_c03.jpg'),
+    image: require('../../../assets/intro/bow-slider-bg_c03.jpg'),
     backgroundColor: '#22bcb5',
   },
   {
     key: 'p4',
     title: I18n.t("Enjoy","Enjoy it"),
     text: I18n.t("Press","Press done to start"),
-    image: require('./img/bow-slider-bg_c04.jpg'),
+    image: require('../../../assets/intro/bow-slider-bg_c04.jpg'),
     backgroundColor: '#22bcb5',
   }
 ];
