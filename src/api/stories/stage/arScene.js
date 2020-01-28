@@ -150,7 +150,7 @@ export default class ArScene extends Component {
               rotation={[-90,0,0]}
               opacity={1}
               onFinish={this.onFinishVideo}
-              //materials={["chromaKeyFilteredVideo"]}
+              materials={["chromaKeyFilteredVideo"]}
             />
         </ViroARImageMarker>
       </ViroARScene>
@@ -159,7 +159,7 @@ export default class ArScene extends Component {
 }
 ViroMaterials.createMaterials({
   chromaKeyFilteredVideo : {
-    chromaKeyFilteringColor: "#53e917"
+    chromaKeyFilteringColor: "#00FF00"
   },
 });
 
