@@ -118,6 +118,9 @@ export default class ArScene extends Component {
   onFinishSound = () => {
     console.log("Sound terminated");
   }
+  onFinishVideo = () => {
+    console.log("Video terminated");
+  }
   onErrorSound = (error) => {
     console.log(error);
   }
@@ -143,10 +146,11 @@ export default class ArScene extends Component {
               onDrag={()=>{}}
               visible={true}
               loop={this.state.videoLoop}
-              position={[0,-.1,0]}
+              position={[0,0,0]}
               rotation={[-90,0,0]}
               opacity={1}
-              materials={["chromaKeyFilteredVideo"]}
+              onFinish={this.onFinishVideo}
+              //materials={["chromaKeyFilteredVideo"]}
             />
         </ViroARImageMarker>
       </ViroARScene>
@@ -155,7 +159,7 @@ export default class ArScene extends Component {
 }
 ViroMaterials.createMaterials({
   chromaKeyFilteredVideo : {
-    chromaKeyFilteringColor: "#000000"
+    chromaKeyFilteringColor: "#53e917"
   },
 });
 

@@ -6,5 +6,18 @@ export default {
   Each_wall: "Chaque mur",
   reveal: "a tant de secrets à révéler",
   Enjoy: "Amusez vous !",
-  Press: "Appuyer sur terminé pour commencer"
+  Press: "Appuyer sur terminé pour commencer",
+  kilometers: "kilometres",
+  Stories: "Contes",
+  Story_downloaded: "Conte téléchargé par BooksOnWall.",
+  ACCESS_FINE_LOCATION: "BooksOnWall a besoin de la permission ACCESS_FINE_LOCATION",
+  Delete_story: "Effacer le conte",
+  Are-u-Sure: "Vous êtes sur de vouloir faire ça ?",
+  Later: "Plus tard",
+  Cancel: "Annuler",
+  Yes_destroy: "Oui efface le!",
+  Auto:"Auto",
+  Pedestrian: "Pieton",
+  Bicycle: "Bicyclette",
+  Transportation: "Choisissez votre mode de transport et appuyez sur Commencer."
 };

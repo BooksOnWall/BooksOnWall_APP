@@ -6,5 +6,18 @@ export default {
   Each_wall: "Each wall",
   reveal: "has many secrets to reveal",
   Enjoy: "Enjoy it",
-  Press: "Press done to start"
+  Press: "Press done to start",
+  kilometers: "kilometers",
+  Stories: "Stories",
+  Story_downloaded: "Story downloaded by BooksOnWall.",
+  ACCESS_FINE_LOCATION: "Mapbox navigation needs ACCESS_FINE_LOCATION",
+  Delete_story: "Delete Story",
+  Are-u-Sure: "Are you sure you want to do this ?",
+  Later: "Ask me later",
+  Cancel: "Cancel",
+  Yes_destroy: "Yes destroy it!",
+  Auto:"Auto",
+  Pedestrian: "Pedestrian",
+  Bicycle: "Bicycle",
+  Transportation: "Please choose your mode of transportation and press Start Navigation."
 };

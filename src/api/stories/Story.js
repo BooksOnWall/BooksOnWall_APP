@@ -10,6 +10,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
+import I18n from "../../utils/i18n";
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -88,7 +89,7 @@ export default class Story extends Component {
             // Optional, but recommended since android DownloadManager will fail when
             // the url does not contains a file extension, by default the mime type will be text/plain
             mime : 'application/zip',
-            description : 'Story downloaded by BooksOnWall.',
+            description : I18n.t("Story_downloaded","Story downloaded by BooksOnWall."),
             mediaScannable: true,
             path : appDir
         }
@@ -164,7 +165,7 @@ export default class Story extends Component {
                 "coordinates": [this.state.toLong, this.state.toLat]
               }
             };
-          let units = "kilometers";
+          let units = I18n.t("kilometers","kilometers");
           let dis = distance(from, to, units);
           console.log('from story distance:', dis);
           if (dis) {
@@ -184,7 +185,7 @@ export default class Story extends Component {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: "ACCESS_FINE_LOCATION",
-          message: "Mapbox navigation needs ACCESS_FINE_LOCATION"
+          message: I18n.t("ACCESS_FINE_LOCATION","Mapbox navigation needs ACCESS_FINE_LOCATION")
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -201,16 +202,16 @@ export default class Story extends Component {
   deleteStory = async (sid) => {
     try {
       await Alert.alert(
-        'Delete Story',
-        'Are you sure you want to do this ?',
+        I18n.t("Delete_story","Delete Story"),
+        I18n.t("Are-u-Sure","Are you sure you want to do this ?"),
         [
-          {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
+          {text: I18n.t("Later","Ask me later"), onPress: () => console.log('Ask me later pressed')},
           {
-            text: 'Cancel',
+            text: I18n.t("Cancel", "Cancel"),
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
-          {text: 'Yes destroy it!', onPress: () => console.log('OK Pressed')},
+          {text: I18n.t("Yes_destroy","Yes destroy it!"), onPress: () => console.log('OK Pressed')},
         ],
         {cancelable: false},
       );
@@ -225,7 +226,7 @@ export default class Story extends Component {
   // storyInstall = () => <Text>Install</Text>
   render() {
     const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
-    const transportbuttons = ['Auto', 'Pedestrian', 'Bicycle'];
+    const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon raised name='play-circle' type='font-awesome' color='#f50' onPress={() => this.launchStory()} />;
     const storyDelete = () => <Icon raised name='trash' type='font-awesome' color='#f50' onPress={() => this.deleteStory(story.id)} />;
     const storyInstall = () => <Icon raised name='download' type='font-awesome' color='#f50' onPress={() => this.downloadStory(story.id)} />;
@@ -258,11 +259,11 @@ export default class Story extends Component {
                 />
               </ScrollView>
               {distance && (
-                <Text>You are at {distance} km from the beginning of your story.</Text>
+                <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
               )}
               {story.isInstalled && (
                 <>
-                <Text style={styles.bold}> Please choose your mode of transportation and press Start Navigation.</Text>
+                <Text style={styles.bold}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
                 <ButtonGroup
                   onPress={this.updateTransportIndex}
                   selectedIndex={transportIndex}

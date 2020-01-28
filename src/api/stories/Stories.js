@@ -8,6 +8,7 @@ import  distance from '@turf/distance';
 import * as RNFS from 'react-native-fs';
 import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
+import I18n from "../../utils/i18n";
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -97,7 +98,7 @@ export default class Stories extends Component {
                 "coordinates": [this.state.toLong, this.state.toLat]
               }
             };
-          let units = "kilometers";
+          let units = I18n.t("kilometers","kilometers");
           let dis = distance(from, to, units);
           console.log('from stories distance:', dis);
           if (dis) {
@@ -152,7 +153,7 @@ export default class Stories extends Component {
         <SafeAreaView style={styles.container}>
           <Header
             leftComponent={{ icon: 'menu', color: '#fff' }}
-            centerComponent={{ text: 'Stories', style: { color: '#fff' } }}
+            centerComponent={{ text: I18n.t("Stories","Stories"), style: { color: '#fff' } }}
             rightComponent={{ icon: 'home', color: '#fff' }}
             />
           <Card  style={styles.card}>
