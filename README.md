@@ -1,3 +1,7 @@
+# Documentation 
+
+## [Wiki Documentation](/wiki/Home)
+
 # First run instructions
 ## Viro media
 ```
