@@ -203,7 +203,7 @@ export default class Story extends Component {
     try {
       await Alert.alert(
         I18n.t("Delete_story","Delete Story"),
-        I18n.t("Are-u-Sure","Are you sure you want to do this ?"),
+        I18n.t("Are_u_Sure","Are you sure you want to do this ?"),
         [
           {text: I18n.t("Later","Ask me later"), onPress: () => console.log('Ask me later pressed')},
           {
