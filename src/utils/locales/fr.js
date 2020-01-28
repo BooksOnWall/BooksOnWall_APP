@@ -12,7 +12,7 @@ export default {
   Story_downloaded: "Conte téléchargé par BooksOnWall.",
   ACCESS_FINE_LOCATION: "BooksOnWall a besoin de la permission ACCESS_FINE_LOCATION",
   Delete_story: "Effacer le conte",
-  Are-u-Sure: "Vous êtes sur de vouloir faire ça ?",
+  Are_u_Sure: "Vous êtes sur de vouloir faire ça ?",
   Later: "Plus tard",
   Cancel: "Annuler",
   Yes_destroy: "Oui efface le!",

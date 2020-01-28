@@ -12,7 +12,7 @@ export default {
   Story_downloaded: "Story downloaded by BooksOnWall.",
   ACCESS_FINE_LOCATION: "Mapbox navigation needs ACCESS_FINE_LOCATION",
   Delete_story: "Delete Story",
-  Are-u-Sure: "Are you sure you want to do this ?",
+  Are_u_Sure: "Are you sure you want to do this ?",
   Later: "Ask me later",
   Cancel: "Cancel",
   Yes_destroy: "Yes destroy it!",
