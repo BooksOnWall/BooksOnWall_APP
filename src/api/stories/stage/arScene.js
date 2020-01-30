@@ -121,15 +121,18 @@ export default class ArScene extends Component {
   onFinishVideo = () => {
     console.log("Video terminated");
   }
-  onErrorSound = (error) => {
-    console.log(error);
+  onVideoError = (event) => {
+    console.log("Video loading failed with error: " + event.nativeEvent.error);
+  }
+  onErrorSound = (event) => {
+    console.log("Audio loading failed with error: " + event.nativeEvent.error);
   }
   toPath = (radius) => {
       console.log('radius', radius);
   }
   render = () => {
     return (
-      <ViroARScene onTrackingUpdated={this.onInitialized} displayPointCloud >
+      <ViroARScene onTrackingUpdated={this.onInitialized}  >
         <ViroSound
            paused={false}
            muted={false}
@@ -142,8 +145,8 @@ export default class ArScene extends Component {
         <ViroARImageMarker target={"targetOne"} >
             <ViroVideo
               source={{uri: this.state.videoPath}}
-              dragType="FixedToWorld"
-              onDrag={()=>{}}
+              // dragType="FixedToWorld"
+              // onDrag={()=>{}}
               visible={true}
               loop={this.state.videoLoop}
               position={[0,0,0]}
