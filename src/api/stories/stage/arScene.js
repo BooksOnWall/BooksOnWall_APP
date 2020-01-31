@@ -9,6 +9,7 @@ import {
   ViroARScene,
   ViroARImageMarker,
   ViroVideo,
+  ViroButton,
   ViroMaterials,
   ViroText,
   ViroSound,
@@ -130,6 +131,12 @@ export default class ArScene extends Component {
   toPath = (radius) => {
       console.log('radius', radius);
   }
+  onButtonGaze() {
+      this.setState({ buttonStateTag: "onGaze" });
+  }
+  onButtonTap() {
+      this.setState({ buttonStateTag: "onTap" });
+  }
   render = () => {
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}  >
@@ -145,17 +152,35 @@ export default class ArScene extends Component {
         <ViroARImageMarker target={"targetOne"} >
             <ViroVideo
               source={{uri: this.state.videoPath}}
-              // dragType="FixedToWorld"
-              // onDrag={()=>{}}
+              dragType="FixedToPlane"
+              onDrag={()=>{}}
               visible={true}
               loop={this.state.videoLoop}
-              position={[0,0,0]}
+              position={[0,-1,0]}
               rotation={[-90,0,0]}
               opacity={1}
               onFinish={this.onFinishVideo}
               materials={["chromaKeyFilteredVideo"]}
             />
         </ViroARImageMarker>
+        <ViroButton
+          source={{uri: "../../../../assets/intro/bow-slider-bg_c01.jpg"}}
+          gazeSource={{uri: "assets/intro/bow-slider-bg_c02.jpg"}}
+          tapSource={{uri: "assets/intro/bow-slider-bg_c03.jpg"}}
+          position={[1, 3, -5]}
+          height={2}
+          width={3}
+          onTap={this.onButtonTap}
+          onGaze={this.onButtonGaze} />
+        <ViroButton
+          source={{uri: "assets/icon/bow-adaptative-icon_108.png"}}
+          gazeSource={{uri: "assets/icon/bow-adaptative-icon_108.png"}}
+          tapSource={{uri: "assets/icon/bow-adaptative-icon_108.png"}}
+          position={[1, 3, -5]}
+          height={2}
+          width={3}
+          onTap={this.onButtonTap}
+          onGaze={this.onButtonGaze} />
       </ViroARScene>
     );
   }
