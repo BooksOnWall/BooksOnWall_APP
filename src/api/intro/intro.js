@@ -68,7 +68,6 @@ export default class Intro extends Component {
         <ImageBackground source={item.image} style={{width: '100%', height: '100%'}}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.text}>{item.text}</Text>
-          <Image source={item.image} />
         </ImageBackground>
       </View>
     );
