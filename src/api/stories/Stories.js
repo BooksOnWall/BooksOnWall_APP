@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
-import { Header,Card, ListItem, Icon, ThemeProvider } from 'react-native-elements';
+import { Header,Card, ListItem, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -9,6 +9,7 @@ import * as RNFS from 'react-native-fs';
 import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
+import Icon from "../../utils/Icon";
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -152,7 +153,6 @@ export default class Stories extends Component {
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
           <Header
-            leftComponent={{ icon: 'menu', color: '#fff' }}
             centerComponent={{ text: I18n.t("Stories","Stories"), style: { color: '#fff' } }}
             rightComponent={{ icon: 'home', color: '#fff' }}
             />
