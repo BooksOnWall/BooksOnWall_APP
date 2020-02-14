@@ -70,9 +70,9 @@
       "./node_modules/react-native-gesture-handler/jestSetup.js"
     ]
   },
-    "rnpm": {
-       "assets": [
-           "assets/nav"
-       ]
-   }
+  "rnpm": {
+    "assets": [
+      "assets/nav"
+    ]
+  }
 }
