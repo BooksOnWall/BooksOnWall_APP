@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="70px" height="70px" viewBox="0 0 70 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55 (78076) - https://sketchapp.com -->
+    <title>play</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 0 19.3163077 0 19.3163077 35.9683077 0 35.9683077"></polygon>
+    </defs>
+    <g id="play" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-3-Copy-2" transform="translate(25.000000, 17.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Clip-2"></g>
+            <path d="M18.9253385,18.9279385 L2.27856923,35.5747077 C1.4378,36.4156308 -4.61538462e-05,35.8200923 -4.61538462e-05,34.6308615 L-4.61538462e-05,1.33732308 C-4.61538462e-05,0.148246154 1.4378,-0.447292308 2.27856923,0.393476923 L18.9253385,17.0402462 C19.4467231,17.5614769 19.4467231,18.4067077 18.9253385,18.9279385" id="Fill-1" fill="#1B1A1B" mask="url(#mask-2)"></path>
+        </g>
+    </g>
+</svg>
