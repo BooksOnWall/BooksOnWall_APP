@@ -29,6 +29,9 @@ import NetInfo from "@react-native-community/netinfo";
 import { Overlay } from 'react-native-elements';
 import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME  } from 'react-native-dotenv';
 import KeepAwake from 'react-native-keep-awake';
+import {createIconSetFromIcoMoon} from 'react-native-vector-icons';
+import icoMoonConfig from './selection.json';
+export default createIconSetFromIcoMoon(icoMoonConfig);
 
 const MainNavigator = createStackNavigator({
   Intro: { screen: Intro},
