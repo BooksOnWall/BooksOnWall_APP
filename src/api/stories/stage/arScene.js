@@ -163,24 +163,7 @@ export default class ArScene extends Component {
               materials={["chromaKeyFilteredVideo"]}
             />
         </ViroARImageMarker>
-        <ViroButton
-          source={{uri: "../../../../assets/intro/bow-slider-bg_c01.jpg"}}
-          gazeSource={{uri: "assets/intro/bow-slider-bg_c02.jpg"}}
-          tapSource={{uri: "assets/intro/bow-slider-bg_c03.jpg"}}
-          position={[1, 3, -5]}
-          height={2}
-          width={3}
-          onTap={this.onButtonTap}
-          onGaze={this.onButtonGaze} />
-        <ViroButton
-          source={{uri: "assets/icon/bow-adaptative-icon_108.png"}}
-          gazeSource={{uri: "assets/icon/bow-adaptative-icon_108.png"}}
-          tapSource={{uri: "assets/icon/bow-adaptative-icon_108.png"}}
-          position={[1, 3, -5]}
-          height={2}
-          width={3}
-          onTap={this.onButtonTap}
-          onGaze={this.onButtonGaze} />
+
       </ViroARScene>
     );
   }

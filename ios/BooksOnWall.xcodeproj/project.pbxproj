@@ -77,6 +77,10 @@
 		4BFA9DD58B53490F9903B154 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 70E4ED774D9D4B6BBA0CE9D2 /* libRNCNetInfo.a */; };
 		9EE7ED4F865E48E0A1F97392 /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B780B2E3A0B4138A98E2A72 /* libRNCNetInfo-tvOS.a */; };
 		F9303517AE39488287465B69 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 517E7A800768460BBCE4FDB5 /* libKCKeepAwake.a */; };
+		2DD509D6716D496D9178BB4E /* libLRDRCTSimpleToast.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD94195282684054B03B37B3 /* libLRDRCTSimpleToast.a */; };
+		62C64D5B27AB4A3F88E5B368 /* icon-names.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B598198F77C4C3C984248F0 /* icon-names.png */; };
+		D4978FEF4F5D40649A49CCCC /* play.svg in Resources */ = {isa = PBXBuildFile; fileRef = F6832EB1B7D44A1FBAC185FA /* play.svg */; };
+		0B67587DA514494DB86F5AC0 /* Iconset-Bookonwall.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EAFCE4EA0B124AF5A6C5FDBB /* Iconset-Bookonwall.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -436,6 +440,11 @@
 		1B780B2E3A0B4138A98E2A72 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		61209ABC9309497A84B87144 /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; name = "KCKeepAwake.xcodeproj"; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		517E7A800768460BBCE4FDB5 /* libKCKeepAwake.a */ = {isa = PBXFileReference; name = "libKCKeepAwake.a"; path = "libKCKeepAwake.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		1ABAACA574994D808C63B88D /* LRDRCTSimpleToast.xcodeproj */ = {isa = PBXFileReference; name = "LRDRCTSimpleToast.xcodeproj"; path = "../node_modules/react-native-simple-toast/ios/LRDRCTSimpleToast.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		AD94195282684054B03B37B3 /* libLRDRCTSimpleToast.a */ = {isa = PBXFileReference; name = "libLRDRCTSimpleToast.a"; path = "libLRDRCTSimpleToast.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		1B598198F77C4C3C984248F0 /* icon-names.png */ = {isa = PBXFileReference; name = "icon-names.png"; path = "../assets/nav/icon-names.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F6832EB1B7D44A1FBAC185FA /* play.svg */ = {isa = PBXFileReference; name = "play.svg"; path = "../assets/nav/play.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		EAFCE4EA0B124AF5A6C5FDBB /* Iconset-Bookonwall.ttf */ = {isa = PBXFileReference; name = "Iconset-Bookonwall.ttf"; path = "../assets/nav/Iconset-Bookonwall.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -479,6 +488,7 @@
 				F29F0013753A4EB8B2F39FE9 /* libRCTMGL.a in Frameworks */,
 				4BFA9DD58B53490F9903B154 /* libRNCNetInfo.a in Frameworks */,
 				F9303517AE39488287465B69 /* libKCKeepAwake.a in Frameworks */,
+				2DD509D6716D496D9178BB4E /* libLRDRCTSimpleToast.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,6 +699,7 @@
 				8EC92B1AD7184062B550AE8F /* RCTMGL.xcodeproj */,
 				D4A1C2F017004D72991829B6 /* RNCNetInfo.xcodeproj */,
 				61209ABC9309497A84B87144 /* KCKeepAwake.xcodeproj */,
+				1ABAACA574994D808C63B88D /* LRDRCTSimpleToast.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -756,6 +767,9 @@
 				393BFF95251B42C9B882B484 /* Octicons.ttf */,
 				FB49657073474C0EBDA4A776 /* SimpleLineIcons.ttf */,
 				0417EA0C6B6749E98AB1BAE3 /* Zocial.ttf */,
+				1B598198F77C4C3C984248F0 /* icon-names.png */,
+				F6832EB1B7D44A1FBAC185FA /* play.svg */,
+				EAFCE4EA0B124AF5A6C5FDBB /* Iconset-Bookonwall.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1223,6 +1237,9 @@
 				D7E44386320545A6AAB4FA8C /* Octicons.ttf in Resources */,
 				38B72718C3744D89A9A9EFCC /* SimpleLineIcons.ttf in Resources */,
 				E80B53ABDE674DD6A0DE29D7 /* Zocial.ttf in Resources */,
+				62C64D5B27AB4A3F88E5B368 /* icon-names.png in Resources */,
+				D4978FEF4F5D40649A49CCCC /* play.svg in Resources */,
+				0B67587DA514494DB86F5AC0 /* Iconset-Bookonwall.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1378,6 +1395,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1417,6 +1435,7 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BooksOnWall.app/BooksOnWall";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1579,6 +1598,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1626,6 +1646,7 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1714,6 +1735,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1760,6 +1782,7 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
