@@ -4,56 +4,78 @@ import { ImageBackground, TouchableOpacity,Image, StyleSheet, View, Text, Activi
 import I18n from "../../utils/i18n";
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { Images } from '../../../assets/intro';
+import Icon from '../../utils/Icon';
 
 const slides = [
   {
     key: 'p1',
-    title: I18n.t("Welcome","Welcome"),
-    text: I18n.t("Invite","We invite you to explore a story."),
+    title: I18n.t("Welcome","BooksOnWall"),
+    text: I18n.t("Invite","welcome! we invite you to explore a story..."),
     image: Images['image1'],
-    backgroundColor: '#59b2ab',
+    backgroundColor: '#9E1C00',
   },
   {
     key: 'p2',
-    title:  I18n.t("Each_story","Each story"),
-    text: I18n.t("discover","has many walls to discover"),
+    title:  I18n.t("Each_story","...each story has many walls to discover..."),
+    text: I18n.t("discover","Soon in your city"),
     image: Images['image2'],
-    backgroundColor: '#febe29',
+    backgroundColor: '#257466',
   },
   {
     key: 'p3',
-    title: I18n.t("Each_wall","Each wall"),
-    text: I18n.t("reveal","has many secrets to reveal"),
+    title: I18n.t("Each_wall","...Each wall has many secrets to reveal..."),
+    text: I18n.t("reveal","whit art, music, animation..."),
     image: Images['image3'],
-    backgroundColor: '#22bcb5',
+    backgroundColor: '#CC7116',
   },
   {
     key: 'p4',
     title: I18n.t("Enjoy","Enjoy it"),
-    text: I18n.t("Press","Press done to start"),
+    text: I18n.t("Press","Choose the story next to you and begin the adventure"),
     image: Images['image4'],
-    backgroundColor: '#22bcb5',
+    backgroundColor: '#593274',
+  },
+  {
+    key: 'p5',
+    title: I18n.t("Bip","oh! please pay attention to the trafic, beep beep!"),
+    text: I18n.t("Better_headphones","Better whit headphone"),
+    icon: 'home',
+    image: Images['image5'],
+    backgroundColor: '#255C97',
   }
 ];
 const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    flexDirection: 'column-reverse',
+    justifyContent: 'space-between',
     backgroundColor: 'transparent',
-    justifyContent: 'space-around',
   },
   text: {
-    color: 'black',
+    flex: 1,
+    color: 'white',
     backgroundColor: 'transparent',
+    fontFamily: "OpenSansCondensed-Light",
+    fontSize: 20,
     textAlign: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 5,
+    marginBottom: 0,
   },
   title: {
-    fontSize: 22,
-    color: 'black',
+    flex: 2,
+    fontSize: 27,
+    color: 'white',
     backgroundColor: 'transparent',
+    fontFamily: "ATypewriterForMe",
     textAlign: 'center',
     marginBottom: 16,
+    marginTop: 70,
+    paddingHorizontal: 15,
+  },
+  icon: {
+    textAlign: 'center',
+    backgroundColor: 'transparent',
   }
 });
 
@@ -67,6 +89,14 @@ export default class Intro extends Component {
       <View style={styles.slide}>
         <ImageBackground source={item.image} style={{width: '100%', height: '100%'}}>
           <Text style={styles.title}>{item.title}</Text>
+        {item.icon &&
+         <Icon
+            style={styles.icon}
+            name={item.icon}
+            size={40}
+            color="white"
+            />
+        }
           <Text style={styles.text}>{item.text}</Text>
         </ImageBackground>
       </View>
