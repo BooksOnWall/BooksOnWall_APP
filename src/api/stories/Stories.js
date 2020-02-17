@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
-import { Header,Card, ListItem, ThemeProvider } from 'react-native-elements';
+import { Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -153,18 +153,20 @@ export default class Stories extends Component {
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
-          <Header
-            centerComponent={{ text: I18n.t("Stories","Stories"), style: { color: '#fff' } }}
-            rightComponent={{ icon: 'home', color: '#fff' }}
+          <Header 
+            containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0}}
+            centerComponent={{ icon: 'bow-logo', color: '#9E1C00' }}
             />
-          <Card  style={styles.card}>
+          <Card  style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
               <ScrollView >
                 {
                   stories.map((story, i) => (
-                    <ListItem
+                    <ListItem 
+                      containerStyle={{backgroundColor: '#D8D8D8',  alignContent: 'center'}}
                       key={i}
-                      leftIcon={{ name: (story.isInstalled) ? 'explore' : 'arrow-drop-down-circle' }}
                       title={story.title}
+                      subtitle={story.city}
+                      titleStyle={{ color: 'black', fontWeight: 'bold' }}
                       onPress={() => navigate('Story', {story: story})}
                       bottomDivider
                       chevron
@@ -184,17 +186,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     justifyContent: 'flex-start',
     alignItems: "stretch",
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#D8D8D8',
   },
-  card : {
+  card: {
     margin: 0,
-    padding: 0
+    padding: 0,
+    backgroundColor: '#D8D8D8',
   },
   scrollView: {
     marginHorizontal: 0,
+    backgroundColor: '#D8D8D8',
   },
   bold: {
-    fontWeight: 'bold'
+    fontWeight: '900'
   },
   loader: {
     flex: 1,
