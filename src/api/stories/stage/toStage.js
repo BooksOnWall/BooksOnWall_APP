@@ -24,6 +24,8 @@ import { Card, ButtonGroup, Button, ThemeProvider } from 'react-native-elements'
 import  distance from '@turf/distance';
 import KeepAwake from 'react-native-keep-awake';
 import Reactotron from 'reactotron-react-native';
+import Toast from 'react-native-simple-toast';
+
 type Props = {};
 
 export default class ToStage extends Component<Props,$FlowFixMeState > {
@@ -88,7 +90,7 @@ export default class ToStage extends Component<Props,$FlowFixMeState > {
             this.setState({distance: dis});
           };
       },
-      error => Alert.alert('Error', JSON.stringify(error)),
+      error => Toast.showWithGravity('Your GPS position is unknown, are you inside a buiding ? please go outside.', Toast.LONG, Toast.TOP),
       {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
       );
 

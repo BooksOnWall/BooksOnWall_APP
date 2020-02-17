@@ -10,6 +10,7 @@ import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
+import Toast from 'react-native-simple-toast';
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -106,7 +107,7 @@ export default class Stories extends Component {
             this.setState({distance: dis.toFixed(2)});
           };
       },
-      error => Alert.alert('Error', JSON.stringify(error)),
+      error => Toast.showWithGravity('Your GPS position is unknown, are you inside a buiding ? please go outside.', Toast.LONG, Toast.TOP),
       {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
     );
     } catch(e) {
