@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
+import { Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
 import { Header,Card, ListItem, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
@@ -77,8 +77,8 @@ export default class Stories extends Component {
           this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
           this.setState({initialPosition});
         },
-        error => Alert.alert('Error', JSON.stringify(error)),
-        {timeout: 2000, maximumAge: 1000, enableHighAccuracy: true},
+        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside.", Toast.LONG, Toast.TOP),
+        {timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
         const lastPosition = position;
@@ -107,7 +107,7 @@ export default class Stories extends Component {
             this.setState({distance: dis.toFixed(2)});
           };
       },
-      error => Toast.showWithGravity('Your GPS position is unknown, are you inside a buiding ? please go outside.', Toast.LONG, Toast.TOP),
+      error => Toast.showWithGravity(I18n.t("Your GPS position is unknown, are you inside a buiding ? please go outside.", Toast.LONG, Toast.TOP),
       {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
     );
     } catch(e) {

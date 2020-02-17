@@ -11,6 +11,7 @@ export default {
   Stories: "Contes",
   Story_downloaded: "Conte téléchargé par BooksOnWall.",
   ACCESS_FINE_LOCATION: "BooksOnWall a besoin de la permission ACCESS_FINE_LOCATION",
+  POSITION_UNKNOWN: "Position GPS inconnue, Etes vous à l'interieur d'un immeuble ? Aller à l'exterieur s'il vous plait.",
   Delete_story: "Effacer le conte",
   Are_u_Sure: "Vous êtes sur de vouloir faire ça ?",
   Later: "Plus tard",

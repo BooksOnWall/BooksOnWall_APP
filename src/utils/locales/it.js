@@ -11,6 +11,7 @@ export default {
   Stories: "Stories",
   Story_downloaded: "Story downloaded by BooksOnWall.",
   ACCESS_FINE_LOCATION: "Mapbox navigation needs ACCESS_FINE_LOCATION",
+  POSITION_UNKNOWN: "GPS position unknown, Are you inside a building ? Please go outside.",
   Delete_story: "Delete Story",
   Are_u_Sure: "Are you sure you want to do this ?",
   Later: "Ask me later",
