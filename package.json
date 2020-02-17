@@ -72,7 +72,8 @@
   },
   "rnpm": {
     "assets": [
-      "assets/nav"
+      "assets/nav",
+      "assets/fonts/"
     ]
   }
 }

@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -77,6 +76,14 @@
 		4BFA9DD58B53490F9903B154 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 70E4ED774D9D4B6BBA0CE9D2 /* libRNCNetInfo.a */; };
 		9EE7ED4F865E48E0A1F97392 /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B780B2E3A0B4138A98E2A72 /* libRNCNetInfo-tvOS.a */; };
 		F9303517AE39488287465B69 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 517E7A800768460BBCE4FDB5 /* libKCKeepAwake.a */; };
+		C591524AD31B4D6DB1F321D7 /* icon-names.png in Resources */ = {isa = PBXBuildFile; fileRef = 189928596F864DBB8EE52255 /* icon-names.png */; };
+		575A4FEF61F141FA8263D253 /* Iconset-Bookonwall.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 007B167590AC46F99DF391FF /* Iconset-Bookonwall.ttf */; };
+		346F221E5FEE4B8D80624D24 /* ATypewriterForMe.otf in Resources */ = {isa = PBXBuildFile; fileRef = 372153838B3D4DA7B8EBF518 /* ATypewriterForMe.otf */; };
+		D0BDB148EFC64EE2BB6DE692 /* OpenSansCondensed-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3934D5542CB7461ABC53E399 /* OpenSansCondensed-Bold.otf */; };
+		DC6585F893C64572A7BE0569 /* OpenSansCondensed-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = FB1B5C0C6A314763BDCFCD5A /* OpenSansCondensed-Light.otf */; };
+		7BC5C7054D0D4358B3EE8C6D /* OpenSansCondensed-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94DFA0233B7E4B78870F772C /* OpenSansCondensed-LightItalic.otf */; };
+		E536997093EA49F99A294511 /* Typewriterhand.otf in Resources */ = {isa = PBXBuildFile; fileRef = F6D775E8A33341FEBDFD33D5 /* Typewriterhand.otf */; };
+		CD0E4B8862D844B3A4F0DE68 /* WaitingfortheSunrise.otf in Resources */ = {isa = PBXBuildFile; fileRef = 62A394F9AA304A6A8FE2B622 /* WaitingfortheSunrise.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -436,6 +443,14 @@
 		1B780B2E3A0B4138A98E2A72 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		61209ABC9309497A84B87144 /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; name = "KCKeepAwake.xcodeproj"; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		517E7A800768460BBCE4FDB5 /* libKCKeepAwake.a */ = {isa = PBXFileReference; name = "libKCKeepAwake.a"; path = "libKCKeepAwake.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		189928596F864DBB8EE52255 /* icon-names.png */ = {isa = PBXFileReference; name = "icon-names.png"; path = "../assets/nav/icon-names.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		007B167590AC46F99DF391FF /* Iconset-Bookonwall.ttf */ = {isa = PBXFileReference; name = "Iconset-Bookonwall.ttf"; path = "../assets/nav/Iconset-Bookonwall.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		372153838B3D4DA7B8EBF518 /* ATypewriterForMe.otf */ = {isa = PBXFileReference; name = "ATypewriterForMe.otf"; path = "../assets/fonts/ATypewriterForMe.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3934D5542CB7461ABC53E399 /* OpenSansCondensed-Bold.otf */ = {isa = PBXFileReference; name = "OpenSansCondensed-Bold.otf"; path = "../assets/fonts/OpenSansCondensed-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FB1B5C0C6A314763BDCFCD5A /* OpenSansCondensed-Light.otf */ = {isa = PBXFileReference; name = "OpenSansCondensed-Light.otf"; path = "../assets/fonts/OpenSansCondensed-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		94DFA0233B7E4B78870F772C /* OpenSansCondensed-LightItalic.otf */ = {isa = PBXFileReference; name = "OpenSansCondensed-LightItalic.otf"; path = "../assets/fonts/OpenSansCondensed-LightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F6D775E8A33341FEBDFD33D5 /* Typewriterhand.otf */ = {isa = PBXFileReference; name = "Typewriterhand.otf"; path = "../assets/fonts/Typewriterhand.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		62A394F9AA304A6A8FE2B622 /* WaitingfortheSunrise.otf */ = {isa = PBXFileReference; name = "WaitingfortheSunrise.otf"; path = "../assets/fonts/WaitingfortheSunrise.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -756,6 +771,14 @@
 				393BFF95251B42C9B882B484 /* Octicons.ttf */,
 				FB49657073474C0EBDA4A776 /* SimpleLineIcons.ttf */,
 				0417EA0C6B6749E98AB1BAE3 /* Zocial.ttf */,
+				189928596F864DBB8EE52255 /* icon-names.png */,
+				007B167590AC46F99DF391FF /* Iconset-Bookonwall.ttf */,
+				372153838B3D4DA7B8EBF518 /* ATypewriterForMe.otf */,
+				3934D5542CB7461ABC53E399 /* OpenSansCondensed-Bold.otf */,
+				FB1B5C0C6A314763BDCFCD5A /* OpenSansCondensed-Light.otf */,
+				94DFA0233B7E4B78870F772C /* OpenSansCondensed-LightItalic.otf */,
+				F6D775E8A33341FEBDFD33D5 /* Typewriterhand.otf */,
+				62A394F9AA304A6A8FE2B622 /* WaitingfortheSunrise.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1223,6 +1246,14 @@
 				D7E44386320545A6AAB4FA8C /* Octicons.ttf in Resources */,
 				38B72718C3744D89A9A9EFCC /* SimpleLineIcons.ttf in Resources */,
 				E80B53ABDE674DD6A0DE29D7 /* Zocial.ttf in Resources */,
+				C591524AD31B4D6DB1F321D7 /* icon-names.png in Resources */,
+				575A4FEF61F141FA8263D253 /* Iconset-Bookonwall.ttf in Resources */,
+				346F221E5FEE4B8D80624D24 /* ATypewriterForMe.otf in Resources */,
+				D0BDB148EFC64EE2BB6DE692 /* OpenSansCondensed-Bold.otf in Resources */,
+				DC6585F893C64572A7BE0569 /* OpenSansCondensed-Light.otf in Resources */,
+				7BC5C7054D0D4358B3EE8C6D /* OpenSansCondensed-LightItalic.otf in Resources */,
+				E536997093EA49F99A294511 /* Typewriterhand.otf in Resources */,
+				CD0E4B8862D844B3A4F0DE68 /* WaitingfortheSunrise.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
