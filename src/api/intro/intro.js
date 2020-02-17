@@ -39,7 +39,7 @@ const slides = [
     key: 'p5',
     title: I18n.t("Bip","oh! please pay attention to the trafic, beep beep!"),
     text: I18n.t("Better_headphones","Better whit headphone"),
-    icon: 'home',
+    icon: 'headphones',
     image: Images['image5'],
     backgroundColor: '#255C97',
   }
@@ -54,24 +54,26 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    color: 'white',
+    color: '#EFEFEF',
     backgroundColor: 'transparent',
-    fontFamily: "OpenSansCondensed-Light",
-    fontSize: 20,
+    fontFamily: "ATypewriterForMe",
+    fontSize: 21,
+    letterSpacing: -1,
     textAlign: 'center',
-    paddingHorizontal: 5,
+    padding: 40,
     marginBottom: 0,
   },
   title: {
     flex: 2,
-    fontSize: 27,
-    color: 'white',
+    fontSize: 33,
+    color: '#EFEFEF',
     backgroundColor: 'transparent',
-    fontFamily: "ATypewriterForMe",
+    fontFamily: "FingerPaint-Regular",
     textAlign: 'center',
-    marginBottom: 16,
+    lineHeight: 36,
+    marginBottom: 20,
     marginTop: 70,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   icon: {
     textAlign: 'center',
@@ -93,7 +95,7 @@ export default class Intro extends Component {
          <Icon
             style={styles.icon}
             name={item.icon}
-            size={40}
+            size={60}
             color="white"
             />
         }
