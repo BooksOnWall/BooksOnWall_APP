@@ -77,7 +77,7 @@ export default class Stories extends Component {
           this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
           this.setState({initialPosition});
         },
-        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside.", Toast.LONG, Toast.TOP),
+        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
         {timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
@@ -107,7 +107,7 @@ export default class Stories extends Component {
             this.setState({distance: dis.toFixed(2)});
           };
       },
-      error => Toast.showWithGravity(I18n.t("Your GPS position is unknown, are you inside a buiding ? please go outside.", Toast.LONG, Toast.TOP),
+      error => oast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
     );
     } catch(e) {
