@@ -162,11 +162,12 @@ export default class Stories extends Component {
                 {
                   stories.map((story, i) => (
                     <ListItem 
-                      containerStyle={{backgroundColor: '#D8D8D8',  alignContent: 'center'}}
+                      containerStyle={{backgroundColor: '#D8D8D8'}}
                       key={i}
                       title={story.title}
+                      titleStyle={{ color: 'black', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16 }}
                       subtitle={story.city}
-                      titleStyle={{ color: 'black', fontWeight: 'bold' }}
+                      subtitleStyle={{ color: 'black', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
                       onPress={() => navigate('Story', {story: story})}
                       bottomDivider
                       chevron
