@@ -11,6 +11,7 @@ import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
 import Toast from 'react-native-simple-toast';
+import { Banner } from '../../../assets/banner';
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -161,9 +162,9 @@ export default class Stories extends Component {
               <ScrollView >
                 {
                   stories.map((story, i) => (
-
-                    <ListItem
-                      containerStyle={{backgroundColor: '#D8D8D8'}}
+                    <ListItem 
+                      //contentContainerStyle={{ backgroundImage: Banner["banner" + story.id] }}
+                      containerStyle={{backgroundColor: '#ccc', }}
                       key={i}
                       title={story.title}
                       titleStyle={{ color: 'white', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16 }}
@@ -172,7 +173,7 @@ export default class Stories extends Component {
                       onPress={() => navigate('Story', {story: story})}
                       bottomDivider
                       chevron
-                    />
+                    /> 
                   ))
                 }
               </ScrollView>

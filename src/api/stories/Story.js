@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
-import { Header, Card, Tile, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
+import { PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground } from 'react-native';
+import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -12,6 +12,7 @@ import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
+import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
 
 function humanFileSize(bytes, si) {
@@ -229,10 +230,10 @@ export default class Story extends Component {
   render() {
     const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyPlay = () => <Icon raised name='play-circle' type='font-awesome' color='#f50' onPress={() => this.launchStory()} />;
-    const storyDelete = () => <Icon raised name='trash' type='font-awesome' color='#9E1C00' onPress={() => this.deleteStory(story.id)} />;
-    const storyInstall = () => <Icon raised name='download' type='Icon' color='#9E1C00' onPress={() => this.downloadStory(story.id)} />;
-    const storyAr = () => <Icon raised name='road' type='font-awesome' color='#f50' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
+    const storyPlay = () => <Icon raised name='play-circle' color='#f50' onPress={() => this.launchStory()} />;
+    const storyDelete = () => <Icon raised name='trash' color='#9E1C00' onPress={() => this.deleteStory(story.id)} />;
+    const storyInstall = () => <Icon raised name='download' color='#9E1C00' onPress={() => this.downloadStory(story.id)} />;
+    const storyAr = () => <Icon raised name='geopoint' color='#f50' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
     return (
@@ -244,17 +245,10 @@ export default class Story extends Component {
             centerComponent={<Icon name='bow-logo' style={styles.icon}/>}
             />
             <Card containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
-              <Tile
-                 containerStyle= {{ height: 100 }}
-                 imageContainerStyle= {{ height: 100 }}
-                 title= {story.title}
-                 titleStyle={{ paddingTop: 15, paddingBottom: 3, fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2}}
-                 featured
-                 caption= {story.city}
-                 captionStyle= {{ paddingTop: 0, paddingBottom: 3, color: 'white', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1}}
-                 contentContainerStyle={{ height: 100 }}
-                 captionStyle={{ padding: 0 }}
-              />
+              <ImageBackground source={Banner['banner1']} style={styles.tile}>
+                <Text>{story.title}</Text>
+                <Text>{story.city} - {story.country}</Text>
+              </ImageBackground>
               <ScrollView style={styles.sinopsys} >
                 <HTMLView
                   value={story.sinopsys}
@@ -264,7 +258,10 @@ export default class Story extends Component {
               {distance && (
                 <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
               )}
-              {story.isInstalled && (
+            </Card>
+
+            <View style={styles.nav}>
+                {story.isInstalled && (
                 <>
                 <Text style={styles.bold}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
                 <ButtonGroup
@@ -283,9 +280,9 @@ export default class Story extends Component {
                 selectedIndex={dlIndex}
                 buttons={dlbuttons}
                 containerStyle={{height: 60}}
-
                 />
-            </Card>
+            </View>
+
         </SafeAreaView>
       </ThemeProvider>
     );
@@ -294,8 +291,9 @@ export default class Story extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "stretch",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
     backgroundColor: "#D8D8D8"
   },
   sinopsys: {
@@ -319,5 +317,18 @@ const styles = StyleSheet.create({
   icon: {
     color: "#9E1C00",
     fontSize: 40,
-    }
+    },
+  nav:{
+    justifyContent: "space-between"
+  },
+  title:{
+    paddingTop: 15, paddingBottom: 3, fontFamily: 'TrashHand', fontSize: 24, textAlign: 'center', letterSpacing: 2 
+  },
+  tile:{
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    minHeight: 80,
+  }
 });
