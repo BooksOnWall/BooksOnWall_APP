@@ -240,8 +240,8 @@ export default class Story extends Component {
         <SafeAreaView style={styles.container}>
           <Header
             leftComponent={{ icon: 'menu', color: '#4B4F53' }}
-            containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0}}
-            centerComponent={<Icon name='bow-logo' />}
+            containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
+            centerComponent={<Icon name='bow-logo' style={styles.icon}/>}
             />
             <Card containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
               <Tile
@@ -315,5 +315,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "stretch",
     backgroundColor: "whitesmoke"
-  }
+  },
+  icon: {
+    color: "#9E1C00",
+    fontSize: 40,
+    }
 });

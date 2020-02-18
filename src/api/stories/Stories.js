@@ -154,8 +154,8 @@ export default class Stories extends Component {
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
           <Header
-            containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0}}
-            centerComponent={<Icon name='bow-logo'/>}
+            containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
+            centerComponent={<Icon name='bow-logo' style={styles.icon}/>}
             />
           <Card  style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
               <ScrollView >
@@ -207,5 +207,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "stretch",
     backgroundColor: "whitesmoke"
-  }
+  },
+  icon: {
+    color: "#9E1C00",
+    fontSize: 40,
+    }
 });
