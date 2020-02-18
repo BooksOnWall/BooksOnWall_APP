@@ -155,19 +155,20 @@ export default class Stories extends Component {
         <SafeAreaView style={styles.container}>
           <Header
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0}}
-            centerComponent={{ icon: 'bow-logo', color: '#9E1C00' }}
+            centerComponent={<Icon name='bow-logo'/>}
             />
           <Card  style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
               <ScrollView >
                 {
                   stories.map((story, i) => (
+
                     <ListItem
                       containerStyle={{backgroundColor: '#D8D8D8'}}
                       key={i}
                       title={story.title}
-                      titleStyle={{ color: 'black', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16 }}
+                      titleStyle={{ color: 'white', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16 }}
                       subtitle={story.city}
-                      subtitleStyle={{ color: 'black', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
+                      subtitleStyle={{ color: 'white', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
                       onPress={() => navigate('Story', {story: story})}
                       bottomDivider
                       chevron
