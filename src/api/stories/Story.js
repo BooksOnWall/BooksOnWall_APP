@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
-import { Header,Card, ListItem, ButtonGroup, Button, Icon, ThemeProvider } from 'react-native-elements';
+import { Header, Card, Tile, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -11,6 +11,7 @@ import * as RNFS from 'react-native-fs';
 import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
+import Icon from "../../utils/Icon";
 import Toast from 'react-native-simple-toast';
 
 function humanFileSize(bytes, si) {
@@ -229,8 +230,8 @@ export default class Story extends Component {
     const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon raised name='play-circle' type='font-awesome' color='#f50' onPress={() => this.launchStory()} />;
-    const storyDelete = () => <Icon raised name='trash' type='font-awesome' color='#f50' onPress={() => this.deleteStory(story.id)} />;
-    const storyInstall = () => <Icon raised name='download' type='font-awesome' color='#f50' onPress={() => this.downloadStory(story.id)} />;
+    const storyDelete = () => <Icon raised name='trash' type='font-awesome' color='#9E1C00' onPress={() => this.deleteStory(story.id)} />;
+    const storyInstall = () => <Icon raised name='download' type='Icon' color='#9E1C00' onPress={() => this.downloadStory(story.id)} />;
     const storyAr = () => <Icon raised name='road' type='font-awesome' color='#f50' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
@@ -238,12 +239,23 @@ export default class Story extends Component {
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
           <Header
-            leftComponent={{ icon: 'menu', color: '#fff' }}
-            centerComponent={{ text: story.title, style: { color: '#fff' } }}
-            rightComponent={{ icon: 'home', color: '#fff' }}
+            leftComponent={{ icon: 'menu', color: '#4B4F53' }}
+            containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0}}
+            centerComponent={<Icon name='bow-logo' />}
             />
-            <Card>
-              <ScrollView style={styles.sinopsys}>
+            <Card containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
+              <Tile
+                 containerStyle= {{ height: 100 }}
+                 imageContainerStyle= {{ height: 100 }}
+                 title= {story.title}
+                 titleStyle={{ paddingTop: 15, paddingBottom: 3, fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2}}
+                 featured
+                 caption= {story.city}
+                 captionStyle= {{ paddingTop: 0, paddingBottom: 3, color: 'white', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1}}
+                 contentContainerStyle={{ height: 100 }}
+                 captionStyle={{ padding: 0 }}
+              />
+              <ScrollView style={styles.sinopsys} >
                 <HTMLView
                   value={story.sinopsys}
                   stylesheet={styles}
@@ -284,12 +296,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "stretch",
-    backgroundColor: "whitesmoke"
+    backgroundColor: "#D8D8D8"
   },
   sinopsys: {
     minHeight: 300,
     maxHeight: 300,
-    marginHorizontal: 0,
+    margin: 0,
+    padding: 16,
   },
   scrollView: {
     marginHorizontal: 0,
