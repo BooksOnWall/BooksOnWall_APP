@@ -7,6 +7,7 @@ export default {
   reveal: "a tant de secrets à révéler",
   Enjoy: "Amusez vous !",
   Press: "Appuyer sur terminé pour commencer",
+  Bip: "ah!, n'oubliez pas, attention à la circulation! bip-bip!",
   kilometers: "kilometres",
   Stories: "Contes",
   Story_downloaded: "Conte téléchargé par BooksOnWall.",

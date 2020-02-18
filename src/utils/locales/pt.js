@@ -8,6 +8,7 @@ export default {
   Enjoy: "Enjoy it",
   Press: "Press done to start",
   kilometers: "kilometers",
+  Bip: "ah!, no lo olvides, atento con el trasito! bip-bip!",
   Stories: "Stories",
   Story_downloaded: "Story downloaded by BooksOnWall.",
   ACCESS_FINE_LOCATION: "Mapbox navigation needs ACCESS_FINE_LOCATION",
