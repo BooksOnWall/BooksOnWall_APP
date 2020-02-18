@@ -107,7 +107,7 @@ export default class Stories extends Component {
             this.setState({distance: dis.toFixed(2)});
           };
       },
-      error => oast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+      error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
     );
     } catch(e) {
@@ -153,7 +153,7 @@ export default class Stories extends Component {
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
-          <Header 
+          <Header
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0}}
             centerComponent={{ icon: 'bow-logo', color: '#9E1C00' }}
             />
@@ -161,7 +161,7 @@ export default class Stories extends Component {
               <ScrollView >
                 {
                   stories.map((story, i) => (
-                    <ListItem 
+                    <ListItem
                       containerStyle={{backgroundColor: '#D8D8D8'}}
                       key={i}
                       title={story.title}
