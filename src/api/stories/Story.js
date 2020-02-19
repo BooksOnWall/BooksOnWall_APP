@@ -230,56 +230,65 @@ export default class Story extends Component {
   render() {
     const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyPlay = () => <Icon raised name='play-circle' color='#f50' onPress={() => this.launchStory()} />;
-    const storyDelete = () => <Icon raised name='trash' color='#9E1C00' onPress={() => this.deleteStory(story.id)} />;
-    const storyInstall = () => <Icon raised name='download' color='#9E1C00' onPress={() => this.downloadStory(story.id)} />;
-    const storyAr = () => <Icon raised name='geopoint' color='#f50' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
+    const storyPlay = () => <Icon size={40} name='play-circle' color='#fff' onPress={() => this.launchStory()} />;
+    const storyDelete = () => <Icon size={40} name='trash' color='#fff' onPress={() => this.deleteStory(story.id)} />;
+    const storyInstall = () => <Icon size={40} name='download' color='#fff' onPress={() => this.downloadStory(story.id)} />;
+    const storyAr = () => <Icon size={15} name='geopoint' color='#fff' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
-          <Header
-            leftComponent={{ icon: 'menu', color: '#4B4F53' }}
+          <Header 
+            style={styles.header}
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
+            leftComponent={{ icon: 'menu', color: '#4B4F53' }}
             centerComponent={<Icon name='bow-logo' style={styles.icon}/>}
-            />
-            <Card containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
+          />
+          <View style={styles.card} >
               <ImageBackground source={Banner['banner1']} style={styles.tile}>
-                <Text>{story.title}</Text>
-                <Text>{story.city} - {story.country}</Text>
+                <Text style={styles.title}>{story.title}</Text>
+                <Text style={styles.location}>{story.city} - {story.country}</Text>
               </ImageBackground>
-              <ScrollView style={styles.sinopsys} >
+              <ScrollView style={styles.scrollview}>
+                <View style={styles.sinopsys} >
                 <HTMLView
                   value={story.sinopsys}
                   stylesheet={styles}
                 />
+                <Text h2 style={styles.credits}>{I18n.t("credits", "Credits")}</Text>
+                <HTMLView
+                  value={story.credits}
+                  stylesheet={styles}
+                />
+               </View>
               </ScrollView>
               {distance && (
                 <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
               )}
-            </Card>
+            </View>
 
             <View style={styles.nav}>
                 {story.isInstalled && (
                 <>
                 <Text style={styles.bold}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
-                <ButtonGroup
+                <ButtonGroup style={styles.buttongroup} 
                   onPress={this.updateTransportIndex}
                   selectedIndex={transportIndex}
                   buttons={transportbuttons}
-                  containerStyle={{height: 40}}
+                  containerStyle={{flex: 1}}
                   disabled={[1, 2]}
                   //disabled={true}
                   />
                 </>
               )}
 
-              <ButtonGroup
+              <ButtonGroup 
+                buttonStyle={{ backgroundColor: '#4B4F53', borderWidth: 0, borderColor: '#4B4F53'  }}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
                 buttons={dlbuttons}
-                containerStyle={{height: 60}}
+                containerStyle={{flex: 1, borderWidth: 0, borderColor: '#4B4F53' }}
                 />
             </View>
 
@@ -289,46 +298,103 @@ export default class Story extends Component {
   }
 }
 const styles = StyleSheet.create({
+  p: {
+    fontFamily: 'ATypewriterForMe',
+    fontSize: 14,
+    marginTop: 1,
+    marginBottom: 1,
+    padding: 0,
+    lineHeight: 20,
+    letterSpacing: 0,
+  },
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    backgroundColor: "#D8D8D8"
+    justifyContent: 'space-between',
+    backgroundColor: '#D8D8D8',
+    padding: 0,
   },
-  sinopsys: {
-    minHeight: 300,
-    maxHeight: 300,
-    margin: 0,
-    padding: 16,
-  },
-  scrollView: {
-    marginHorizontal: 0,
-  },
-  bold: {
-    fontWeight: 'bold'
-  },
-  loader: {
+  header: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "stretch",
-    backgroundColor: "whitesmoke"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderWidth: 0,
+    backgroundColor: '#D8D8D8', 
+    margin: 0,
+    padding: 0,
   },
-  icon: {
-    color: "#9E1C00",
-    fontSize: 40,
-    },
-  nav:{
-    justifyContent: "space-between"
-  },
-  title:{
-    paddingTop: 15, paddingBottom: 3, fontFamily: 'TrashHand', fontSize: 24, textAlign: 'center', letterSpacing: 2 
+  card: {
+    flex: 5,
+    flexDirection: 'column',
+    padding: 0, 
+    margin: 0,
+    borderWidth: 0,
+    backgroundColor: '#D8D8D8',
   },
   tile:{
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'stretch',
-    minHeight: 80,
-  }
+    textAlign: 'center',
+    backgroundColor: '#D8D8D8',
+    maxHeight: 90,
+  },
+  title: {
+    flex: 1,
+    paddingTop: 25, 
+    paddingBottom: 1,
+    fontFamily: 'TrashHand',
+    fontSize: 24,
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: '#fff',
+    margin: 0,
+  }, 
+  location: {
+    flex: 1,
+    paddingTop: 0, 
+    paddingBottom: 3,
+    fontFamily: 'ATypewriterForMe',
+    fontSize: 13,
+    textAlign: 'center',
+    letterSpacing: 2,
+    margin: 0,
+    color: '#fff',
+  },  
+  scrollview: {
+    backgroundColor: '#D8D8D8',
+    flex: 3,
+  },
+  sinopsys: {
+    backgroundColor: '#D8D8D8',
+    padding: 20,
+    marginTop: 3,
+    flex: 1,
+  },
+  credits:{
+      fontWeight: 'bold', padding: 0, marginTop: 30, marginBottom: 5, fontSize: 16, textTransform: 'uppercase'
+  },
+  bold: {
+    fontWeight: 'bold',
+  },  
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    backgroundColor: 'whitesmoke',
+  },
+  icon: {
+    color: '#9E1C00',
+    fontSize: 40,
+  },
+  nav: {
+    flex: 1,
+    fontSize: 20,
+    backgroundColor: '#4B4F53', 
+    padding: 0,
+    margin: 0,
+    maxHeight: 60
+  },
+  buttongroup: { fontSize: 20, backgroundColor: 'transparent', maxHeight: 40, borderWidth: 0, borderColor: '#4B4F53'  }
 });

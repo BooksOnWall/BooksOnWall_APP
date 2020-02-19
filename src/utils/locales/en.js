@@ -22,5 +22,6 @@ export default {
   Auto:"Auto",
   Pedestrian: "Pedestrian",
   Bicycle: "Bicycle",
-  Transportation: "Please choose your mode of transportation and press Start Navigation."
+  Transportation: "Please choose your mode of transportation and press Start Navigation.",
+  credits: "Credits" 
 };

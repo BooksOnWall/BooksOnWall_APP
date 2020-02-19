@@ -22,5 +22,6 @@ export default {
   Auto:"Vehiculo",
   Pedestrian: "Caminando",
   Bicycle: "En Bici",
-  Transportation: "Please choose your mode of transportation and press Start Navigation."
+  Transportation: "Please choose your mode of transportation and press Start Navigation.",
+  credits: "Creditos" 
 };

@@ -21,5 +21,6 @@ export default {
   Auto:"Auto",
   Pedestrian: "Pieton",
   Bicycle: "Bicyclette",
-  Transportation: "Choisissez votre mode de transport et appuyez sur Commencer."
+  Transportation: "Choisissez votre mode de transport et appuyez sur Commencer.",
+  credits: "Crédits" 
 };
