@@ -271,8 +271,8 @@ export default class Story extends Component {
             <View style={styles.nav}>
                 {story.isInstalled && (
                 <>
-                <Text style={styles.bold}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
-                <ButtonGroup style={styles.buttongroup} 
+                <Text style={styles.transportation}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
+                <ButtonGroup style={styles.transport} 
                   onPress={this.updateTransportIndex}
                   selectedIndex={transportIndex}
                   buttons={transportbuttons}
@@ -283,8 +283,8 @@ export default class Story extends Component {
                 </>
               )}
 
-              <ButtonGroup 
-                buttonStyle={{ backgroundColor: '#4B4F53', borderWidth: 0, borderColor: '#4B4F53'  }}
+              <ButtonGroup style={styles.menu} 
+                buttonStyle={{ backgroundColor: '#4B4F53', maxHeight: 90, borderWidth: 0, borderColor: '#4B4F53'  }}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
                 buttons={dlbuttons}
@@ -374,9 +374,6 @@ const styles = StyleSheet.create({
   },
   credits:{
       fontWeight: 'bold', padding: 0, marginTop: 30, marginBottom: 5, fontSize: 16, textTransform: 'uppercase'
-  },
-  bold: {
-    fontWeight: 'bold',
   },  
   loader: {
     flex: 1,
@@ -394,7 +391,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B4F53', 
     padding: 0,
     margin: 0,
-    maxHeight: 60
+    
   },
-  buttongroup: { fontSize: 20, backgroundColor: 'transparent', maxHeight: 40, borderWidth: 0, borderColor: '#4B4F53'  }
+  transportation: {
+    fontWeight: 'bold',
+    fontSize: 10,
+    color: '#fff',
+    textAlign: 'center',
+    padding: 5,
+  },
+  transport: { 
+    flex: 1, 
+    fontSize: 20, 
+    backgroundColor: 'transparent', 
+    borderWidth: 0, 
+    borderColor: '#4B4F53', 
+    minHeight: 120  
+  },
+  menu: {
+    flex: 3
+}
 });
