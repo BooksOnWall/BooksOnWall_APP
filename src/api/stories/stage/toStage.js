@@ -60,7 +60,7 @@ export default class ToStage extends Component<Props,$FlowFixMeState > {
           this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
           this.setState({initialPosition});
         },
-        error =>  oast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+        error =>  Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
         {enableHighAccuracy: true, timeout: 10000, maximumAge: 1000},
       );
       this.watchID = await Geolocation.watchPosition(position => {
