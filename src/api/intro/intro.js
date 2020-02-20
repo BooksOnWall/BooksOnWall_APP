@@ -106,10 +106,11 @@ export default class Intro extends Component {
     );
   }
   onDone = () => this.props.navigation.navigate('Stories');
+
   render() {
 
       return (
-        <AppIntroSlider renderItem={this.renderItem} slides={slides} onDone={this.onDone}/>
+        <AppIntroSlider renderItem={this.renderItem} slides={slides} onDone={this.onDone} showSkipButton/>
       );
     }
 
