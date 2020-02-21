@@ -156,9 +156,9 @@ export default class Stories extends Component {
         <SafeAreaView style={styles.container}>
           <Header
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
-            centerComponent={<Icon name='bow-logo' style={styles.icon}/>}
+            centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
             />
-          <Card  style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
+          <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
               <ScrollView >
                 {
                   stories.map((story, i) => (
@@ -167,7 +167,7 @@ export default class Stories extends Component {
                       containerStyle={{backgroundColor: '#ccc', }}
                       key={i}
                       title={story.title}
-                      titleStyle={{ color: 'white', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16 }}
+                      titleStyle={{ color: 'white', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16, textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5}}
                       subtitle={story.city}
                       subtitleStyle={{ color: 'white', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
                       onPress={() => navigate('Story', {story: story})}
@@ -209,8 +209,11 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     backgroundColor: "whitesmoke"
   },
-  icon: {
-    color: "#9E1C00",
+  logo: {
+    color: '#9E1C00',
     fontSize: 40,
-    }
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 3,
+  }
 });

@@ -230,10 +230,10 @@ export default class Story extends Component {
   render() {
     const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyPlay = () => <Icon size={40} name='play-circle' color='#fff' onPress={() => this.launchStory()} />;
-    const storyDelete = () => <Icon size={40} name='trash' color='#fff' onPress={() => this.deleteStory(story.id)} />;
+    const storyPlay = () => <Icon size={40} name='geopoint' color='#4D0101' onPress={() => this.launchStory()} />;
+    const storyDelete = () => <Icon size={40} name='trash' color='#4D0101' onPress={() => this.deleteStory(story.id)} />;
     const storyInstall = () => <Icon size={40} name='download' color='#fff' onPress={() => this.downloadStory(story.id)} />;
-    const storyAr = () => <Icon size={15} name='geopoint' color='#fff' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
+    const storyAr = () => <Icon size={40} name='play' color='#4D0101' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
     return (
@@ -243,7 +243,7 @@ export default class Story extends Component {
             style={styles.header}
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             leftComponent={{ icon: 'menu', color: '#4B4F53' }}
-            centerComponent={<Icon name='bow-logo' style={styles.icon}/>}
+            centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
           />
           <View style={styles.card} >
               <ImageBackground source={Banner['banner1']} style={styles.tile}>
@@ -268,27 +268,33 @@ export default class Story extends Component {
               )}
             </View>
 
-            <View style={styles.nav}>
+            <View style={styles.nav} containerStyle= {{margin: 0, padding: 0, flex:1, justifyContent: 'flex-end',}}>
                 {story.isInstalled && (
                 <>
-                <Text style={styles.transportation}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
-                <ButtonGroup style={styles.transport} 
+                <Text style={styles.menssage}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
+                <ButtonGroup 
+                  style={styles.transport} 
                   onPress={this.updateTransportIndex}
                   selectedIndex={transportIndex}
                   buttons={transportbuttons}
-                  containerStyle={{flex: 1}}
+                  buttonStyle={{ borderWidth: 0, borderColor: '#999999', backgroundColor: '#c2c3c4', minHeight: 35, maxHeight: 35, margin: 0}}
+                  selectedButtonStyle= {{backgroundColor: '#ccc'}}
+                  textStyle= {{ color: '#4B4F53', fontSize: 10 }}
+                  selectedTextStyle= {{ color: '#9E1C00' }}
+                  innerBorderStyle= {{  color: '#d2d2d2' }}
                   disabled={[1, 2]}
+                  containerStyle={{flex: 1, borderWidth: 1, borderColor: '#c2c3c4', backgroundColor: '#c2c3c4', margin: 0, minHeight: 35, maxHeight: 35, borderRadius: 0, margin: 0, padding: 0}}
                   //disabled={true}
                   />
                 </>
               )}
-
               <ButtonGroup style={styles.menu} 
-                buttonStyle={{ backgroundColor: '#4B4F53', maxHeight: 90, borderWidth: 0, borderColor: '#4B4F53'  }}
+                buttonStyle={{ backgroundColor: '#9E1C00', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
                 buttons={dlbuttons}
-                containerStyle={{flex: 1, borderWidth: 0, borderColor: '#4B4F53' }}
+                containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 50, maxHeight: 50, backgroundColor: '#9E1C00', borderRadius: 0, margin: 0, padding: 0}}
+                innerBorderStyle= {{  color: '#750000' }}
                 />
             </View>
 
@@ -306,6 +312,7 @@ const styles = StyleSheet.create({
     padding: 0,
     lineHeight: 20,
     letterSpacing: 0,
+    color: '#000'
   },
   container: {
     flex: 1,
@@ -324,12 +331,13 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   card: {
-    flex: 5,
+    flex: 3,
     flexDirection: 'column',
     padding: 0, 
     margin: 0,
     borderWidth: 0,
     backgroundColor: '#D8D8D8',
+    marginBottom: 3,
   },
   tile:{
     flex: 1,
@@ -350,6 +358,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     color: '#fff',
     margin: 0,
+    textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5  
   }, 
   location: {
     flex: 1,
@@ -363,17 +372,23 @@ const styles = StyleSheet.create({
     color: '#fff',
   },  
   scrollview: {
+    flex: 2,
     backgroundColor: '#D8D8D8',
-    flex: 3,
+    marginTop: 3
   },
   sinopsys: {
+    flex: 1,
     backgroundColor: '#D8D8D8',
     padding: 20,
     marginTop: 3,
-    flex: 1,
   },
   credits:{
-      fontWeight: 'bold', padding: 0, marginTop: 30, marginBottom: 5, fontSize: 16, textTransform: 'uppercase'
+    fontWeight: 'bold', 
+    padding: 0, 
+    marginTop: 30, 
+    marginBottom: 5, 
+    fontSize: 16, 
+    textTransform: 'uppercase'
   },  
   loader: {
     flex: 1,
@@ -381,34 +396,41 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: 'whitesmoke',
   },
-  icon: {
+  logo: {
     color: '#9E1C00',
     fontSize: 40,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 3,
   },
   nav: {
     flex: 1,
     fontSize: 20,
-    backgroundColor: '#4B4F53', 
+    backgroundColor: '#d1d2d3', 
     padding: 0,
     margin: 0,
-    
+    justifyContent: 'center',
   },
-  transportation: {
-    fontWeight: 'bold',
-    fontSize: 10,
-    color: '#fff',
+  menssage: {
+    fontSize: 12,
+    color: '#000',
     textAlign: 'center',
-    padding: 5,
+    paddingTop: 5,
+    fontFamily: 'OpenSansCondensed-Light',
   },
-  transport: { 
-    flex: 1, 
-    fontSize: 20, 
-    backgroundColor: 'transparent', 
+  transport: {
+    fontSize: 14, 
+    backgroundColor: '#4B4F53', 
     borderWidth: 0, 
-    borderColor: '#4B4F53', 
-    minHeight: 120  
+    borderColor: '#d2d2d2', 
+    minHeight: 40,
+    maxHeight: 40,
+    margin: 0,  
   },
   menu: {
-    flex: 3
-}
+    flex: 1,
+    minHeight: 40,
+    maxHeight: 40,
+    margin: 0,
+  }
 });
