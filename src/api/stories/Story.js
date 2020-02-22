@@ -223,10 +223,6 @@ export default class Story extends Component {
     }
 
   }
-
-  // storyPlay = () => <Text>Play</Text>
-  // storyDelete = () => <Text>Delete</Text>
-  // storyInstall = () => <Text>Install</Text>
   render() {
     const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
@@ -239,7 +235,7 @@ export default class Story extends Component {
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
-          <Header 
+          <Header
             style={styles.header}
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             leftComponent={{ icon: 'menu', color: '#4B4F53' }}
@@ -272,8 +268,8 @@ export default class Story extends Component {
                 {story.isInstalled && (
                 <>
                 <Text style={styles.menssage}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
-                <ButtonGroup 
-                  style={styles.transport} 
+                <ButtonGroup
+                  style={styles.transport}
                   onPress={this.updateTransportIndex}
                   selectedIndex={transportIndex}
                   buttons={transportbuttons}
@@ -288,7 +284,7 @@ export default class Story extends Component {
                   />
                 </>
               )}
-              <ButtonGroup style={styles.menu} 
+              <ButtonGroup style={styles.menu}
                 buttonStyle={{ backgroundColor: '#9E1C00', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
@@ -326,14 +322,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderWidth: 0,
-    backgroundColor: '#D8D8D8', 
+    backgroundColor: '#D8D8D8',
     margin: 0,
     padding: 0,
   },
   card: {
     flex: 3,
     flexDirection: 'column',
-    padding: 0, 
+    padding: 0,
     margin: 0,
     borderWidth: 0,
     backgroundColor: '#D8D8D8',
@@ -350,7 +346,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    paddingTop: 25, 
+    paddingTop: 25,
     paddingBottom: 1,
     fontFamily: 'TrashHand',
     fontSize: 24,
@@ -358,11 +354,11 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     color: '#fff',
     margin: 0,
-    textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5  
-  }, 
+    textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5
+  },
   location: {
     flex: 1,
-    paddingTop: 0, 
+    paddingTop: 0,
     paddingBottom: 3,
     fontFamily: 'ATypewriterForMe',
     fontSize: 13,
@@ -370,7 +366,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     margin: 0,
     color: '#fff',
-  },  
+  },
   scrollview: {
     flex: 2,
     backgroundColor: '#D8D8D8',
@@ -383,13 +379,13 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   credits:{
-    fontWeight: 'bold', 
-    padding: 0, 
-    marginTop: 30, 
-    marginBottom: 5, 
-    fontSize: 16, 
+    fontWeight: 'bold',
+    padding: 0,
+    marginTop: 30,
+    marginBottom: 5,
+    fontSize: 16,
     textTransform: 'uppercase'
-  },  
+  },
   loader: {
     flex: 1,
     justifyContent: 'center',
@@ -406,7 +402,7 @@ const styles = StyleSheet.create({
   nav: {
     flex: 1,
     fontSize: 20,
-    backgroundColor: '#d1d2d3', 
+    backgroundColor: '#d1d2d3',
     padding: 0,
     margin: 0,
     justifyContent: 'center',
@@ -419,13 +415,13 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSansCondensed-Light',
   },
   transport: {
-    fontSize: 14, 
-    backgroundColor: '#4B4F53', 
-    borderWidth: 0, 
-    borderColor: '#d2d2d2', 
+    fontSize: 14,
+    backgroundColor: '#4B4F53',
+    borderWidth: 0,
+    borderColor: '#d2d2d2',
     minHeight: 40,
     maxHeight: 40,
-    margin: 0,  
+    margin: 0,
   },
   menu: {
     flex: 1,
