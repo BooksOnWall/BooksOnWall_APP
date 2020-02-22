@@ -25,7 +25,7 @@ import  distance from '@turf/distance';
 import KeepAwake from 'react-native-keep-awake';
 import Reactotron from 'reactotron-react-native';
 import Toast from 'react-native-simple-toast';
-
+import I18n from "../../../utils/i18n";
 type Props = {};
 
 export default class ToStage extends Component<Props,$FlowFixMeState > {
