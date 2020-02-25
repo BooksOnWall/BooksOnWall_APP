@@ -25,7 +25,7 @@ import  distance from '@turf/distance';
 import KeepAwake from 'react-native-keep-awake';
 import Reactotron from 'reactotron-react-native';
 import Toast from 'react-native-simple-toast';
-
+import I18n from "../../../utils/i18n";
 type Props = {};
 
 export default class ToStage extends Component<Props,$FlowFixMeState > {
@@ -90,7 +90,7 @@ export default class ToStage extends Component<Props,$FlowFixMeState > {
             this.setState({distance: dis});
           };
       },
-      error => oast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+      error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
       );
 
