@@ -157,7 +157,7 @@ export default class Stories extends Component {
   }
   isInstalled = async (sid) => {
     try {
-      return await RNFS.exists(this.state.appDir + '/' + sid)
+      return await RNFS.exists(this.state.appDir + '/stories/' + sid)
         .then( (exists) => {
             return exists;
         });

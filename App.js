@@ -174,7 +174,7 @@ export default class App extends Component {
               AppDir = dirs.MainBundleDir +'/'+ this.state.appName;
           }
       });
-      if (AppDir === '') console.log('error AppDir is not defined');
+      if (AppDir === '')  Toast.showWithGravity('Error: No access to your filesystem to install the application!', Toast.LONG, Toast.TOP);
 
       // check if directory to store .zip exist
       await RNFS.exists(AppDir)
@@ -190,7 +190,6 @@ export default class App extends Component {
               });
           }
       });
-      console.log('AppDir',AppDir);
       this.setState({AppDir: AppDir});
     } catch(e) {
       console.log(e);

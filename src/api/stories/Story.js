@@ -94,7 +94,7 @@ export default class Story extends Component {
             mime : 'application/zip',
             description : I18n.t("Story_downloaded","Story downloaded by BooksOnWall."),
             mediaScannable: true,
-            path : appDir
+            path : appDir + '/stories/'
         }
     })
     .fetch('POST', this.state.server + '/zip/' + sid)
