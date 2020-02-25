@@ -183,9 +183,32 @@ export default class Stories extends Component {
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
             />
+<<<<<<< HEAD
+          <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: '#8c8c8c'}}>
+              <ScrollView >
+                {
+                  stories.map((story, i) => (
+                    <ListItem
+                      //contentContainerStyle={{ backgroundImage: Banner["banner" + story.id] }}
+                      containerStyle={{backgroundColor: '#8c8c8c', }}
+                      key={i}
+                      title={story.title}
+                      titleStyle={{ color: 'white', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16, textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5, }}
+                      subtitle={story.city}
+                      subtitleStyle={{ color: 'white', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
+                      onPress={() => navigate('Story', {story: story})}
+                      bottomDivider
+                      chevron
+                    />
+                  ))
+                }
+              </ScrollView>
+            </Card>
+=======
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
               <ListStories stories={stories} navigate={navigate} />
           </Card>
+>>>>>>> 15b2f8178b69017b327b1416b2994bfb143195b9
         </SafeAreaView>
       </ThemeProvider>
     );
