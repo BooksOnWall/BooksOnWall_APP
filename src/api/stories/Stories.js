@@ -157,7 +157,7 @@ export default class Stories extends Component {
   }
   isInstalled = async (sid) => {
     try {
-      return await RNFS.exists(this.state.appDir + '/' + sid)
+      return await RNFS.exists(this.state.appDir + '/stories/' + sid)
         .then( (exists) => {
             return exists;
         });
@@ -183,7 +183,11 @@ export default class Stories extends Component {
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
             />
+<<<<<<< HEAD
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
+=======
+          <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: '#8c8c8c'}}>
+>>>>>>> 7dd219f78322402c86d2f5901c301d0e352762ab
               <ListStories stories={stories} navigate={navigate} />
           </Card>
         </SafeAreaView>
