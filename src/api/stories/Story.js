@@ -224,7 +224,7 @@ export default class Story extends Component {
 
   }
   render() {
-    const {story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon size={40} name='geopoint' color='#4D0101' onPress={() => this.launchStory()} />;
     const storyDelete = () => <Icon size={40} name='trash' color='#4D0101' onPress={() => this.deleteStory(story.id)} />;
@@ -234,14 +234,14 @@ export default class Story extends Component {
     const {navigate} = this.props.navigation;
     const themeSheet = StyleSheet.create({
       p: {
-        fontFamily: 'ATypewriterForMe',
+        fontFamily: theme.font3,
         fontSize: 14,
         marginTop: 1,
         marginBottom: 1,
         padding: 0,
         lineHeight: 20,
         letterSpacing: 0,
-        color: '#000'
+        color: theme.color3
       },
       container: {
         flex: 1,
@@ -357,8 +357,8 @@ export default class Story extends Component {
                 <Text style={styles.title}>{story.title}</Text>
                 <Text style={styles.location}>{story.city} - {story.country}</Text>
               </ImageBackground>
-              <ScrollView style={styles.scrollview}>
-                <View style={styles.sinopsys} >
+              <ScrollView style={themeSheet.scrollview}>
+                <View style={themeSheet.sinopsys} >
                 <HTMLView
                   value={story.sinopsys}
                   stylesheet={styles}
