@@ -57,7 +57,7 @@ export default class Story extends Component {
       fromLong: null,
       toLat: null ,
       toLong: null,
-      distance: null
+      distance: null,
     };
     this.updateTransportIndex = this.updateTransportIndex.bind(this);
     this.updateDlIndex = this.updateDlIndex.bind(this);
@@ -232,6 +232,117 @@ export default class Story extends Component {
     const storyAr = () => <Icon size={40} name='play' color='#4D0101' onPress={() => navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0})} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const {navigate} = this.props.navigation;
+    const themeSheet = StyleSheet.create({
+      p: {
+        fontFamily: 'ATypewriterForMe',
+        fontSize: 14,
+        marginTop: 1,
+        marginBottom: 1,
+        padding: 0,
+        lineHeight: 20,
+        letterSpacing: 0,
+        color: '#000'
+      },
+      container: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        backgroundColor: '#D8D8D8',
+        padding: 0,
+      },
+      header: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderWidth: 0,
+        backgroundColor: '#D8D8D8',
+        margin: 0,
+        padding: 0,
+      },
+      card: {
+        flex: 3,
+        flexDirection: 'column',
+        padding: 0,
+        margin: 0,
+        borderWidth: 0,
+        backgroundColor: '#D8D8D8',
+        marginBottom: 3,
+      },
+      tile:{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'stretch',
+        textAlign: 'center',
+        backgroundColor: '#D8D8D8',
+        maxHeight: 90,
+      },
+      title: {
+        flex: 1,
+        paddingTop: 25,
+        paddingBottom: 1,
+        fontFamily: 'TrashHand',
+        fontSize: 24,
+        textAlign: 'center',
+        letterSpacing: 2,
+        color: '#fff',
+        margin: 0,
+        textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5
+      },
+      location: {
+        flex: 1,
+        paddingTop: 0,
+        paddingBottom: 3,
+        fontFamily: 'ATypewriterForMe',
+        fontSize: 13,
+        textAlign: 'center',
+        letterSpacing: 2,
+        margin: 0,
+        color: '#fff',
+      },
+      scrollview: {
+        flex: 2,
+        backgroundColor: '#D8D8D8',
+        marginTop: 3
+      },
+      sinopsys: {
+        flex: 1,
+        backgroundColor: '#D8D8D8',
+        padding: 20,
+        marginTop: 3,
+      },
+      logo: {
+        color: '#9E1C00',
+        fontSize: 40,
+        textShadowColor: 'rgba(0, 0, 0, 0.35)',
+        textShadowOffset: {width: 1, height: 1},
+        textShadowRadius: 3,
+      },
+      nav: {
+        flex: 1,
+        fontSize: 20,
+        backgroundColor: '#d1d2d3',
+        padding: 0,
+        margin: 0,
+        justifyContent: 'center',
+      },
+      menssage: {
+        fontSize: 12,
+        color: '#000',
+        textAlign: 'center',
+        paddingTop: 5,
+        fontFamily: 'OpenSansCondensed-Light',
+      },
+      transport: {
+        fontSize: 14,
+        backgroundColor: '#4B4F53',
+        borderWidth: 0,
+        borderColor: '#d2d2d2',
+        minHeight: 40,
+        maxHeight: 40,
+        margin: 0,
+      },
+    });
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
