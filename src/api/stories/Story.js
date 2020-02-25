@@ -353,7 +353,7 @@ export default class Story extends Component {
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
           />
           <View style={styles.card} >
-              <ImageBackground source={Banner['banner1']} style={styles.tile}>
+              <ImageBackground source={{uri: theme.banner.filePath}} style={styles.tile}>
                 <Text style={styles.title}>{story.title}</Text>
                 <Text style={styles.location}>{story.city} - {story.country}</Text>
               </ImageBackground>
