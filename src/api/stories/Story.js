@@ -45,6 +45,7 @@ export default class Story extends Component {
       //photo: 'file://'+this.props.screenProps.AppDir+'/'+ this.props.navigation.getParam('story').id + '/stages/'+ this.props.navigation.getParam('story').stages[0].id + '/' + this.props.navigation.getParam('story').stages[0].photo[0].name,
       downloadProgress: 0,
       story: this.props.navigation.getParam('story'),
+      theme: this.props.navigation.getParam('story').theme,
       granted: Platform.OS === 'ios',
       transportIndex: 0,
       dlIndex: null,
@@ -58,7 +59,6 @@ export default class Story extends Component {
       toLong: null,
       distance: null
     };
-    console.table(this.state.story);
     this.updateTransportIndex = this.updateTransportIndex.bind(this);
     this.updateDlIndex = this.updateDlIndex.bind(this);
     this.getCurrentLocation = this.getCurrentLocation.bind(this);

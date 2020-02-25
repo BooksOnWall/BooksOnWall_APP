@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
+import { Platform, ImageBackground, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
 import { Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
@@ -28,7 +28,30 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
-
+ListStories = (props) => {
+  return (
+    <ScrollView >
+      {
+        props.stories.map((story, i) => (
+          <ImageBackground key={'b'+i} source={{uri: story.theme.banner.filePath}} style={styles.listItemBackground}>
+            <ListItem
+              containerStyle={{backgroundColor: 'transparent'}}
+              style={styles.listItem}
+              key={'l'+i}
+              title={story.title}
+              titleStyle={{ color: 'white', fontFamily: story.theme.font1, fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16, textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5}}
+              subtitle={story.city}
+              subtitleStyle={{ color: 'white', fontFamily: story.theme.font2, fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
+              onPress={() => props.navigate('Story', {story: story})}
+              bottomDivider
+              chevron
+            />
+      </ImageBackground>
+      ))
+      }
+    </ScrollView>
+  );
+}
 export default class Stories extends Component {
   static navigationOptions = {
     title: 'Story',
@@ -36,11 +59,15 @@ export default class Stories extends Component {
   };
   constructor(props) {
     super(props);
+    let stories = this.props.screenProps.stories;
+    // let theme = JSON.parse(this.props.screenProps.stories.design_options);
+    // stories.design_options = theme;
     this.state = {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
-      stories: this.props.screenProps.stories,
+      stories: stories,
+      bannerPath: this.props.screenProps.AppDir + '/banner/',
       granted: Platform.OS === 'ios',
       transportIndex: 0,
       dlIndex: null,
@@ -123,14 +150,12 @@ export default class Stories extends Component {
         story.isInstalled = await this.isInstalled(story.id);
         st.push(story);
       }
-      console.table(st);
       this.setState({stories: st});
     } catch(e) {
       console.log(e);
     }
   }
   isInstalled = async (sid) => {
-    console.log('sid', sid);
     try {
       return await RNFS.exists(this.state.appDir + '/' + sid)
         .then( (exists) => {
@@ -159,25 +184,8 @@ export default class Stories extends Component {
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0}}>
-              <ScrollView >
-                {
-                  stories.map((story, i) => (
-                    <ListItem 
-                      //contentContainerStyle={{ backgroundImage: Banner["banner" + story.id] }}
-                      containerStyle={{backgroundColor: '#ccc', }}
-                      key={i}
-                      title={story.title}
-                      titleStyle={{ color: 'white', fontFamily: "TrashHand", fontSize: 24, textAlign: 'center', letterSpacing: 2, paddingTop: 16, textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 5}}
-                      subtitle={story.city}
-                      subtitleStyle={{ color: 'white', fontFamily: "ATypewriterForMe", fontSize: 13, textAlign: 'center', letterSpacing: 1, paddingBottom: 16 }}
-                      onPress={() => navigate('Story', {story: story})}
-                      bottomDivider
-                      chevron
-                    /> 
-                  ))
-                }
-              </ScrollView>
-            </Card>
+              <ListStories stories={stories} navigate={navigate} />
+          </Card>
         </SafeAreaView>
       </ThemeProvider>
     );
@@ -199,6 +207,13 @@ const styles = StyleSheet.create({
   scrollView: {
     marginHorizontal: 0,
     backgroundColor: '#D8D8D8',
+  },
+  listItem: {
+    backgroundColor: 'transparent',
+  },
+  listItemBackground: {
+    width: '100%',
+    height: 'auto',
   },
   bold: {
     fontWeight: '900'

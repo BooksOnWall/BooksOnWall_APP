@@ -14,11 +14,9 @@ import Stories from './src/api/stories/Stories';
 import Story from './src/api/stories/Story';
 import Stages from './src/api/stories/stages/Stages';
 import Stage from './src/api/stories/stage/Stage';
-//import NavigationView from './src/api/stories/stage/NavigationView';
 import ToStage from './src/api/stories/stage/toStage';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import SplashScreen from 'react-native-splash-screen';
-import FirstRun from './src/api/firstRun/FirstRun';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as RNLocalize from "react-native-localize";
 import RNFetchBlob from 'rn-fetch-blob';
@@ -29,6 +27,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { Overlay } from 'react-native-elements';
 import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME  } from 'react-native-dotenv';
 import KeepAwake from 'react-native-keep-awake';
+import Toast from 'react-native-simple-toast';
 
 const MainNavigator = createStackNavigator({
   Intro: { screen: Intro},
@@ -48,6 +47,7 @@ const MainNavigator = createStackNavigator({
 });
 const AppContainer = createAppContainer(MainNavigator);
 
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -57,6 +57,7 @@ export default class App extends Component {
       server: SERVER_URL,
       appName: PROJECT_NAME,
       AppDir: '',
+      FirstRun: false,
       stories: [],
       storiesURL: SERVER_URL + '/stories',
       isLoading: false,
@@ -68,14 +69,38 @@ export default class App extends Component {
       if(Platform.OS !== 'web') {
         await KeepAwake.activate();
         await this.handleLocales();
-        //await this.networkCheck();
         await this.checkPermissions();
         await this.checkFileSystem();
-        await this.loadStories();
+        await this.handleFirstRun();
         SplashScreen.hide();
       }
     } catch (e) {
       console.warn(e);
+    }
+  }
+  handleFirstRun = async () => {
+    try {
+      // check if application is already installed and has it's list of stories offline
+      let StoryFile = this.state.AppDir+'/Stories.json';
+      await RNFS.exists(StoryFile)
+      .then( (exists) => {
+          if (!exists) {
+            this.setState({FistRun: true})
+            Toast.showWithGravity('Please wait while we are installing your application !', Toast.LONG, Toast.TOP);
+            return this.loadStories();
+          } else {
+            // load stories from Stories.json file
+            RNFS.readFile(this.state.AppDir+'/Stories.json','utf8')
+            .then((stories) => {
+                return this.setState({stories: JSON.parse(stories), isLoading: false, FirstRun: false});
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+          }
+      });
+    } catch(e) {
+      console.log(e.message);
     }
   }
   componentWillUnmount = async () => KeepAwake.deactivate();
@@ -117,7 +142,7 @@ export default class App extends Component {
     NetInfo.fetch().then(state => {
       // console.warn("Connection type", state.type);
       // console.warn("Is connected?", state.isConnected);
-      !state.isConnected ? console.error('No internet connection') : '';
+      !state.isConnected ? Toast.showWithGravity('Error: No internet connection!', Toast.LONG, Toast.TOP) : '';
     });
   }
   checkFileSystem = async () => {
@@ -137,7 +162,6 @@ export default class App extends Component {
       await RNFS.getFSInfo()
       .then ((info) => {
         console.log('info', info);
-        console.log("Free Space is" + info.freeSpace / 1024 + "KB")
       });
       //Check if sdcard exist
       await RNFS.exists(dirs.SDCardDir)
@@ -150,7 +174,6 @@ export default class App extends Component {
               AppDir = dirs.MainBundleDir +'/'+ this.state.appName;
           }
       });
-      console.log(AppDir);
       if (AppDir === '') console.log('error AppDir is not defined');
 
       // check if directory to store .zip exist
@@ -216,6 +239,7 @@ export default class App extends Component {
   loadStories = async () => {
     try {
       this.setState({isLoading: true});
+      await this.networkCheck();
       await fetch(this.state.storiesURL, {
         method: 'get',
         headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
@@ -226,10 +250,9 @@ export default class App extends Component {
       })
       .then(data => {
           if(data) {
-            console.table(data.stories);
-            return this.setState({stories: data.stories, isLoading: false});
+            return this.storeStories(data.stories);
           } else {
-            console.log('No Data received from the server');
+            Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
           }
       })
       .catch((error) => {
@@ -240,11 +263,73 @@ export default class App extends Component {
       console.warn(e);
     }
   }
+  storeStories = async (stories) => {
+    try {
+      // create banner folder
+      const bannerPath = this.state.AppDir+'/banner';
+      await RNFS.exists(bannerPath)
+      .then( (exists) => {
+          if (!exists) {
+              RNFS.mkdir(bannerPath).then((result) => {
+                // banner folder created successfully
+              }).catch((err) => {
+                console.log('mkdir err', err)
+              });
+          }
+      });
+      // check each story and install story banner
+      // downloading banners and added mobile storage path for banner
+      let sts = [];
+      stories.map((story, i) => {
+        let st = story;
+        let theme = JSON.parse(story.design_options);
+        theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
+        st['theme'] = theme;
+        const path = theme.banner.path;
+        const name = theme.banner.name;
+        const url = this.state.server +'/'+ path;
+        const filePath = bannerPath + '/'+ name;
+        st['theme']['banner']['filePath'] = 'file://' + filePath;
+        const {id, promise} = RNFS.downloadFile({
+          fromUrl: url,
+          toFile: filePath,
+          background: false,
+          cacheable: false,
+          connectionTimeout: 60 * 1000,
+          readTimeout: 120 * 1000
+        });
+        sts.push(st);
+      });
+      // store stories list in Stories.json file
+      await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
+      .then((success) => {
+        Toast.showWithGravity('Storing stories ...', Toast.SHORT, Toast.TOP);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+      this.setState({stories: sts, isLoading: false, FirstRun: false});
+    } catch(e) {
+      console.log(e.message);
+    }
+  }
   render() {
-    if (this.state.isLoading) {
+
+    if (this.state.FirstRun) {
       return (
+
         <SafeAreaProvider>
           <SafeAreaView style={styles.container}>
+            <Overlay
+              isVisible={this.state.FirstRun}
+              windowBackgroundColor="rgba(255, 255, 255, .5)"
+              overlayBackgroundColor="red"
+              width="auto"
+              height="auto"
+            >
+              <Text>Hello please wait, we are installing the application</Text>
+
+            </Overlay>
             <ActivityIndicator size="large" color="#0000ff" />
           </SafeAreaView>
         </SafeAreaProvider>
