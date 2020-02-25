@@ -256,12 +256,14 @@ export default class Story extends Component {
                   value={story.sinopsys}
                   stylesheet={styles}
                 />
-                <Text h2 style={styles.credits}>{I18n.t("credits", "Credits")}</Text>
-                <HTMLView
-                  value={story.credits}
-                  stylesheet={styles}
-                />
                </View>
+                <View style={styles.credits}>
+                    <Text h2 style={styles.subtitle}>{I18n.t("credits", "Credits")}</Text>
+                    <HTMLView
+                    value={story.credits}
+                    stylesheet={styles}
+                    />
+                </View>
               </ScrollView>
               {distance && (
                 <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
@@ -292,9 +294,10 @@ export default class Story extends Component {
                 buttonStyle={{ backgroundColor: '#9E1C00', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
+                selectedButtonStyle= {{backgroundColor: '#750000'}}
                 buttons={dlbuttons}
                 containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 50, maxHeight: 50, backgroundColor: '#9E1C00', borderRadius: 0, margin: 0, padding: 0}}
-                innerBorderStyle= {{  color: '#750000' }}
+                innerBorderStyle= {{ color: '#750000' }}
                 />
             </View>
 
@@ -314,6 +317,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     color: '#000'
   },
+  b: {fontFamily: 'OpenSansCondensed-Bold',
+    },
   container: {
     flex: 1,
     flexDirection: 'column',
@@ -382,11 +387,15 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 3,
   },
-  credits:{
+ credits: {
+     backgroundColor: '#c2c3c4',
+     padding: 20,
+  },
+  subtitle: {
     fontWeight: 'bold', 
     padding: 0, 
-    marginTop: 30, 
-    marginBottom: 5, 
+    marginTop: 15, 
+    marginBottom: 25, 
     fontSize: 16, 
     textTransform: 'uppercase'
   },  
