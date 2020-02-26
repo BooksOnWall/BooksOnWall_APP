@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		004155131E6144BCB018D146 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8E40C1C36F430892E86FC8 /* libRNGestureHandler-tvOS.a */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -91,6 +90,7 @@
 		F6C12398AF2041F68844AA83 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8A1BC2356DA4896B9464F49 /* libRNVectorIcons.a */; };
 		F9303517AE39488287465B69 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 517E7A800768460BBCE4FDB5 /* libKCKeepAwake.a */; };
 		FC57351840164AD0A9D5A39D /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F0C963739654C1184523380 /* MaterialCommunityIcons.ttf */; };
+		49DC168FB7024479BCBDA7BB /* booksonwall.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B6C4B95B5B9B42F7998F4FAC /* booksonwall.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -626,6 +626,7 @@
 		FB1B5C0C6A314763BDCFCD5A /* OpenSansCondensed-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSansCondensed-Light.otf"; path = "../assets/fonts/OpenSansCondensed-Light.otf"; sourceTree = "<group>"; };
 		FB49657073474C0EBDA4A776 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		FC8E40C1C36F430892E86FC8 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; };
+		B6C4B95B5B9B42F7998F4FAC /* booksonwall.ttf */ = {isa = PBXFileReference; name = "booksonwall.ttf"; path = "../assets/nav/booksonwall.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -953,6 +954,7 @@
 				62A394F9AA304A6A8FE2B622 /* WaitingfortheSunrise.otf */,
 				4241AA24E0D14D15B1C439DA /* BadScript-Regular.otf */,
 				667FBC0F19564D3C9FF5D299 /* TrashHand.otf */,
+				B6C4B95B5B9B42F7998F4FAC /* booksonwall.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1831,6 +1833,7 @@
 				CD0E4B8862D844B3A4F0DE68 /* WaitingfortheSunrise.otf in Resources */,
 				449D553997C44C86A6311CA3 /* BadScript-Regular.otf in Resources */,
 				0421F243431C46B9BDE8DFA0 /* TrashHand.otf in Resources */,
+				49DC168FB7024479BCBDA7BB /* booksonwall.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
