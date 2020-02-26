@@ -184,7 +184,10 @@ export default class App extends Component {
           } else {
               console.log("Directory need to be created");
               RNFetchBlob.fs.mkdir(AppDir).then((result) => {
-                console.log('mkdir result', result)
+                RNFetchBlob.fs.mkdir(AppDir+'/stories').then((result) => {
+                }).catch((err) => {
+                  console.log('mkdir err', err)
+                });
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
