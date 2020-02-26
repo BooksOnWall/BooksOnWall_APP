@@ -11,7 +11,9 @@ import {
 import { ViroARSceneNavigator} from 'react-viro';
 import InitialARScene from './arScene';
 import KeepAwake from 'react-native-keep-awake';
-
+import SafeAreaView from 'react-native-safe-area-view';
+import { ButtonGroup } from 'react-native-elements';
+import Icon from "../../../utils/Icon";
 /*
  TODO: Insert your API key below unneeded since v.2.17
  */
@@ -34,6 +36,7 @@ export default class ToAR extends Component {
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
       story: this.props.navigation.getParam('story'),
+      arIndex: 0,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
@@ -52,6 +55,15 @@ export default class ToAR extends Component {
       console.log(e);
     }
   }
+  reload = () => {
+
+  }
+  map = () => {
+
+  }
+  next = () => {
+
+  }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
@@ -66,17 +78,37 @@ export default class ToAR extends Component {
       onPictureMatch: this.state.stage.onPictureMatch,
       appDir: this.state.appDir,
     };
+    const storyReload = () => <Icon size={40} name='reload-circle' color='#4D0101' onPress={() => this.reload()} />;
+    const storyMap = () => <Icon size={40} name='geopoint-circle' color='#4D0101' onPress={() => this.map()} />;
+    const storyNext = () => <Icon size={40} name='next-circle' color='#4D0101' onPress={() => this.next()} />;
+    const arButtons = [ { element: storyReload }, { element: storyMap }, { element: storyNext} ];
+
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
+      <SafeAreaView style={styles.mainContainer}>
         <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={{ scene: InitialARScene }} style={styles.viroContainer}/>
+        <ButtonGroup style={styles.menu}
+          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
+          onPress={this.updateDlIndex}
+          selectedIndex={this.state.arIndex}
+          selectedButtonStyle= {{backgroundColor: '#750000'}}
+          buttons={arButtons}
+          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 50, maxHeight: 50, backgroundColor: 'transparent', borderRadius: 0, margin: 0, padding: 0}}
+          innerBorderStyle= {{ color: '#750000' }}
+          />
+      </SafeAreaView>
     );
   }
 }
 
 var styles = StyleSheet.create({
+  mainContainer: {
+    flex : 1,
+    backgroundColor: "transparent",
+  },
   viroContainer :{
     flex : 1,
-    backgroundColor: "black",
+    backgroundColor: "transparent",
   }
 });

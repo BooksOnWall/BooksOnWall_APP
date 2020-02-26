@@ -7,12 +7,8 @@ import {
   ViroARScene,
   ViroARImageMarker,
   ViroVideo,
-  ViroButton,
   ViroMaterials,
-  ViroText,
   ViroSound,
-  ViroFlexView,
-  ViroImage,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
@@ -147,14 +143,6 @@ export default class ArScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroFlexView style={{flexDirection: 'row', padding: .1}}
-        width={1.0} height={1.0}
-        position={[0, 0, 0]}
-        rotation={[-90,0,0]} >
-        <ViroImage source={require('./nav/btn_map_point.png')} style={{flex: .1}} />
-        <ViroImage source={require('./nav/btn_next.png')} style={{flex: .1}} />
-        <ViroImage source={require('./nav/btn_reload.png')} style={{flex: .1}} />
-      </ViroFlexView>
         <ViroARImageMarker target={"targetOne"} >
             <ViroVideo
               source={{uri: this.state.videoPath}}
@@ -170,7 +158,6 @@ export default class ArScene extends Component {
             />
 
         </ViroARImageMarker>
-
       </ViroARScene>
       </SafeAreaView>
     );
