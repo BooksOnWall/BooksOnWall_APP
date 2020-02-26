@@ -264,6 +264,7 @@ export default class App extends Component {
     try {
       // create banner folder
       const bannerPath = this.state.AppDir+'/banner';
+      let sts = [];
       await RNFS.exists(bannerPath)
       .then( (exists) => {
           if (!exists) {
@@ -271,7 +272,7 @@ export default class App extends Component {
                 // banner folder created successfully
                 // check each story and install story banner
                 // downloading banners and added mobile storage path for banner
-                let sts = [];
+
                 stories.map((story, i) => {
                   let st = story;
                   let theme = JSON.parse(story.design_options);
