@@ -1,9 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-
 import {SafeAreaView,ActivityIndicator, Button, Text,StyleSheet, TouchableHighlight} from 'react-native';
-//import { Button, Icon } from 'react-native-elements';
 import {
   ViroConstants,
   ViroARScene,
@@ -13,11 +11,12 @@ import {
   ViroMaterials,
   ViroText,
   ViroSound,
+  ViroFlexView,
+  ViroImage,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-
 
 export default class ArScene extends Component {
   constructor(props) {
@@ -29,6 +28,7 @@ export default class ArScene extends Component {
       server: params.server,
       appName: params.appName,
       appDir: params.appDir,
+      storyDir: params.appDir+'/stories/',
       story: params.story,
       index: params.index,
       stage: params.story.stages[params.index],
@@ -42,9 +42,6 @@ export default class ArScene extends Component {
       onZoneLeave: params.onZoneLeave,
       onPictureMatch: params.onPictureMatch
     };
-    // console.table(this.state.pictures);
-    // console.log(params.appDir);
-    // bind 'this' to functions
     this.onInitialized = this.onInitialized.bind(this);
     this.buildTrackingTargets = this.buildTrackingTargets.bind(this);
     this.setVideoComponent = this.setVideoComponent.bind(this);
@@ -83,7 +80,7 @@ export default class ArScene extends Component {
         let dimension = this.state.stage.dimension.split("x");
         let width = parseFloat(dimension[0]);
         let height = parseFloat(dimension[1]);
-        path = 'file://' + this.state.appDir + path.replace("assets/stories", "");
+        path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
           "targetOne" : {
@@ -102,14 +99,14 @@ export default class ArScene extends Component {
   }
   setVideoComponent = () => {
     let path = this.state.stage.onPictureMatch[0].path;
-    path = 'file://' + this.state.appDir + path.replace("assets/stories", "");
+    path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
     let loop = this.state.stage.onPictureMatch[0].loop;
     this.setState({'videoPath': path, 'videoLoop': loop});
   }
   loadAndPlayAudio = async () => {
     try {
       let path = this.state.stage.onZoneEnter[0].path;
-      path = 'file://'+this.state.appDir + path.replace("assets/stories", "");
+      path = 'file://'+this.state.storyDir + path.replace("assets/stories", "");
       let loop = this.state.stage.onZoneEnter[0].loop;
       this.setState({'audioPath': path,'audioLoop': loop });
     } catch(e) {
@@ -139,6 +136,7 @@ export default class ArScene extends Component {
   }
   render = () => {
     return (
+      <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >
         <ViroSound
            paused={false}
@@ -149,6 +147,14 @@ export default class ArScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
+      <ViroFlexView style={{flexDirection: 'row', padding: .1}}
+        width={1.0} height={1.0}
+        position={[0, 0, 0]}
+        rotation={[-90,0,0]} >
+        <ViroImage source={require('./nav/btn_map_point.png')} style={{flex: .1}} />
+        <ViroImage source={require('./nav/btn_next.png')} style={{flex: .1}} />
+        <ViroImage source={require('./nav/btn_reload.png')} style={{flex: .1}} />
+      </ViroFlexView>
         <ViroARImageMarker target={"targetOne"} >
             <ViroVideo
               source={{uri: this.state.videoPath}}
@@ -162,9 +168,11 @@ export default class ArScene extends Component {
               onFinish={this.onFinishVideo}
               materials={["chromaKeyFilteredVideo"]}
             />
+
         </ViroARImageMarker>
 
       </ViroARScene>
+      </SafeAreaView>
     );
   }
 }

@@ -74,7 +74,9 @@ export default class Story extends Component {
       console.log(e);
     }
   }
-  componentWillUnmount = async () => await KeepAwake.deactivate();
+  componentWillUnmount = async () => {
+    await KeepAwake.deactivate();
+  }
   updateTransportIndex = (transportIndex) => this.setState({transportIndex})
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
   watchID: ?number = null;
@@ -149,15 +151,14 @@ export default class Story extends Component {
         { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        const lastPosition = position;
-        this.setState({lastPosition});
-        this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+
+        this.setState({LastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},
             "geometry": {
               "type": "Point",
-              "coordinates": [this.state.fromLong, this.state.fromLat]
+              "coordinates": [this.state.fromLat, this.state.fromLong]
             }
           };
           let to = {
@@ -165,11 +166,11 @@ export default class Story extends Component {
             "properties": {},
               "geometry": {
                 "type": "Point",
-                "coordinates": [this.state.toLong, this.state.toLat]
+                "coordinates": [this.state.toLat, this.state.fromLong]
               }
             };
           let units = I18n.t("kilometers","kilometers");
-          let dis = distance(from, to, units);
+          let dis = distance(from, to, "kilometers");
           console.log('from story distance:', dis);
           if (dis) {
             this.setState({distance: dis.toFixed(2)});
