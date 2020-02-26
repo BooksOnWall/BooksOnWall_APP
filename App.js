@@ -164,7 +164,7 @@ export default class App extends Component {
         console.log('info', info);
       });
       //Check if sdcard exist
-      await RNFS.exists(dirs.SDCardDir)
+      await RNFS.exists(dirs.SDCardApplicationDir)
       .then( (exists) => {
           if (exists) {
               console.log("SD Card exist");
@@ -183,7 +183,7 @@ export default class App extends Component {
               console.log("Directory exist");
           } else {
               console.log("Directory need to be created");
-              RNFS.mkdir(AppDir).then((result) => {
+              RNFetchBlob.fs.mkdir(AppDir).then((result) => {
                 console.log('mkdir result', result)
               }).catch((err) => {
                 console.log('mkdir err', err)
