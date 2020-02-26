@@ -46,7 +46,6 @@ export default class ToAR extends Component {
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
     }
-    console.table(this.state.stage);
   }
   static navigationOptions = {
     title: 'To Augmented Reality',
@@ -60,7 +59,6 @@ export default class ToAR extends Component {
     } catch(e) {
       console.log(e);
     }
-
   }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.

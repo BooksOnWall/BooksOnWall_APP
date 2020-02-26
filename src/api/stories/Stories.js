@@ -60,8 +60,6 @@ export default class Stories extends Component {
   constructor(props) {
     super(props);
     let stories = this.props.screenProps.stories;
-    // let theme = JSON.parse(this.props.screenProps.stories.design_options);
-    // stories.design_options = theme;
     this.state = {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
@@ -72,76 +70,19 @@ export default class Stories extends Component {
       transportIndex: 0,
       dlIndex: null,
       access_token: MAPBOX_KEY,
-      profile: 'mapbox/walking',
-      initialPosition: null,
-      lastPosition: null,
-      fromLat: null,
-      fromLong: null,
-      toLat: null ,
-      toLong: null,
-      distance: null
     };
-    this.getCurrentLocation = this.getCurrentLocation.bind(this);
     this.storiesCheck = this.storiesCheck.bind(this);
   }
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
-      await this.getCurrentLocation();
+      // await this.getCurrentLocation();
       await this.storiesCheck();
     } catch(e) {
       console.log(e);
     }
   }
   componentWillUnmount = async () => KeepAwake.deactivate();
-  watchID: ?number = null;
-
-  getCurrentLocation = async () => {
-    try {
-      // Instead of navigator.geolocation, just use Geolocation.
-      await Geolocation.getCurrentPosition(
-        position => {
-          const initialPosition = position;
-          this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-          this.setState({initialPosition});
-        },
-        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        {timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
-      );
-      this.watchID = await Geolocation.watchPosition(position => {
-        const lastPosition = position;
-        this.setState({lastPosition});
-        this.setState({fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-        let from = {
-          "type": "Feature",
-          "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [this.state.fromLong, this.state.fromLat]
-            }
-          };
-          let to = {
-            "type": "Feature",
-            "properties": {},
-              "geometry": {
-                "type": "Point",
-                "coordinates": [this.state.toLong, this.state.toLat]
-              }
-            };
-          let units = I18n.t("kilometers","kilometers");
-          let dis = distance(from, to, units);
-          console.log('from stories distance:', dis);
-          if (dis) {
-            this.setState({distance: dis.toFixed(2)});
-          };
-      },
-      error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
-    );
-    } catch(e) {
-      console.log(e);
-    }
-  }
   storiesCheck = async () => {
     let stories = this.state.stories;
     try {
@@ -167,7 +108,7 @@ export default class Stories extends Component {
   }
 
   render() {
-    const {stories, distance, access_token, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {stories} = this.state;
     const {navigate} = this.props.navigation;
     if (!stories) {
       return (
