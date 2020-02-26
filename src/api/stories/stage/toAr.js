@@ -74,7 +74,6 @@ export default class ToAR extends Component {
       onPictureMatch: this.state.stage.onPictureMatch,
       appDir: this.state.appDir
     };
-    console.table(params);
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
