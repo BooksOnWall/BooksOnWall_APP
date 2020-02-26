@@ -270,35 +270,35 @@ export default class App extends Component {
           if (!exists) {
               RNFS.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
-                // check each story and install story banner
-                // downloading banners and added mobile storage path for banner
 
-                stories.map((story, i) => {
-                  let st = story;
-                  let theme = JSON.parse(story.design_options);
-                  theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
-                  st['theme'] = theme;
-                  const path = theme.banner.path;
-                  const name = theme.banner.name;
-                  const url = this.state.server +'/'+ path;
-                  const filePath = bannerPath + '/'+ name;
-                  st['theme']['banner']['filePath'] = 'file://' + filePath;
-                  const {id, promise} = RNFS.downloadFile({
-                    fromUrl: url,
-                    toFile: filePath,
-                    background: false,
-                    cacheable: false,
-                    connectionTimeout: 60 * 1000,
-                    readTimeout: 120 * 1000
-                  });
-                  sts.push(st);
-                });
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
           }
       });
+      // check each story and install story banner
+      // downloading banners and added mobile storage path for banner
 
+      stories.map((story, i) => {
+        let st = story;
+        let theme = JSON.parse(story.design_options);
+        theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
+        st['theme'] = theme;
+        const path = theme.banner.path;
+        const name = theme.banner.name;
+        const url = this.state.server +'/'+ path;
+        const filePath = bannerPath + '/'+ name;
+        st['theme']['banner']['filePath'] = 'file://' + filePath;
+        const {id, promise} = RNFS.downloadFile({
+          fromUrl: url,
+          toFile: filePath,
+          background: false,
+          cacheable: false,
+          connectionTimeout: 60 * 1000,
+          readTimeout: 120 * 1000
+        });
+        sts.push(st);
+      });
       // store stories list in Stories.json file
       await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
