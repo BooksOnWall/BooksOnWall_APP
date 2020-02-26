@@ -154,7 +154,7 @@ export default class App extends Component {
       // check if BooksOnWall directory exist , we are using here the name given to the project
       // ex: ./react-bow init MyProject https://api.myproject.xx  project name is MyProject
       // if not we create the directory in user Documents directory
-      console.log('dirs', dirs);
+      console.table(dirs);
       // we have to choose where to store the story , some pĥone have sdcard some other not
       // we also need th check if we have enough space to store the datas
       let AppDir = '';
@@ -232,9 +232,7 @@ export default class App extends Component {
     }
 
   }
-  handleLocales = async () => {
-    this.locales = RNLocalize.getLocales();
-  }
+  handleLocales = async () => this.locales = RNLocalize.getLocales()
   loadStories = async () => {
     try {
       this.setState({isLoading: true});
@@ -271,34 +269,35 @@ export default class App extends Component {
           if (!exists) {
               RNFS.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
+                // check each story and install story banner
+                // downloading banners and added mobile storage path for banner
+                let sts = [];
+                stories.map((story, i) => {
+                  let st = story;
+                  let theme = JSON.parse(story.design_options);
+                  theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
+                  st['theme'] = theme;
+                  const path = theme.banner.path;
+                  const name = theme.banner.name;
+                  const url = this.state.server +'/'+ path;
+                  const filePath = bannerPath + '/'+ name;
+                  st['theme']['banner']['filePath'] = 'file://' + filePath;
+                  const {id, promise} = RNFS.downloadFile({
+                    fromUrl: url,
+                    toFile: filePath,
+                    background: false,
+                    cacheable: false,
+                    connectionTimeout: 60 * 1000,
+                    readTimeout: 120 * 1000
+                  });
+                  sts.push(st);
+                });
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
           }
       });
-      // check each story and install story banner
-      // downloading banners and added mobile storage path for banner
-      let sts = [];
-      stories.map((story, i) => {
-        let st = story;
-        let theme = JSON.parse(story.design_options);
-        theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
-        st['theme'] = theme;
-        const path = theme.banner.path;
-        const name = theme.banner.name;
-        const url = this.state.server +'/'+ path;
-        const filePath = bannerPath + '/'+ name;
-        st['theme']['banner']['filePath'] = 'file://' + filePath;
-        const {id, promise} = RNFS.downloadFile({
-          fromUrl: url,
-          toFile: filePath,
-          background: false,
-          cacheable: false,
-          connectionTimeout: 60 * 1000,
-          readTimeout: 120 * 1000
-        });
-        sts.push(st);
-      });
+
       // store stories list in Stories.json file
       await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
