@@ -293,4 +293,4 @@ class ToPath extends Component {
   }
 }
 
-export default ToStage;
+export default ToPath;

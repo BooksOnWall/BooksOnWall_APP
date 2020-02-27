@@ -30,7 +30,7 @@ import Story from './src/api/stories/Story';
 import Stages from './src/api/stories/stages/Stages';
 import Stage from './src/api/stories/stage/Stage';
 import ToStage from './src/api/stories/stage/toStage';
-//import ToPath from './src/api/stories/stage/toPath';
+import ToPath from './src/api/stories/stage/toPath';
 import SplashScreen from 'react-native-splash-screen';
 
 
@@ -43,6 +43,7 @@ const MainNavigator = createStackNavigator({
   Stage: { screen: Stage},
   ToStage: { screen: ToStage},
   ToAr: { screen: ToAr},
+  ToPath: { screen: ToPath}
 },
 {
     initialRouteName: 'Intro',
@@ -245,6 +246,7 @@ export default class App extends Component {
   loadStories = async () => {
     try {
       this.setState({isLoading: true});
+      Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
       await this.networkCheck();
       await fetch(this.state.storiesURL, {
         method: 'get',
@@ -256,6 +258,7 @@ export default class App extends Component {
       })
       .then(data => {
           if(data) {
+            Toast.showWithGravity('Receiving data', Toast.SHORT, Toast.TOP);
             return this.storeStories(data.stories);
           } else {
             Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
@@ -274,12 +277,13 @@ export default class App extends Component {
       // create banner folder
       const bannerPath = this.state.AppDir+'/banner';
       let sts = [];
-      await RNFS.exists(bannerPath)
+      await RNFetchBlob.fs.exists(bannerPath)
       .then( (exists) => {
-          if (!exists) {
+          console.log('banner exist:', exists);
+          if (exists === false) {
               RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
-
+                Toast.showWithGravity('Creating banners', Toast.SHORT, Toast.TOP);
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
