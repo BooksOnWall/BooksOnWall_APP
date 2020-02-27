@@ -171,7 +171,7 @@ export default class App extends Component {
                AppDir = dirs.SDCardApplicationDir +'/'+ this.state.appName;
           } else {
               console.log("SD Card is not available we need to install inside memory card");
-              AppDir = dirs.MainBundleDir +'/'+ this.state.appName;
+              AppDir = dirs.DocumentDir +'/'+ this.state.appName;
           }
       });
       if (AppDir === '')  Toast.showWithGravity('Error: No access to your filesystem to install the application!', Toast.LONG, Toast.TOP);
@@ -271,7 +271,7 @@ export default class App extends Component {
       await RNFS.exists(bannerPath)
       .then( (exists) => {
           if (!exists) {
-              RNFS.mkdir(bannerPath).then((result) => {
+              RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
 
               }).catch((err) => {
@@ -292,14 +292,21 @@ export default class App extends Component {
         const url = this.state.server +'/'+ path;
         const filePath = bannerPath + '/'+ name;
         st['theme']['banner']['filePath'] = 'file://' + filePath;
-        const {id, promise} = RNFS.downloadFile({
-          fromUrl: url,
-          toFile: filePath,
-          background: false,
-          cacheable: false,
-          connectionTimeout: 60 * 1000,
-          readTimeout: 120 * 1000
-        });
+        let dirs = RNFetchBlob.fs.dirs
+          RNFetchBlob
+          .config({
+            // response data will be saved to this path if it has access right.
+            path : filePath
+          })
+          .fetch('GET', url, {
+            'Access-Control-Allow-Origin': '*',
+            credentials: 'same-origin',
+            'Content-Type':'application/json'
+          })
+          .then((res) => {
+            // the path should be dirs.DocumentDir + 'path-to-file.anything'
+            console.log('The file saved to ', res.path())
+          });
         sts.push(st);
       });
       // store stories list in Stories.json file

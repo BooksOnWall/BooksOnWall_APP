@@ -36,7 +36,7 @@ export default class ToAR extends Component {
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
       story: this.props.navigation.getParam('story'),
-      arIndex: 0,
+      arIndex: -1,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
