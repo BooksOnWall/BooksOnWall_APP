@@ -6,11 +6,11 @@ import {lineString as makeLineString} from '@turf/helpers';
 
 import RouteSimulator from './utils/RouteSimulator';
 import {directionsClient} from './MapboxClient';
-import sheet from './styles/sheet';
+import sheet from './mapbox-gl/styles/sheet';
 
-import BaseExamplePropTypes from './common/BaseExamplePropTypes';
-import Page from './common/Page';
-import PulseCircleLayer from './common/PulseCircleLayer';
+import BaseExamplePropTypes from './mapbox-gl/common/BaseExamplePropTypes';
+import Page from './mapbox-gl/common/Page';
+import PulseCircleLayer from './mapbox-gl/common/PulseCircleLayer';
 
 const styles = StyleSheet.create({
   buttonCnt: {

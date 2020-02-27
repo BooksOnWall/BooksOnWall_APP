@@ -54,8 +54,13 @@ export default class ArScene extends Component {
     }
   }
   componentWillUnmount = async () => {
-    await KeepAwake.deactivate();
-    await audio.release();
+    try {
+      await KeepAwake.deactivate();
+      if(audio) await audio.release();
+    } catch(e) {
+      console.log(e.message);
+    }
+
   }
   onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {

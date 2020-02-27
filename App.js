@@ -8,15 +8,9 @@ import { TouchableOpacity, StyleSheet, View, Text, ActivityIndicator, Platform }
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { fromRight } from 'react-navigation-transitions';
-import ToAr from './src/api/stories/stage/toAr';
-import Intro from './src/api/intro/intro';
-import Stories from './src/api/stories/Stories';
-import Story from './src/api/stories/Story';
-import Stages from './src/api/stories/stages/Stages';
-import Stage from './src/api/stories/stage/Stage';
-import ToStage from './src/api/stories/stage/toStage';
+
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import SplashScreen from 'react-native-splash-screen';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as RNLocalize from "react-native-localize";
 import RNFetchBlob from 'rn-fetch-blob';
@@ -29,14 +23,26 @@ import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME  } from 'react-native
 import KeepAwake from 'react-native-keep-awake';
 import Toast from 'react-native-simple-toast';
 
+import ToAr from './src/api/stories/stage/toAr';
+import Intro from './src/api/intro/intro';
+import Stories from './src/api/stories/Stories';
+import Story from './src/api/stories/Story';
+import Stages from './src/api/stories/stages/Stages';
+import Stage from './src/api/stories/stage/Stage';
+import ToStage from './src/api/stories/stage/toStage';
+//import ToPath from './src/api/stories/stage/toPath';
+import SplashScreen from 'react-native-splash-screen';
+
+
+
 const MainNavigator = createStackNavigator({
   Intro: { screen: Intro},
   Stories: { screen: Stories},
   Story: { screen: Story},
   Stages: { screen: Stages},
   Stage: { screen: Stage},
-  ToStage: {screen: ToStage},
-  ToAr: {screen: ToAr}
+  ToStage: { screen: ToStage},
+  ToAr: { screen: ToAr},
 },
 {
     initialRouteName: 'Intro',

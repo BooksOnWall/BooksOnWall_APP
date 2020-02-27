@@ -36,6 +36,7 @@ export default class ToAR extends Component {
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
       story: this.props.navigation.getParam('story'),
+      position: this.props.navigation.getParam('position'),
       arIndex: -1,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
@@ -55,12 +56,8 @@ export default class ToAR extends Component {
       console.log(e);
     }
   }
-  reload = () => {
-
-  }
-  map = () => {
-
-  }
+  reload = () => this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
+  map = () => this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
   next = () => {
 
   }
@@ -105,6 +102,9 @@ export default class ToAR extends Component {
 var styles = StyleSheet.create({
   mainContainer: {
     flex : 1,
+    backgroundColor: "transparent",
+  },
+  menu: {
     backgroundColor: "transparent",
   },
   viroContainer :{
