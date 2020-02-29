@@ -67,6 +67,8 @@ export default class App extends Component {
       FirstRun: false,
       stories: [],
       storiesURL: SERVER_URL + '/stories',
+      loadStories: this.loadStories,
+      storeStories: this.storeStories,
       isLoading: false,
     };
   }

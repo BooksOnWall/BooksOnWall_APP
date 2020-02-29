@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Platform, ImageBackground, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager } from 'react-native';
-import { Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
+import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -122,11 +122,11 @@ export default class Stories extends Component {
         <SafeAreaView style={styles.container}>
           <Header
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
-            centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
+            centerComponent={<Button onPress={this.props.screenProps.loadStories}><Icon name='bow-logo' style={styles.logo}/><Icon name="reload-circle" style={styles.logo} /></Button>}
             />
 
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: '#8c8c8c'}}>
-              <ListStories stories={stories} navigate={navigate} />
+              <ListStories loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
           </Card>
         </SafeAreaView>
       </ThemeProvider>
