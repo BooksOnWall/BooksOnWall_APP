@@ -9,12 +9,18 @@ import {
   ViroVideo,
   ViroMaterials,
   ViroSound,
+  Viro360Video,
+  Viro360Image,
+  ViroUtils,
+  ViroPortal,
+  ViroPortalScene,
+  Viro3DObject,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 
-export default class ArScene extends Component {
+export default class PortalScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
@@ -148,21 +154,7 @@ export default class ArScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-        <ViroARImageMarker target={"targetOne"} >
-            <ViroVideo
-              source={{uri: this.state.videoPath}}
-              dragType="FixedToPlane"
-              onDrag={()=>{}}
-              visible={true}
-              loop={this.state.videoLoop}
-              position={[0,-1,0]}
-              rotation={[-90,0,0]}
-              opacity={1}
-              onFinish={this.onFinishVideo}
-              materials={["chromaKeyFilteredVideo"]}
-            />
 
-        </ViroARImageMarker>
       </ViroARScene>
       </SafeAreaView>
     );

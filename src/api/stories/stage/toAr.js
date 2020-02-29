@@ -9,11 +9,24 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { ViroARSceneNavigator} from 'react-viro';
-import InitialARScene from './arScene';
+
 import KeepAwake from 'react-native-keep-awake';
 import SafeAreaView from 'react-native-safe-area-view';
 import { ButtonGroup } from 'react-native-elements';
 import Icon from "../../../utils/Icon";
+
+
+/*
+AR Scene type:
+#1 VIP aka Video inside Picture to detect
+#2 VAAP aka Video aside anchored picture
+#3 VAAMP aka Video anchored with multiple pictures
+#4 PORTAL aka Portal
+*/
+import VIP from '../../scenes/VipScene';
+import VAAMP from '../../scenes/VaampScene';
+import VAAP from '../../scenes/VaapScene';
+import PORTAL from '../../scenes/PortalScene';
 /*
  TODO: Insert your API key below unneeded since v.2.17
  */
@@ -57,7 +70,7 @@ export default class ToAR extends Component {
     }
   }
   reload = () => this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
-  map = () => this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
+  map = () => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
   next = () => {
 
   }
@@ -84,7 +97,7 @@ export default class ToAR extends Component {
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
       <SafeAreaView style={styles.mainContainer}>
-        <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={{ scene: InitialARScene }} style={styles.viroContainer}/>
+        <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={{ scene: VIP }} style={styles.viroContainer}/>
         <ButtonGroup style={styles.menu}
           buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
           onPress={this.updateDlIndex}
