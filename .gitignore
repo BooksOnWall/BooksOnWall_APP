@@ -29,7 +29,8 @@ build/
 .gradle
 local.properties
 *.iml
-
+# wiki documentation 
+BooksOnWall.wiki
 # node.js
 #
 node_modules/
