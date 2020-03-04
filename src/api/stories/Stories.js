@@ -135,8 +135,8 @@ export default class Stories extends Component {
   }
   storiesUpdate = async () => {
     try {
-      Toast.showWithGravity('Story update ...', Toast.SHORT, Toast.TOP);
-      const stories = this.props.loadStories();
+      Toast.showWithGravity('Stories update ...', Toast.SHORT, Toast.TOP);
+      const stories = await this.props.loadStories();
       this.setState({stories: stories});
       Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
       return this.storiesCheck();
