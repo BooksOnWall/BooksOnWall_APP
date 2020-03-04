@@ -358,7 +358,7 @@ export default class App extends Component {
         </SafeAreaProvider>
       );
     }
-    return ( <SafeAreaProvider><AppContainer screenProps={this.state} setState={this.setState} /></SafeAreaProvider> );
+    return ( <SafeAreaProvider><AppContainer screenProps={this.state} setState={this.setState} loadStories={this.loadStories}/></SafeAreaProvider> );
   }
 }
 const styles = StyleSheet.create({

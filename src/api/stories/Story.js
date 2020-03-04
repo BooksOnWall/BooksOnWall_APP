@@ -38,6 +38,7 @@ export default class Story extends Component {
   };
   constructor(props) {
     super(props);
+    this.loadStories = this.props.loadStories;
     this.state = {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
