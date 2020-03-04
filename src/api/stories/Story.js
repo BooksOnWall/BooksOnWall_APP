@@ -285,7 +285,6 @@ export default class Story extends Component {
         flexDirection: 'column',
         justifyContent: 'center',
         alignContent: 'center',
-        backgroundColor: '#D8D8D8',
         maxHeight: 100,
       },
       title: {
@@ -294,12 +293,11 @@ export default class Story extends Component {
         fontFamily: 'TrashHand',
         fontSize: 26,
         textAlign: 'center',
+        paddingTop: 30,
+        paddingBottom: 0,
         letterSpacing: 1,
         color: '#fff',
-        textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2
-      },
-      location: {
-        color: story.theme.color1
+        textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2,
       },
       sinopsys: {
         flex: 1,
@@ -309,7 +307,7 @@ export default class Story extends Component {
         color: '#000',
       },
       credits: {
-        backgroundColor: story.theme.color1,
+        backgroundColor: story.theme.color2,
         fontFamily: story.theme.font3,
         padding: 20,
         color: story.theme.color3,
@@ -333,11 +331,12 @@ export default class Story extends Component {
       },
       nav: {
         flex: 1,
+        justifyContent: 'center',
         fontSize: 20,
-        backgroundColor: '#d1d2d3',
+        backgroundColor: story.theme.color1,
         padding: 0,
         margin: 0,
-        justifyContent: 'center',
+        textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 2,
       },
       menssage: {
         fontSize: 12,
@@ -354,7 +353,7 @@ export default class Story extends Component {
         minHeight: 40,
         maxHeight: 40,
         margin: 0,
-      },
+      }
     });
     return (
       <ThemeProvider>
@@ -367,7 +366,7 @@ export default class Story extends Component {
           />
           <View style={styles.card} >
 
-              <ImageBackground source={{uri: theme.banner.filePath}} style={themeSheet.tile}>
+              <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
                 <Text style={themeSheet.title}>{story.title}</Text>
                 <Text style={styles.location}>{story.city+' • '+story.state}</Text>
               </ImageBackground>
@@ -389,12 +388,12 @@ export default class Story extends Component {
                 <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
               )}
           </View>
-          <View style={styles.nav} style= {{ margin: 0, padding: 1 , flex:1, justifyContent: 'flex-end',}}>
+          <View style={themeSheet.nav}>
                 {story.isInstalled && (
                 <>
                 <Text style={styles.menssage}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
                 <ButtonGroup
-                  style={styles.transport}
+                  style={themeSheet.transport}
                   onPress={this.updateTransportIndex}
                   selectedIndex={transportIndex}
                   buttons={transportbuttons}
@@ -459,7 +458,7 @@ const styles = StyleSheet.create({
   location: {
     flex: 1,
     fontFamily: 'ATypewriterForMe',
-    fontSize: 14,
+    fontSize: 11,
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1
@@ -481,14 +480,6 @@ const styles = StyleSheet.create({
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 3,
   },
-  nav: {
-    flex: 1,
-    fontSize: 20,
-    backgroundColor: '#d1d2d3',
-    padding: 0,
-    margin: 0,
-    justifyContent: 'center',
-  },
   menssage: {
     fontSize: 12,
     color: '#000',
@@ -496,19 +487,9 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     fontFamily: 'OpenSansCondensed-Light',
   },
-  transport: {
-    fontSize: 14,
-    backgroundColor: '#4B4F53',
-    borderWidth: 0,
-    borderColor: '#d2d2d2',
-    minHeight: 40,
-    maxHeight: 40,
-    margin: 0,
-  },
   menu: {
     flex: 1,
     minHeight: 40,
-    maxHeight: 40,
     margin: 0,
     padding: 0,
   }
