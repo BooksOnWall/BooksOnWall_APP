@@ -53,7 +53,7 @@ ListStories = (props) => {
 
 
   return (
-    <TouchableOpacity onPress={this.onPress}>
+    <TouchableOpacity onPress={() => props.navigate('Story', {story: story})}>
       <View >
       {
         stories.map((story, i) => (
@@ -97,6 +97,7 @@ export default class Stories extends Component {
       dlIndex: null,
       access_token: MAPBOX_KEY,
     };
+    this.storiesUpdate = this.storiesUpdate.bind(this);
     this.storiesCheck = this.storiesCheck.bind(this);
   }
   componentDidMount = async () => {
@@ -132,7 +133,16 @@ export default class Stories extends Component {
       console.log(e);
     }
   }
-
+  storiesUpdate = async () => {
+    try {
+      Toast.showWithGravity('Story update ...', Toast.SHORT, Toast.TOP);
+      const stories = await this.props.loadStories();
+      this.setState({stories: stories});
+      Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
+    } catch(e) {
+      console.log(e.message);
+    }
+  }
   render() {
     const {stories} = this.state;
     const {navigate} = this.props.navigation;
@@ -149,7 +159,7 @@ export default class Stories extends Component {
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<TouchableOpacity onPress={this.onPress}><Icon raised name='reload-circle' onPress={() => this.props.loadStories} style={styles.reload}  /></TouchableOpacity>}
+            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate}><Icon raised name='reload-circle' onPress={() => this.props.loadStories} style={styles.reload}  /></TouchableOpacity>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
           <ScrollView style={styles.scrollView}>

@@ -331,6 +331,7 @@ export default class App extends Component {
         console.log(err.message);
       });
       this.setState({stories: sts, isLoading: false, FirstRun: false});
+      return sts;
     } catch(e) {
       console.log(e.message);
     }
