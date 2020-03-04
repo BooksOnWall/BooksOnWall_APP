@@ -336,24 +336,20 @@ export default class Story extends Component {
         padding: 0,
         margin: 0,
         textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 2,
+        maxHeight: 55
       },
       NavButton: {
           backgroundColor: story.theme.color1,
           borderWidth: 0,
-          borderColor: story.theme.color2,
           margin: 0,
-          minHeight: 50,
-          maxHeight: 50,
-          margin: 0
       },
       NavContainer: {
         flex: 1,
         borderWidth: 0,
-        minHeight: 50, maxHeight: 50,
         borderRadius: 0,
         margin: 0,
         padding: 0,
-        backgroundColor: 'red',
+        backgroundColor: story.theme.color1,
       },
       menssage: {
         fontSize: 12,
@@ -408,25 +404,6 @@ export default class Story extends Component {
               )}
           </View>
           <View style={themeSheet.nav}>
-                {story.isInstalled && (
-                <>
-                <Text style={styles.menssage}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
-                <ButtonGroup
-                  style={themeSheet.transport}
-                  onPress={this.updateTransportIndex}
-                  selectedIndex={transportIndex}
-                  buttons={transportbuttons}
-                  buttonStyle={{ borderWidth: 0, borderColor: '#999999', backgroundColor: '#c2c3c4', minHeight: 35, maxHeight: 35, margin: 0}}
-                  selectedButtonStyle= {{backgroundColor: '#ccc'}}
-                  textStyle= {{ color: '#4B4F53', fontSize: 10 }}
-                  selectedTextStyle= {{ color: '#9E1C00' }}
-                  innerBorderStyle= {{  color: '#d2d2d2' }}
-                  disabled={[1, 2]}
-                  containerStyle={{flex: 1, borderWidth: 1, borderColor: '#c2c3c4', backgroundColor: '#c2c3c4', margin: 0, minHeight: 35, maxHeight: 35, borderRadius: 0, margin: 0, padding: 0}}
-                  //disabled={true}
-                  />
-                </>
-              )}
               <ButtonGroup
                 style={styles.menu}
                 containerStyle= {themeSheet.NavContainer}
@@ -435,7 +412,9 @@ export default class Story extends Component {
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
                 selectedButtonStyle= {{backgroundColor: 'transparent'}}
-                innerBorderStyle= {{color: 'white'}}
+                innerBorderStyle= {{color: 'rgba(0, 0, 0, 0.3)'}}
+                Component={TouchableOpacity}
+                selectedButtonStyle={{backgroundColor: 'transparent'}}
                 />
           </View>
         </SafeAreaView>
