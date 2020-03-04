@@ -104,7 +104,7 @@ export default class Intro extends Component {
       </View>
     );
   }
-  onDone = () => this.props.navigation.navigate('Stories');
+  onDone = () => this.props.navigation.navigate('Stories', {loadStories: this.loadStories});
 
   render() {
 

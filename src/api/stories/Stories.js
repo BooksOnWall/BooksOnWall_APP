@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, useState, useCallback} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { Platform, ImageBackground, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import { RefreshControl, Platform, ImageBackground, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
@@ -13,6 +13,11 @@ import Icon from "../../utils/Icon";
 import Toast from 'react-native-simple-toast';
 import { Banner } from '../../../assets/banner';
 
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
     if(Math.abs(bytes) < thresh) {
@@ -51,7 +56,6 @@ ListStories = (props) => {
      return story;
  });
 
-
   return (
     <TouchableOpacity onPress={() => props.navigate('Story', {story: story})}>
       <View >
@@ -83,6 +87,7 @@ export default class Stories extends Component {
     title: 'Story',
     headerShown: false
   };
+
   constructor(props) {
     super(props);
     let stories = this.props.screenProps.stories;
@@ -94,12 +99,14 @@ export default class Stories extends Component {
       bannerPath: this.props.screenProps.AppDir + '/banner/',
       granted: Platform.OS === 'ios',
       transportIndex: 0,
+      reloadLoading: false,
       dlIndex: null,
       access_token: MAPBOX_KEY,
     };
     this.storiesUpdate = this.storiesUpdate.bind(this);
     this.storiesCheck = this.storiesCheck.bind(this);
   }
+
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
@@ -118,7 +125,8 @@ export default class Stories extends Component {
         story.isInstalled = await this.isInstalled(story.id);
         st.push(story);
       }
-      this.setState({stories: st});
+      this.setState({stories: st, reloadLoading: false});
+
     } catch(e) {
       console.log(e);
     }
@@ -135,16 +143,20 @@ export default class Stories extends Component {
   }
   storiesUpdate = async () => {
     try {
+      await this.setState({reloadLoading: true});
       Toast.showWithGravity('Stories update ...', Toast.SHORT, Toast.TOP);
       const stories = await this.props.loadStories();
-      this.setState({stories: stories});
+      (stories && stories.length > 0) ? await this.setState({stories: stories}) : null;
+      console.table('stories', stories);
       Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
       return this.storiesCheck();
     } catch(e) {
       console.log(e.message);
     }
   }
+
   render() {
+
     const {stories} = this.state;
     const {navigate} = this.props.navigation;
     if (!stories) {
@@ -154,13 +166,15 @@ export default class Stories extends Component {
           </SafeAreaView>
       );
     }
+
+
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button type="clear" onPress={() => this.storiesUpdate()} icon={
+            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button type="clear" loading={this.state.loading} onPress={() => this.storiesUpdate()} icon={
               <Icon
                 name="reload-circle"
                 size={46}
@@ -169,7 +183,7 @@ export default class Stories extends Component {
             }></Button></TouchableOpacity>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
-          <ScrollView style={styles.scrollView}>
+          <ScrollView refreshControl={<RefreshControl refreshing={this.state.reloadLoading} onRefresh={this.storiesUpdate} /> } style={styles.scrollView} onScrollToTop={() => this.storiesUpdate()}>
             <View style={styles.wrapList} >
               <ListStories loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
               </View>
