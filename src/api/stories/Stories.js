@@ -29,13 +29,36 @@ function humanFileSize(bytes, si) {
     return bytes.toFixed(1)+' '+units[u];
 }
 ListStories = (props) => {
+  // if theme or banner are empty and for dev purpose put default banner
+  const default_theme = {
+    font1: 'TrashHand',
+    font2: 'BadScript-Regular',
+    font3: 'ATypewriterForMe',
+    banner: {
+      name: null,
+      path: null,
+      size: null,
+      type: null
+    },
+    gallery: [],
+    color1: '#9E1C00',
+    color2: '#D1D2D3',
+    color3: '#4B4F53'
+  };
+ let stories = props.stories.map ((story) => {
+     story['theme'] = (story.theme) ? story.theme : default_theme;
+     story['banner_default'] = (story.theme && story.theme.banner.filePath) ? {uri: story.theme.banner.filePath} : Banner['banner_default'];
+     return story;
+ });
+
+
   return (
-    <TouchableOpacity onPress={this.onPress}>
+    <TouchableOpacity onPress={() => props.navigate('Story', {story: story})}>
       <View >
       {
-        props.stories.map((story, i) => (
+        stories.map((story, i) => (
 
-            <ImageBackground key={'b'+i} source={{uri: story.theme.banner.filePath}} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
+            <ImageBackground key={'b'+i} source={story.banner_default} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
               <ListItem
                 containerStyle={{backgroundColor: 'transparent', flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'flex-start', backgroundColor: 'transparent', }}
                 style={styles.listItem}
@@ -74,6 +97,7 @@ export default class Stories extends Component {
       dlIndex: null,
       access_token: MAPBOX_KEY,
     };
+    this.storiesUpdate = this.storiesUpdate.bind(this);
     this.storiesCheck = this.storiesCheck.bind(this);
   }
   componentDidMount = async () => {
@@ -109,7 +133,17 @@ export default class Stories extends Component {
       console.log(e);
     }
   }
-
+  storiesUpdate = async () => {
+    try {
+      Toast.showWithGravity('Stories update ...', Toast.SHORT, Toast.TOP);
+      const stories = await this.props.loadStories();
+      this.setState({stories: stories});
+      Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
+      return this.storiesCheck();
+    } catch(e) {
+      console.log(e.message);
+    }
+  }
   render() {
     const {stories} = this.state;
     const {navigate} = this.props.navigation;
@@ -126,7 +160,13 @@ export default class Stories extends Component {
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<TouchableOpacity onPress={this.onPress}><Icon raised name='reload-circle' onPress={() => this.props.loadStories} style={styles.reload}  /></TouchableOpacity>}
+            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button type="clear" onPress={() => this.storiesUpdate()} icon={
+              <Icon
+                name="reload-circle"
+                size={46}
+                color="white"
+              />
+            }></Button></TouchableOpacity>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
           <ScrollView style={styles.scrollView}>
