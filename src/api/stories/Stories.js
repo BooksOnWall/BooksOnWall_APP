@@ -136,9 +136,10 @@ export default class Stories extends Component {
   storiesUpdate = async () => {
     try {
       Toast.showWithGravity('Story update ...', Toast.SHORT, Toast.TOP);
-      const stories = await this.props.loadStories();
+      const stories = this.props.loadStories();
       this.setState({stories: stories});
       Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
+      return this.storiesCheck();
     } catch(e) {
       console.log(e.message);
     }
@@ -159,7 +160,13 @@ export default class Stories extends Component {
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate}><Icon raised name='reload-circle' onPress={() => this.props.loadStories} style={styles.reload}  /></TouchableOpacity>}
+            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button type="clear" onPress={() => this.storiesUpdate()} icon={
+              <Icon
+                name="reload-circle"
+                size={46}
+                color="white"
+              />
+            }></Button></TouchableOpacity>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
           <ScrollView style={styles.scrollView}>
