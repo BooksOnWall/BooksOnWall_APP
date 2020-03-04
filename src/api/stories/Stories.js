@@ -35,7 +35,7 @@ ListStories = (props) => {
       {
         props.stories.map((story, i) => (
 
-            <ImageBackground key={'b'+i} source={{uri: story.theme.banner.filePath}} imageStyle={{opacity: .8}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
+            <ImageBackground key={'b'+i} source={{uri: story.theme.banner.filePath}} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
               <ListItem
                 containerStyle={{backgroundColor: 'transparent', flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'flex-start', backgroundColor: 'transparent', }}
                 style={styles.listItem}
