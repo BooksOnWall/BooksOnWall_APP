@@ -29,13 +29,36 @@ function humanFileSize(bytes, si) {
     return bytes.toFixed(1)+' '+units[u];
 }
 ListStories = (props) => {
+  // if theme or banner are empty and for dev purpose put default banner
+  const default_theme = {
+    font1: 'TrashHand',
+    font2: 'BadScript-Regular',
+    font3: 'ATypewriterForMe',
+    banner: {
+      name: null,
+      path: null,
+      size: null,
+      type: null
+    },
+    gallery: [],
+    color1: '#9E1C00',
+    color2: '#D1D2D3',
+    color3: '#4B4F53'
+  };
+ let stories = props.stories.map ((story) => {
+     story['theme'] = (story.theme) ? story.theme : default_theme;
+     story['banner_default'] = (story.theme && story.theme.banner.filePath) ? {uri: story.theme.banner.filePath} : Banner['banner_default'];
+     return story;
+ });
+
+
   return (
     <TouchableOpacity onPress={this.onPress}>
       <View >
       {
-        props.stories.map((story, i) => (
+        stories.map((story, i) => (
 
-            <ImageBackground key={'b'+i} source={{uri: story.theme.banner.filePath}} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
+            <ImageBackground key={'b'+i} source={story.banner_default} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
               <ListItem
                 containerStyle={{backgroundColor: 'transparent', flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'flex-start', backgroundColor: 'transparent', }}
                 style={styles.listItem}

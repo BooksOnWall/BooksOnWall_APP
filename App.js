@@ -296,17 +296,17 @@ export default class App extends Component {
 
       stories.map((story, i) => {
         let st = story;
-        let theme = JSON.parse(story.design_options);
-        theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
-        st['theme'] = theme;
-        const path = theme.banner.path;
-        const name = theme.banner.name;
-        const url = this.state.server +'/'+ path;
-        const filePath = bannerPath + '/'+ name;
-        st['theme']['banner']['filePath'] = 'file://' + filePath;
-        let dirs = RNFetchBlob.fs.dirs
-          RNFetchBlob
-          .config({
+        if (story.design_options) {
+          let theme = JSON.parse(story.design_options);
+          theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
+          st['theme'] = theme;
+          const path = theme.banner.path;
+          const name = theme.banner.name;
+          const url = this.state.server +'/'+ path;
+          const filePath = bannerPath + '/'+ name;
+          st['theme']['banner']['filePath'] = 'file://' + filePath;
+          let dirs = RNFetchBlob.fs.dirs;
+          RNFetchBlob.config({
             // response data will be saved to this path if it has access right.
             path : filePath
           })
@@ -319,6 +319,7 @@ export default class App extends Component {
             // the path should be dirs.DocumentDir + 'path-to-file.anything'
             console.log('The file saved to ', res.path())
           });
+        }
         sts.push(st);
       });
       // store stories list in Stories.json file
