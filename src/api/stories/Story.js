@@ -276,7 +276,6 @@ export default class Story extends Component {
         flexDirection: 'column',
         padding: 0,
         margin: 0,
-        borderWidth: 0,
         backgroundColor: 'transparent',
       },
       tile:{
@@ -338,6 +337,24 @@ export default class Story extends Component {
         margin: 0,
         textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 2,
       },
+      NavButton: {
+          backgroundColor: story.theme.color1,
+          borderWidth: 0,
+          borderColor: story.theme.color2,
+          margin: 0,
+          minHeight: 50,
+          maxHeight: 50,
+          margin: 0
+      },
+      NavContainer: {
+        flex: 1,
+        borderWidth: 0,
+        minHeight: 50, maxHeight: 50,
+        borderRadius: 0,
+        margin: 0,
+        padding: 0,
+        backgroundColor: 'red',
+      },
       menssage: {
         fontSize: 12,
         color: '#000',
@@ -346,6 +363,7 @@ export default class Story extends Component {
         fontFamily: 'OpenSansCondensed-Light',
       },
       transport: {
+        flex: 1,
         fontSize: 14,
         backgroundColor: '#4B4F53',
         borderWidth: 0,
@@ -353,6 +371,7 @@ export default class Story extends Component {
         minHeight: 40,
         maxHeight: 40,
         margin: 0,
+        padding: 0
       }
     });
     return (
@@ -410,13 +429,13 @@ export default class Story extends Component {
               )}
               <ButtonGroup
                 style={styles.menu}
-                buttonStyle={{ backgroundColor: '#9E1C00', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50, margin: 0}}
+                containerStyle= {themeSheet.NavContainer}
+                buttons={dlbuttons}
+                buttonStyle={themeSheet.NavButton}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
-                selectedButtonStyle= {{backgroundColor: '#9E1C00'}}
-                buttons={dlbuttons}
-                containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 50, maxHeight: 50, backgroundColor: '#9E1C00', borderRadius: 0, margin: 0, padding: 0}}
-                innerBorderStyle= {{ color: '#750000' }}
+                selectedButtonStyle= {{backgroundColor: 'transparent'}}
+                innerBorderStyle= {{color: 'white'}}
                 />
           </View>
         </SafeAreaView>
@@ -438,7 +457,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     borderWidth: 0,
     paddingTop: 25,
-    paddingBottom: 25
+    paddingBottom: 25,
+    borderWidth: 0
   },
   header: {
     flex: 1,
