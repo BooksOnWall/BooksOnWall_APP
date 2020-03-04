@@ -56,8 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#D9D9D9',
     backgroundColor: 'transparent',
-    fontFamily: "OpenSansCondensed-Light",
-    fontSize: 20,
+    fontSize: 15,
     textAlign: 'center',
     paddingLeft: 60,
     paddingRight: 60,
@@ -110,7 +109,7 @@ export default class Intro extends Component {
   render() {
 
       return (
-        <AppIntroSlider renderItem={this.renderItem} slides={slides} onDone={this.onDone} showSkipButton/>
+        <AppIntroSlider renderItem={this.renderItem} slides={slides} onDone={this.onDone} showSkipButton buttonStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.2 )', borderRadius: 200 }} buttonTextStyle={{ fontSize: 18, marginTop: 3, textTransform: 'uppercase', fontFamily: "TrashHand",} }/>
       );
     }
 
