@@ -37,8 +37,8 @@ ListStories = (props) => {
   // if theme or banner are empty and for dev purpose put default banner
   const default_theme = {
     font1: 'TrashHand',
-    font2: 'BadScript-Regular',
-    font3: 'ATypewriterForMe',
+    font2: 'ATypewriterForMe',
+    font3: 'OpenSansCondensed-ligth',
     banner: {
       name: null,
       path: null,
@@ -47,8 +47,8 @@ ListStories = (props) => {
     },
     gallery: [],
     color1: '#9E1C00',
-    color2: '#D1D2D3',
-    color3: '#4B4F53'
+    color2: '#4B4F53',
+    color3: '#D1D2D3'
   };
  let stories = props.stories.map ((story) => {
      story['theme'] = (story.theme) ? story.theme : default_theme;
@@ -174,16 +174,16 @@ export default class Stories extends Component {
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button type="clear" loading={this.state.loading} onPress={() => this.storiesUpdate()} icon={
+            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button style={styles.reload} type="clear" loading={this.state.loading} onPress={() => this.storiesUpdate()} icon={
               <Icon
                 name="reload-circle"
-                size={46}
-                color="white"
+                size={38}
+                color="#ece2d6"
               />
             }></Button></TouchableOpacity>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
-          <ScrollView refreshControl={<RefreshControl refreshing={this.state.reloadLoading} onRefresh={this.storiesUpdate} /> } style={styles.scrollView} onScrollToTop={() => this.storiesUpdate()}>
+          <ScrollView refreshControl={<RefreshControl progressBackgroundColor={'#8C1B8'} progressViewOffset={25} refreshing={this.state.reloadLoading} onRefresh={this.storiesUpdate} /> } style={styles.scrollView} onScrollToTop={() => this.storiesUpdate()}>
             <View style={styles.wrapList} >
               <ListStories loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
               </View>
@@ -243,10 +243,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   reload: {
-    color: '#9b948e',
-    fontSize: 35,
-    paddingTop: 12,
-    paddingBottom: 10,
-    paddingHorizontal: 7
+    color: '#9b948e',paddingTop: 12,paddingBottom: 10,  paddingHorizontal: 7
   }
 });
