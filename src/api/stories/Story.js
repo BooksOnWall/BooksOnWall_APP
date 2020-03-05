@@ -388,7 +388,9 @@ export default class Story extends Component {
           fontFamily: story.theme.font2,
           textAlign: 'center',
         },
-        b: { fontFamily: 'OpenSansCondensed-Bold'},
+        b: {
+          fontFamily: 'OpenSansCondensed-Bold'
+        },
         container: {
           flex: 1,
           flexDirection: 'column',
@@ -396,21 +398,25 @@ export default class Story extends Component {
           backgroundColor: '#D8D8D8',
           padding: 0,
         },
-      });    return (
+        i:{
+          fontSize: 24,
+          fontFamily: story.theme.font2
+        }
+      });
+      return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
+        <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
           <Header
+            backgroundImage={story.theme.banner}
             style={styles.header}
             containerStyle={styles.containerStyle}
             leftComponent={{ icon: 'menu', color: '#4B4F53' }}
-            centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
+            centerComponent={<Text style={themeSheet.title}>{story.title}</Text>}
           />
-          <View style={styles.card} >
+          </ImageBackground>
 
-              <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
-                <Text style={themeSheet.title}>{story.title}</Text>
-                <Text style={styles.location}>{story.city+' • '+story.state}</Text>
-              </ImageBackground>
+          <View style={styles.card} >
 
               <ScrollView style={styles.scrollview}>
 
