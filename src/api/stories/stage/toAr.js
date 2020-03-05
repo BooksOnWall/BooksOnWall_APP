@@ -63,7 +63,7 @@ export default class ToAR extends Component {
   componentDidMount = async () => await KeepAwake.activate();
   componentWillUnmount = async () => {
     try {
-      this.setState({ navigatorType : UNSET });
+      await this.setState({ navigatorType : UNSET });
       await KeepAwake.deactivate();
     } catch(e) {
       console.log(e);
@@ -81,6 +81,8 @@ export default class ToAR extends Component {
       sharedProps: this.state.sharedProps,
       server: this.state.server,
       story: this.state.story,
+      stages: this.state.story.stages,
+      sceneType: this.state.stage.scene_type,
       index: this.state.index,
       pictures: this.state.stage.pictures,
       onZoneEnter: this.state.stage.onZoneEnter,
@@ -92,12 +94,19 @@ export default class ToAR extends Component {
     const storyMap = () => <Icon size={40} name='geopoint-circle' color='#4D0101' onPress={() => this.map()} />;
     const storyNext = () => <Icon size={40} name='next-circle' color='#4D0101' onPress={() => this.next()} />;
     const arButtons = [ { element: storyReload }, { element: storyMap }, { element: storyNext} ];
-
+    const arScene = {
+      'vip':  { scene: VIP },
+      'vaap':  { scene: VAAP },
+      'vaamp':  { scene: VAAMP },
+      'portal':  { scene: PORTAL}
+    };
+    let types = ['vip', 'vaap', 'vaamp', 'portal'];
+    let type = (this.state.stage.scene_type) ? types[this.state.stage.scene_type] : 'vip';
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
       <SafeAreaView style={styles.mainContainer}>
-        <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={{ scene: VIP }} style={styles.viroContainer}/>
+        <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={arScene[type]} style={styles.viroContainer}/>
         <ButtonGroup style={styles.menu}
           buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
           onPress={this.updateDlIndex}
