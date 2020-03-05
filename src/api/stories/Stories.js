@@ -123,7 +123,7 @@ export default class Stories extends Component {
           <Header
             containerStyle={{ backgroundColor: '#D8D8D8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<Icon raised name='reload-circle' color='#f50' onPress={() => this.props.loadStories} style={styles.reload}  />}
+            rightComponent={<Icon raised reverse name='reload-circle' color='#f50' onPress={() => this.props.loadStories} style={styles.reload}  />}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: '#8c8c8c'}}>
               <ListStories loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
