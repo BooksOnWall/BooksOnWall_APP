@@ -153,7 +153,6 @@ export default class Stories extends Component {
   }
   loadStories = async () => {
     try {
-      this.setState({reloadLoading: true});
       await this.networkCheck();
       Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
       await fetch(this.state.storiesURL, {
@@ -166,7 +165,6 @@ export default class Stories extends Component {
       })
       .then(data => {
           if(data) {
-            Toast.showWithGravity('Receiving data', Toast.SHORT, Toast.TOP);
             return this.storeStories(data.stories);
           } else {
             Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
@@ -187,7 +185,6 @@ export default class Stories extends Component {
       let sts = [];
       await RNFetchBlob.fs.exists(bannerPath)
       .then( (exists) => {
-          console.log('banner exist:', exists);
           if (exists === false) {
               RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
@@ -223,7 +220,7 @@ export default class Stories extends Component {
           })
           .then((res) => {
             // the path should be dirs.DocumentDir + 'path-to-file.anything'
-            console.log('The file saved to ', res.path())
+            // console.log('The file saved to ', res.path())
           });
         }
         sts.push(st);
@@ -236,7 +233,7 @@ export default class Stories extends Component {
       .catch((err) => {
         console.log(err.message);
       });
-      this.setState({stories: sts, isLoading: false, FirstRun: false});
+      this.setState({stories: sts, reloadLoading: false});
       return sts;
     } catch(e) {
       console.log(e.message);
@@ -246,7 +243,6 @@ export default class Stories extends Component {
     try {
       await this.setState({reloadLoading: true});
       await this.loadStories();
-      Toast.showWithGravity('Stories updated', Toast.SHORT, Toast.TOP);
       return this.storiesCheck();
     } catch(e) {
       console.log(e.message);
