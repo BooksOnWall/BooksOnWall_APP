@@ -285,7 +285,7 @@ export default class App extends Component {
           if (exists === false) {
               RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
-                Toast.showWithGravity('Creating banners', Toast.SHORT, Toast.TOP);
+                Toast.showWithGravity('Creating banners ...', Toast.SHORT, Toast.TOP);
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
@@ -325,7 +325,7 @@ export default class App extends Component {
       // store stories list in Stories.json file
       await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
-        Toast.showWithGravity('Storing stories ...', Toast.SHORT, Toast.TOP);
+        Toast.showWithGravity('Installation complete', Toast.SHORT, Toast.TOP);
       })
       .catch((err) => {
         console.log(err.message);
