@@ -12,6 +12,8 @@ import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
 import Toast from 'react-native-simple-toast';
 import { Banner } from '../../../assets/banner';
+import NetInfo from "@react-native-community/netinfo";
+import RNFetchBlob from 'rn-fetch-blob';
 
 function wait(timeout) {
   return new Promise(resolve => {
@@ -96,6 +98,7 @@ export default class Stories extends Component {
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
       stories: stories,
+      storiesURL: this.props.screenProps.server + '/stories',
       bannerPath: this.props.screenProps.AppDir + '/banner/',
       granted: Platform.OS === 'ios',
       transportIndex: 0,
@@ -150,9 +153,9 @@ export default class Stories extends Component {
   }
   loadStories = async () => {
     try {
-      this.setState({isLoading: true});
-      Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
+      this.setState({reloadLoading: true});
       await this.networkCheck();
+      Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
       await fetch(this.state.storiesURL, {
         method: 'get',
         headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
@@ -164,7 +167,7 @@ export default class Stories extends Component {
       .then(data => {
           if(data) {
             Toast.showWithGravity('Receiving data', Toast.SHORT, Toast.TOP);
-            return data.stories;
+            return this.storeStories(data.stories);
           } else {
             Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
           }
@@ -180,7 +183,7 @@ export default class Stories extends Component {
   storeStories = async (stories) => {
     try {
       // create banner folder
-      const bannerPath = this.state.AppDir+'/banner';
+      const bannerPath = this.state.appDir+'/banner';
       let sts = [];
       await RNFetchBlob.fs.exists(bannerPath)
       .then( (exists) => {
@@ -226,9 +229,9 @@ export default class Stories extends Component {
         sts.push(st);
       });
       // store stories list in Stories.json file
-      await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
+      await RNFS.writeFile(this.state.appDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
-        Toast.showWithGravity('Storing stories ...', Toast.SHORT, Toast.TOP);
+        Toast.showWithGravity('Update complete', Toast.SHORT, Toast.TOP);
       })
       .catch((err) => {
         console.log(err.message);
@@ -242,12 +245,8 @@ export default class Stories extends Component {
   storiesUpdate = async () => {
     try {
       await this.setState({reloadLoading: true});
-      Toast.showWithGravity('Stories update ...', Toast.SHORT, Toast.TOP);
-      const stories = await this.loadStories();
-      await this.storeStories();
-      (stories && stories.length > 0) ? await this.setState({stories: stories}) : null;
-      console.table('stories', stories);
-      Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
+      await this.loadStories();
+      Toast.showWithGravity('Stories updated', Toast.SHORT, Toast.TOP);
       return this.storiesCheck();
     } catch(e) {
       console.log(e.message);
