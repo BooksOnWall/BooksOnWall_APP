@@ -141,11 +141,110 @@ export default class Stories extends Component {
       console.log(e);
     }
   }
+  networkCheck = () => {
+    NetInfo.fetch().then(state => {
+      // console.warn("Connection type", state.type);
+      // console.warn("Is connected?", state.isConnected);
+      !state.isConnected ? Toast.showWithGravity('Error: No internet connection!', Toast.LONG, Toast.TOP) : '';
+    });
+  }
+  loadStories = async () => {
+    try {
+      this.setState({isLoading: true});
+      Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
+      await this.networkCheck();
+      await fetch(this.state.storiesURL, {
+        method: 'get',
+        headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
+      })
+      .then(response => {
+        if (response && !response.ok) { throw new Error(response.statusText);}
+        return response.json();
+      })
+      .then(data => {
+          if(data) {
+            Toast.showWithGravity('Receiving data', Toast.SHORT, Toast.TOP);
+            return data.stories;
+          } else {
+            Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
+          }
+      })
+      .catch((error) => {
+        // Your error is here!
+        console.error(error);
+      });
+    } catch(e) {
+      console.warn(e);
+    }
+  }
+  storeStories = async (stories) => {
+    try {
+      // create banner folder
+      const bannerPath = this.state.AppDir+'/banner';
+      let sts = [];
+      await RNFetchBlob.fs.exists(bannerPath)
+      .then( (exists) => {
+          console.log('banner exist:', exists);
+          if (exists === false) {
+              RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
+                // banner folder created successfully
+                Toast.showWithGravity('Creating banners', Toast.SHORT, Toast.TOP);
+              }).catch((err) => {
+                console.log('mkdir err', err)
+              });
+          }
+      });
+      // check each story and install story banner
+      // downloading banners and added mobile storage path for banner
+
+      stories.map((story, i) => {
+        let st = story;
+        if (story.design_options) {
+          let theme = JSON.parse(story.design_options);
+          theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
+          st['theme'] = theme;
+          const path = theme.banner.path;
+          const name = theme.banner.name;
+          const url = this.state.server +'/'+ path;
+          const filePath = bannerPath + '/'+ name;
+          st['theme']['banner']['filePath'] = 'file://' + filePath;
+          let dirs = RNFetchBlob.fs.dirs;
+          RNFetchBlob.config({
+            // response data will be saved to this path if it has access right.
+            path : filePath
+          })
+          .fetch('GET', url, {
+            'Access-Control-Allow-Origin': '*',
+            credentials: 'same-origin',
+            'Content-Type':'application/json'
+          })
+          .then((res) => {
+            // the path should be dirs.DocumentDir + 'path-to-file.anything'
+            console.log('The file saved to ', res.path())
+          });
+        }
+        sts.push(st);
+      });
+      // store stories list in Stories.json file
+      await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
+      .then((success) => {
+        Toast.showWithGravity('Storing stories ...', Toast.SHORT, Toast.TOP);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+      this.setState({stories: sts, isLoading: false, FirstRun: false});
+      return sts;
+    } catch(e) {
+      console.log(e.message);
+    }
+  }
   storiesUpdate = async () => {
     try {
       await this.setState({reloadLoading: true});
       Toast.showWithGravity('Stories update ...', Toast.SHORT, Toast.TOP);
-      const stories = await this.props.loadStories();
+      const stories = await this.loadStories();
+      await this.storeStories();
       (stories && stories.length > 0) ? await this.setState({stories: stories}) : null;
       console.table('stories', stories);
       Toast.showWithGravity('Updating stories ...', Toast.SHORT, Toast.TOP);
@@ -178,7 +277,7 @@ export default class Stories extends Component {
               <Icon
                 name="reload-circle"
                 size={46}
-                color="white"
+                color="red"
               />
             }></Button></TouchableOpacity>}
             />
