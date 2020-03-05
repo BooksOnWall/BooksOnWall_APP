@@ -61,21 +61,6 @@ class ToPath extends Component {
   };
   constructor(props) {
     super(props);
-    Alert.alert(
-      'Story',
-      JSON.stringify(props.screenProps.story),
-      [
-        {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
-      {cancelable: false},
-    );
-
     this.state = {
       prevLatLng: null,
       track: null,
