@@ -247,22 +247,6 @@ export default class Story extends Component {
     const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
-    p: {
-        fontSize: 14,
-        marginTop: 1,
-        marginBottom: 1,
-        padding: 0,
-        lineHeight: 20,
-        letterSpacing: 0,
-      },
-      b: { fontFamily: 'OpenSansCondensed-Bold'},
-      container: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        backgroundColor: '#D8D8D8',
-        padding: 0,
-      },
       header: {
         flex: 1,
         flexDirection: 'row',
@@ -302,14 +286,15 @@ export default class Story extends Component {
       sinopsys: {
         flex: 1,
         backgroundColor: '#C8C1B8',
-        padding: 20,
         fontFamily: story.theme.font2,
         color: '#000',
+        paddingTop: 30,
+        paddingBottom: 30
       },
       credits: {
         backgroundColor: story.theme.color2,
         fontFamily: story.theme.font3,
-        padding: 20,
+        padding: 26,
         color: story.theme.color3,
       },
       subtitle: {
@@ -317,7 +302,7 @@ export default class Story extends Component {
         padding: 0,
         marginTop: 15,
         marginBottom: 25,
-        fontSize: 14,
+        fontSize: 12,
         textTransform: 'uppercase',
         fontFamily: story.theme.font3,
         color: story.theme.color3,
@@ -337,24 +322,20 @@ export default class Story extends Component {
         padding: 0,
         margin: 0,
         textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 2,
+        maxHeight: 55
       },
       NavButton: {
           backgroundColor: story.theme.color1,
           borderWidth: 0,
-          borderColor: story.theme.color2,
           margin: 0,
-          minHeight: 50,
-          maxHeight: 50,
-          margin: 0
       },
       NavContainer: {
         flex: 1,
         borderWidth: 0,
-        minHeight: 50, maxHeight: 50,
         borderRadius: 0,
         margin: 0,
         padding: 0,
-        backgroundColor: 'red',
+        backgroundColor: story.theme.color1,
       },
       menssage: {
         fontSize: 12,
@@ -375,7 +356,54 @@ export default class Story extends Component {
         padding: 0
       }
     });
-    return (
+    const creditsThemeSheet = StyleSheet.create({
+      p: {
+          fontSize: 14,
+          padding: 0,
+          lineHeight: 20,
+          letterSpacing: 0,
+          fontFamily: 'OpenSansCondensed-ligth',
+          color: story.theme.color3
+        },
+        b: {
+          fontFamily: 'OpenSansCondensed-Bold'},
+          container: {
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          backgroundColor: '#D8D8D8',
+          padding: 0,
+        },
+      });
+    const sinopsysThemeSheet = StyleSheet.create({
+      p: {
+          fontSize: 16,
+          paddingTop: 25,
+          paddingBottom: 10,
+          paddingHorizontal:25,
+          lineHeight: 24,
+          letterSpacing: 0,
+          fontFamily: '',
+          color: '#111',
+          fontFamily: story.theme.font2,
+          textAlign: 'center',
+        },
+        b: {
+          fontFamily: 'OpenSansCondensed-Bold'
+        },
+        container: {
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          backgroundColor: '#D8D8D8',
+          padding: 0,
+        },
+        i:{
+          fontSize: 24,
+          fontFamily: story.theme.font2
+        }
+      });
+      return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
           <Header
@@ -394,12 +422,12 @@ export default class Story extends Component {
               <ScrollView style={styles.scrollview}>
 
                 <View style={themeSheet.sinopsys} >
-                  <HTMLView value={story.sinopsys} stylesheet={themeSheet}/>
+                  <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
                 </View>
 
                 <View style={themeSheet.credits} >
                   <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-                  <HTMLView value={story.credits} stylesheet={themeSheet} />
+                  <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
                 </View>
 
               </ScrollView>
@@ -409,34 +437,17 @@ export default class Story extends Component {
               )}
           </View>
           <View style={themeSheet.nav}>
-                {story.isInstalled && (
-                <>
-                <Text style={styles.menssage}>{I18n.t("Transportation","Please choose your mode of transportation and press Start Navigation.")}</Text>
-                <ButtonGroup
-                  style={themeSheet.transport}
-                  onPress={this.updateTransportIndex}
-                  selectedIndex={transportIndex}
-                  buttons={transportbuttons}
-                  buttonStyle={{ borderWidth: 0, borderColor: '#999999', backgroundColor: '#c2c3c4', minHeight: 35, maxHeight: 35, margin: 0}}
-                  selectedButtonStyle= {{backgroundColor: '#ccc'}}
-                  textStyle= {{ color: '#4B4F53', fontSize: 10 }}
-                  selectedTextStyle= {{ color: '#9E1C00' }}
-                  innerBorderStyle= {{  color: '#d2d2d2' }}
-                  disabled={[1, 2]}
-                  containerStyle={{flex: 1, borderWidth: 1, borderColor: '#c2c3c4', backgroundColor: '#c2c3c4', margin: 0, minHeight: 35, maxHeight: 35, borderRadius: 0, margin: 0, padding: 0}}
-                  //disabled={true}
-                  />
-                </>
-              )}
               <ButtonGroup
                 style={styles.menu}
-                containerStyle= {themeSheet.NavContainer}
+                containerStyle={themeSheet.NavContainer}
                 buttons={dlbuttons}
                 buttonStyle={themeSheet.NavButton}
                 onPress={this.updateDlIndex}
                 selectedIndex={dlIndex}
-                selectedButtonStyle= {{backgroundColor: 'transparent'}}
-                innerBorderStyle= {{color: 'white'}}
+                selectedButtonStyle={{backgroundColor: 'transparent'}}
+                innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+                Component={TouchableOpacity}
+                selectedButtonStyle={{backgroundColor: 'transparent'}}
                 />
           </View>
         </SafeAreaView>
