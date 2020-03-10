@@ -462,7 +462,7 @@ export default class Story extends Component {
 
       const Title = () => (
         <View>
-        <Text style={styles.title}></Text>
+        <Text style={{fontFamily: story.theme.font1}}>{story.title}</Text>
         <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
