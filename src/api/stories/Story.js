@@ -403,6 +403,13 @@ export default class Story extends Component {
           fontFamily: story.theme.font2
         }
       });
+      const Title = () => (
+        <View>
+        <Text>toto</Text>
+        <Text style={themeSheet.title}>{story.title}</Text>
+        <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+        </View>
+      );
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
@@ -417,12 +424,7 @@ export default class Story extends Component {
                 color="#4B4F53"
               />
             }></Button></TouchableOpacity>}
-            centerComponent={
-              <>
-              <Text style={themeSheet.title}>{story.title}</Text>
-              <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-              </>
-            }
+            centerComponent={<Title />}
           />
           </ImageBackground>
           <View style={styles.card} >
