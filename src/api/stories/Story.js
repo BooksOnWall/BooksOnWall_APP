@@ -418,8 +418,10 @@ export default class Story extends Component {
               />
             }></Button></TouchableOpacity>}
             centerComponent={
-              <div><Text style={themeSheet.title}>{story.title}</Text></div>
-              <div><Text style={styles.location}>{story.city+' • '+story.state}</Text></div>
+              <>
+              <Text style={themeSheet.title}>{story.title}</Text>
+              <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+              </>
             }
           />
           </ImageBackground>
