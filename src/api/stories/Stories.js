@@ -261,7 +261,6 @@ export default class Stories extends Component {
       );
     }
 
-
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
