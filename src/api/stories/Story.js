@@ -273,11 +273,9 @@ export default class Story extends Component {
       },
       title: {
         fontFamily: story.theme.font1,
-        flex: 1,
-        fontFamily: 'TrashHand',
-        fontSize: 26,
+        fontSize: 16,
         textAlign: 'center',
-        paddingTop: 30,
+        paddingTop: 0,
         paddingBottom: 0,
         letterSpacing: 1,
         color: '#fff',
@@ -300,8 +298,8 @@ export default class Story extends Component {
       subtitle: {
         fontWeight: 'bold',
         padding: 0,
-        marginTop: 15,
-        marginBottom: 25,
+        marginTop: 0,
+        marginBottom: 0,
         fontSize: 12,
         textTransform: 'uppercase',
         fontFamily: story.theme.font3,
@@ -405,7 +403,6 @@ export default class Story extends Component {
       });
       const Title = () => (
         <View>
-        <Text>toto</Text>
         <Text style={themeSheet.title}>{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
         </View>
@@ -417,14 +414,9 @@ export default class Story extends Component {
           <Header
             style={styles.header}
             containerStyle={styles.containerStyle}
-            leftComponent={<TouchableOpacity onPress={() => this.props.navigation.goBack()}><Button type="clear" onPress={() => this.props.navigation.goBack()} icon={
-              <Icon
-                name="menu"
-                size={38}
-                color="#4B4F53"
-              />
-            }></Button></TouchableOpacity>}
-            centerComponent={<Title />}
+            leftComponent={<TouchableOpacity onPress={() => this.props.navigation.goBack()}><Button type="clear" onPress={() => this.props.navigation.goBack()} icon={{
+                name:"menu", size:38, color:"#4B4F53" }}></Button></TouchableOpacity>}
+            centerComponent={<Title style={styles.titleContainer}/>}
           />
           </ImageBackground>
           <View style={styles.card} >
@@ -480,6 +472,13 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingBottom: 25,
     borderWidth: 0
+  },
+  titleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 0,
+    margin: 0,
   },
   header: {
     flex: 1,
