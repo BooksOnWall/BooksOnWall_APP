@@ -406,19 +406,18 @@ export default class Story extends Component {
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
+        <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
           <Header
             style={styles.header}
             containerStyle={styles.containerStyle}
             leftComponent={{ icon: 'menu', color: '#4B4F53' }}
-            centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
+            centerComponent={
+              <div><Text style={themeSheet.title}>{story.title}</Text></div>
+              <div><Text style={styles.location}>{story.city+' • '+story.state}</Text></div>
+            }
           />
+          </ImageBackground>
           <View style={styles.card} >
-
-              <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
-                <Text style={themeSheet.title}>{story.title}</Text>
-                <Text style={styles.location}>{story.city+' • '+story.state}</Text>
-              </ImageBackground>
-
               <ScrollView style={styles.scrollview}>
 
                 <View style={themeSheet.sinopsys} >
