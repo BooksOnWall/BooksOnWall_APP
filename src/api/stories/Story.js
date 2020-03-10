@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
+import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
 import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
@@ -14,6 +14,13 @@ import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
 import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
+
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
+const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -237,6 +244,55 @@ export default class Story extends Component {
     }
 
   }
+  renderContent = (themeSheet, story, sinopsysThemeSheet, creditsThemeSheet, dlbuttons, dlIndex) => {
+    <>
+    <View style={styles.card} >
+        <ScrollView style={styles.scrollview}>
+
+          <View style={themeSheet.sinopsys} >
+            <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
+          </View>
+
+          <View style={themeSheet.credits} >
+            <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+            <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+          </View>
+
+        </ScrollView>
+
+        {distance && (
+          <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
+        )}
+    </View>
+    <View style={themeSheet.nav}>
+        <ButtonGroup
+          style={styles.menu}
+          containerStyle={themeSheet.NavContainer}
+          buttons={dlbuttons}
+          buttonStyle={themeSheet.NavButton}
+          onPress={this.updateDlIndex}
+          selectedIndex={dlIndex}
+          selectedButtonStyle={{backgroundColor: 'transparent'}}
+          innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+          Component={TouchableOpacity}
+          selectedButtonStyle={{backgroundColor: 'transparent'}}
+          />
+    </View>
+    </>
+  }
+  renderNavBar = () => (
+  <View style={styles.navContainer}>
+    <View style={styles.statusBar} />
+    <View style={styles.navBar}>
+      <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
+        <Icon name="add" size={25} color="#fff" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconRight} onPress={() => {}}>
+        <Icon name="search" size={25} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  </View>
+)
   launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   render() {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
@@ -246,6 +302,9 @@ export default class Story extends Component {
     const storyInstall = () => <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} />;
     const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
+    const images = {
+      background: {uri: theme.banner.filePath}, // Put your own image here
+    };
     const themeSheet = StyleSheet.create({
       header: {
         flex: 1,
@@ -410,6 +469,25 @@ export default class Story extends Component {
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
+        <ReactNativeParallaxHeader
+          headerMinHeight={HEADER_HEIGHT}
+          headerMaxHeight={250}
+          extraScrollHeight={20}
+          navbarColor="#3498db"
+          title="Parallax Header ~"
+          titleStyle={styles.titleStyle}
+          backgroundImage={images.background}
+          backgroundImageScale={1.2}
+          renderNavBar={this.renderNavBar}
+          renderContent={this.renderContent(themeSheet, story, sinopsysThemeSheet, creditsThemeSheet, dlbuttons, dlIndex)}
+          containerStyle={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          innerContainerStyle={styles.container}
+          scrollViewProps={{
+            onScrollBeginDrag: () => console.log('onScrollBeginDrag'),
+            onScrollEndDrag: () => console.log('onScrollEndDrag'),
+          }}
+      />
         <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
           <Header
             style={styles.header}
@@ -419,38 +497,7 @@ export default class Story extends Component {
             centerComponent={<Title style={styles.titleContainer}/>}
           />
           </ImageBackground>
-          <View style={styles.card} >
-              <ScrollView style={styles.scrollview}>
 
-                <View style={themeSheet.sinopsys} >
-                  <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
-                </View>
-
-                <View style={themeSheet.credits} >
-                  <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-                  <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
-                </View>
-
-              </ScrollView>
-
-              {distance && (
-                <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
-              )}
-          </View>
-          <View style={themeSheet.nav}>
-              <ButtonGroup
-                style={styles.menu}
-                containerStyle={themeSheet.NavContainer}
-                buttons={dlbuttons}
-                buttonStyle={themeSheet.NavButton}
-                onPress={this.updateDlIndex}
-                selectedIndex={dlIndex}
-                selectedButtonStyle={{backgroundColor: 'transparent'}}
-                innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-                Component={TouchableOpacity}
-                selectedButtonStyle={{backgroundColor: 'transparent'}}
-                />
-          </View>
         </SafeAreaView>
       </ThemeProvider>
     );
@@ -464,6 +511,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#D8D8D8',
     padding: 0,
     margin: 0,
+  },
+  contentContainer: {
+    flexGrow: 1,
+  },
+  navContainer: {
+    height: HEADER_HEIGHT,
+    marginHorizontal: 10,
+  },
+  statusBar: {
+    height: STATUS_BAR_HEIGHT,
+    backgroundColor: 'transparent',
+  },
+  navBar: {
+    height: NAV_BAR_HEIGHT,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
   },
   containerStyle: {
     backgroundColor: '#C8C1B8',
