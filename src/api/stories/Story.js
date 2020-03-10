@@ -426,21 +426,19 @@ export default class Story extends Component {
           {distance && (
             <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
           )}
+          <ButtonGroup
+            style={styles.menu}
+            containerStyle={themeSheet.NavContainer}
+            buttons={dlbuttons}
+            buttonStyle={themeSheet.NavButton}
+            onPress={this.updateDlIndex}
+            selectedIndex={dlIndex}
+            selectedButtonStyle={{backgroundColor: 'transparent'}}
+            innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+            Component={TouchableOpacity}
+            selectedButtonStyle={{backgroundColor: 'transparent'}}
+            />
       </View>
-      <View style={themeSheet.nav}>
-            <ButtonGroup
-              style={styles.menu}
-              containerStyle={themeSheet.NavContainer}
-              buttons={dlbuttons}
-              buttonStyle={themeSheet.NavButton}
-              onPress={this.updateDlIndex}
-              selectedIndex={dlIndex}
-              selectedButtonStyle={{backgroundColor: 'transparent'}}
-              innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-              Component={TouchableOpacity}
-              selectedButtonStyle={{backgroundColor: 'transparent'}}
-              />
-        </View>
       </>
     )
 
