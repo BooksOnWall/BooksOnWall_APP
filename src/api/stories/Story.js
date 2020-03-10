@@ -58,6 +58,7 @@ export default class Story extends Component {
       dlIndex: null,
       access_token: MAPBOX_KEY,
       profile: 'mapbox/walking',
+      themeSheet: null,
       initialPosition: null,
       lastPosition: null,
       fromLat: null,
@@ -244,57 +245,7 @@ export default class Story extends Component {
     }
 
   }
-  renderContent = (themeSheet, story, sinopsysThemeSheet, creditsThemeSheet, dlbuttons, dlIndex) => {
-    <>
-    <View style={styles.card} >
-        <ScrollView style={styles.scrollview}>
-
-          <View style={themeSheet.sinopsys} >
-            <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
-          </View>
-
-          <View style={themeSheet.credits} >
-            <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-            <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
-          </View>
-
-        </ScrollView>
-
-        {distance && (
-          <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
-        )}
-    </View>
-    <View style={themeSheet.nav}>
-        <ButtonGroup
-          style={styles.menu}
-          containerStyle={themeSheet.NavContainer}
-          buttons={dlbuttons}
-          buttonStyle={themeSheet.NavButton}
-          onPress={this.updateDlIndex}
-          selectedIndex={dlIndex}
-          selectedButtonStyle={{backgroundColor: 'transparent'}}
-          innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-          Component={TouchableOpacity}
-          selectedButtonStyle={{backgroundColor: 'transparent'}}
-          />
-    </View>
-    </>
-  }
-  renderNavBar = () => (
-  <View style={styles.navContainer}>
-    <View style={styles.statusBar} />
-    <View style={styles.navBar}>
-      <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
-        <Icon name="add" size={25} color="#fff" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.iconRight} onPress={() => {}}>
-        <Icon name="search" size={25} color="#fff" />
-      </TouchableOpacity>
-    </View>
-  </View>
-)
-  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
-  render() {
+  renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchStory()} />;
@@ -302,9 +253,6 @@ export default class Story extends Component {
     const storyInstall = () => <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} />;
     const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
-    const images = {
-      background: {uri: theme.banner.filePath}, // Put your own image here
-    };
     const themeSheet = StyleSheet.create({
       header: {
         flex: 1,
@@ -413,6 +361,7 @@ export default class Story extends Component {
         padding: 0
       }
     });
+
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 14,
@@ -460,10 +409,63 @@ export default class Story extends Component {
           fontFamily: story.theme.font2
         }
       });
+    return (
+      <>
+      <View style={styles.card} >
+
+            <View style={themeSheet.sinopsys} >
+              <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
+            </View>
+
+            <View style={themeSheet.credits} >
+              <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+              <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+            </View>
+
+
+          {distance && (
+            <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
+          )}
+      </View>
+      <View style={themeSheet.nav}>
+            <ButtonGroup
+              style={styles.menu}
+              containerStyle={themeSheet.NavContainer}
+              buttons={dlbuttons}
+              buttonStyle={themeSheet.NavButton}
+              onPress={this.updateDlIndex}
+              selectedIndex={dlIndex}
+              selectedButtonStyle={{backgroundColor: 'transparent'}}
+              innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+              Component={TouchableOpacity}
+              selectedButtonStyle={{backgroundColor: 'transparent'}}
+              />
+        </View>
+      </>
+    )
+
+  }
+  renderNavBar = () => (
+  <View style={styles.navContainer}>
+    <View style={styles.statusBar} />
+    <View style={styles.navBar}>
+      <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
+        <Icon name="home" size={25} color="#fff" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconRight} onPress={() => {}}>
+        <Icon name="home" size={25} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  </View>
+)
+  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
+  render() {
+      const {theme, themeSheet, story} = this.state;
+
       const Title = () => (
         <View>
-        <Text style={themeSheet.title}>{story.title}</Text>
-        <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+        <Text style={styles.title}></Text>
+        <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
       return (
@@ -474,12 +476,12 @@ export default class Story extends Component {
           headerMaxHeight={250}
           extraScrollHeight={20}
           navbarColor="#3498db"
-          title="Parallax Header ~"
+          title={<Title/>}
           titleStyle={styles.titleStyle}
-          backgroundImage={images.background}
+          backgroundImage={{uri: theme.banner.filePath}}
           backgroundImageScale={1.2}
           renderNavBar={this.renderNavBar}
-          renderContent={this.renderContent(themeSheet, story, sinopsysThemeSheet, creditsThemeSheet, dlbuttons, dlIndex)}
+          renderContent={this.renderContent}
           containerStyle={styles.container}
           contentContainerStyle={styles.contentContainer}
           innerContainerStyle={styles.container}
@@ -488,15 +490,6 @@ export default class Story extends Component {
             onScrollEndDrag: () => console.log('onScrollEndDrag'),
           }}
       />
-        <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
-          <Header
-            style={styles.header}
-            containerStyle={styles.containerStyle}
-            leftComponent={<TouchableOpacity onPress={() => this.props.navigation.goBack()}><Button type="clear" onPress={() => this.props.navigation.goBack()} icon={{
-                name:"menu", size:38, color:"#4B4F53" }}></Button></TouchableOpacity>}
-            centerComponent={<Title style={styles.titleContainer}/>}
-          />
-          </ImageBackground>
 
         </SafeAreaView>
       </ThemeProvider>
