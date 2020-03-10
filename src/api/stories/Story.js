@@ -410,7 +410,13 @@ export default class Story extends Component {
           <Header
             style={styles.header}
             containerStyle={styles.containerStyle}
-            leftComponent={{ icon: 'menu', color: '#4B4F53' }}
+            leftComponent={<TouchableOpacity onPress={() => this.props.navigation.goBack()}><Button type="clear" onPress={() => this.props.navigation.goBack()} icon={
+              <Icon
+                name="menu"
+                size={38}
+                color="#4B4F53"
+              />
+            }></Button></TouchableOpacity>}
             centerComponent={
               <div><Text style={themeSheet.title}>{story.title}</Text></div>
               <div><Text style={styles.location}>{story.city+' • '+story.state}</Text></div>

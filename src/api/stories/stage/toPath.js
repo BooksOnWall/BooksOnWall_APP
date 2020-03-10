@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {Alert, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-elements';
 import {lineString as makeLineString} from '@turf/helpers';
 
@@ -8,7 +8,6 @@ import RouteSimulator from './utils/RouteSimulator';
 import {directionsClient} from './MapboxClient';
 import sheet from './mapbox-gl/styles/sheet';
 
-import BaseExamplePropTypes from './mapbox-gl/common/BaseExamplePropTypes';
 import Page from './mapbox-gl/common/Page';
 import PulseCircleLayer from './mapbox-gl/common/PulseCircleLayer';
 
@@ -55,9 +54,6 @@ class ToPath extends Component {
   static navigationOptions = {
     title: 'To Stage',
     headerShown: false
-  };
-  static propTypes = {
-    ...BaseExamplePropTypes,
   };
   constructor(props) {
     super(props);
