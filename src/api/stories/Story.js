@@ -476,6 +476,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'transparent',
   },
+  containerStyle: {
+    backgroundColor: '#C8C1B8',
+    justifyContent: 'space-around',
+    borderWidth: 0,
+    paddingTop: 25,
+    paddingBottom: 25,
+    borderWidth: 0
+  },
+  navContainer: {
+    height: HEADER_HEIGHT,
+    marginHorizontal: 10,
+  },
+  statusBar: {
+    height: STATUS_BAR_HEIGHT,
+    backgroundColor: 'transparent',
+  },
+  navBar: {
+    height: NAV_BAR_HEIGHT,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+  },
   titleStyle: {
     flex: 1,
     justifyContent: 'center',
