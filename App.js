@@ -10,7 +10,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { TouchableOpacity, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { fromRight } from 'react-navigation-transitions';
+import { fromRight, fromLeft,  fromTop, fromBottom, fadeIn,fadeout, zoomIn, zoomOut } from 'react-navigation-transitions';
 
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
@@ -50,6 +50,7 @@ const MainNavigator = createStackNavigator({
 },
 {
     initialRouteName: 'Intro',
+    transitionConfig: () => zoomIn(3000),
     navigationOptions: {
       headerShown: false
     }
@@ -345,7 +346,7 @@ export default class App extends Component {
       return (
 
         <SafeAreaProvider>
-          <SafeAreaView style={styles.container}>
+          <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
             <Overlay
               isVisible={this.state.FirstRun}
               windowBackgroundColor="rgba(255, 255, 255, .5)"

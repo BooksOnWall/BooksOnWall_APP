@@ -263,7 +263,7 @@ export default class Stories extends Component {
 
     return (
       <ThemeProvider>
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}

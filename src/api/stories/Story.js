@@ -425,7 +425,7 @@ export default class Story extends Component {
       );
       return (
       <ThemeProvider>
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
         <ReactNativeParallaxHeader
           headerMinHeight={HEADER_HEIGHT}
           headerMaxHeight={250}
