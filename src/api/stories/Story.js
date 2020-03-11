@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
+import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
 import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
@@ -14,6 +14,13 @@ import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
 import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
+
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
+const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -51,6 +58,7 @@ export default class Story extends Component {
       dlIndex: null,
       access_token: MAPBOX_KEY,
       profile: 'mapbox/walking',
+      themeSheet: null,
       initialPosition: null,
       lastPosition: null,
       fromLat: null,
@@ -237,8 +245,7 @@ export default class Story extends Component {
     }
 
   }
-  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
-  render() {
+  renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchStory()} />;
@@ -354,6 +361,7 @@ export default class Story extends Component {
         padding: 0
       }
     });
+
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 14,
@@ -401,56 +409,86 @@ export default class Story extends Component {
           fontFamily: story.theme.font2
         }
       });
+    return (
+      <>
+      <View style={styles.card} >
+
+            <View style={themeSheet.sinopsys} >
+              <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
+            </View>
+
+            <View style={themeSheet.credits} >
+              <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+              <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+            </View>
+
+
+          {distance && (
+            <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
+          )}
+          <ButtonGroup
+            style={styles.menu}
+            containerStyle={themeSheet.NavContainer}
+            buttons={dlbuttons}
+            buttonStyle={themeSheet.NavButton}
+            onPress={this.updateDlIndex}
+            selectedIndex={dlIndex}
+            selectedButtonStyle={{backgroundColor: 'transparent'}}
+            innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+            Component={TouchableOpacity}
+            selectedButtonStyle={{backgroundColor: 'transparent'}}
+            />
+      </View>
+      </>
+    )
+
+  }
+  renderNavBar = () => (
+  <View style={styles.navContainer}>
+    <View style={styles.statusBar} />
+    <View style={styles.navBar}>
+      <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
+        <Icon name="home" size={25} color="#fff" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconRight} onPress={() => {}}>
+        <Icon name="home" size={25} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  </View>
+)
+  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
+  render() {
+      const {theme, themeSheet, story} = this.state;
+
       const Title = () => (
         <View>
-        <Text style={themeSheet.title}>{story.title}</Text>
-        <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+        <Text style={{fontFamily: story.theme.font1}}>{story.title}</Text>
+        <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
-        <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
-          <Header
-            style={styles.header}
-            containerStyle={styles.containerStyle}
-            leftComponent={<TouchableOpacity onPress={() => this.props.navigation.goBack()}><Button type="clear" onPress={() => this.props.navigation.goBack()} icon={{
-                name:"menu", size:38, color:"#4B4F53" }}></Button></TouchableOpacity>}
-            centerComponent={<Title style={styles.titleContainer}/>}
-          />
-          </ImageBackground>
-          <View style={styles.card} >
-              <ScrollView style={styles.scrollview}>
+        <ReactNativeParallaxHeader
+          headerMinHeight={HEADER_HEIGHT}
+          headerMaxHeight={250}
+          extraScrollHeight={20}
+          navbarColor="#3498db"
+          title={<Title/>}
+          titleStyle={styles.titleStyle}
+          backgroundImage={{uri: theme.banner.filePath}}
+          backgroundImageScale={1.2}
+          renderNavBar={this.renderNavBar}
+          renderContent={this.renderContent}
+          containerStyle={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          innerContainerStyle={styles.container}
+          scrollViewProps={{
+            onScrollBeginDrag: () => console.log('onScrollBeginDrag'),
+            onScrollEndDrag: () => console.log('onScrollEndDrag'),
+          }}
+      />
 
-                <View style={themeSheet.sinopsys} >
-                  <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
-                </View>
-
-                <View style={themeSheet.credits} >
-                  <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-                  <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
-                </View>
-
-              </ScrollView>
-
-              {distance && (
-                <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
-              )}
-          </View>
-          <View style={themeSheet.nav}>
-              <ButtonGroup
-                style={styles.menu}
-                containerStyle={themeSheet.NavContainer}
-                buttons={dlbuttons}
-                buttonStyle={themeSheet.NavButton}
-                onPress={this.updateDlIndex}
-                selectedIndex={dlIndex}
-                selectedButtonStyle={{backgroundColor: 'transparent'}}
-                innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-                Component={TouchableOpacity}
-                selectedButtonStyle={{backgroundColor: 'transparent'}}
-                />
-          </View>
         </SafeAreaView>
       </ThemeProvider>
     );
@@ -464,6 +502,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#D8D8D8',
     padding: 0,
     margin: 0,
+  },
+  contentContainer: {
+    flexGrow: 1,
+  },
+  navContainer: {
+    height: HEADER_HEIGHT,
+    marginHorizontal: 10,
+  },
+  statusBar: {
+    height: STATUS_BAR_HEIGHT,
+    backgroundColor: 'transparent',
+  },
+  navBar: {
+    height: NAV_BAR_HEIGHT,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
   },
   containerStyle: {
     backgroundColor: '#C8C1B8',
