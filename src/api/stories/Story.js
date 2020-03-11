@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
+import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
 import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
@@ -14,6 +14,13 @@ import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";
 import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
+
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
+const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -51,6 +58,7 @@ export default class Story extends Component {
       dlIndex: null,
       access_token: MAPBOX_KEY,
       profile: 'mapbox/walking',
+      themeSheet: null,
       initialPosition: null,
       lastPosition: null,
       fromLat: null,
@@ -237,8 +245,7 @@ export default class Story extends Component {
     }
 
   }
-  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
-  render() {
+  renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchStory()} />;
@@ -247,70 +254,32 @@ export default class Story extends Component {
     const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
-      header: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderWidth: 0,
-        backgroundColor: '#D8D8D8',
-        margin: 0,
-        padding: 0,
-      },
-      card: {
-        flex: 3,
-        flexDirection: 'column',
-        padding: 0,
-        margin: 0,
-        backgroundColor: 'transparent',
-      },
-      tile:{
-        backgroundColor: story.theme.color1,
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignContent: 'center',
-        maxHeight: 100,
-      },
       title: {
         fontFamily: story.theme.font1,
-        fontSize: 16,
-        textAlign: 'center',
-        paddingTop: 0,
-        paddingBottom: 0,
-        letterSpacing: 1,
         color: '#fff',
-        textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2,
-      },
-      sinopsys: {
-        flex: 1,
-        backgroundColor: '#C8C1B8',
-        fontFamily: story.theme.font2,
-        color: '#000',
-        paddingTop: 30,
-        paddingBottom: 30
       },
       credits: {
         backgroundColor: story.theme.color2,
-        fontFamily: story.theme.font3,
-        padding: 26,
+        fontFamily: 'OpenSansCondensed-Light',
+        paddingTop: 60,
+        paddingBottom: 60,
+        paddingHorizontal: 26,
         color: story.theme.color3,
+      },
+      sinopsys: {
+        paddingTop: 20,
+        paddingBottom: 50,
+        paddingHorizontal: 26,
       },
       subtitle: {
         fontWeight: 'bold',
         padding: 0,
         marginTop: 0,
-        marginBottom: 0,
+        marginBottom: 30,
         fontSize: 12,
         textTransform: 'uppercase',
-        fontFamily: story.theme.font3,
+        fontFamily: 'OpenSansCondensed-bold',
         color: story.theme.color3,
-      },
-      logo: {
-        color: '#9E1C00',
-        fontSize: 40,
-        textShadowColor: 'rgba(0, 0, 0, 0.35)',
-        textShadowOffset: {width: 1, height: 1},
-        textShadowRadius: 3,
       },
       nav: {
         flex: 1,
@@ -354,10 +323,10 @@ export default class Story extends Component {
         padding: 0
       }
     });
+
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 14,
-          padding: 0,
           lineHeight: 20,
           letterSpacing: 0,
           fontFamily: 'OpenSansCondensed-ligth',
@@ -376,15 +345,11 @@ export default class Story extends Component {
     const sinopsysThemeSheet = StyleSheet.create({
       p: {
           fontSize: 16,
-          paddingTop: 25,
-          paddingBottom: 10,
-          paddingHorizontal:25,
           lineHeight: 24,
           letterSpacing: 0,
           fontFamily: '',
           color: '#111',
-          fontFamily: story.theme.font2,
-          textAlign: 'center',
+          fontFamily: 'OpenSansCondensed-Light',
         },
         b: {
           fontFamily: 'OpenSansCondensed-Bold'
@@ -401,56 +366,86 @@ export default class Story extends Component {
           fontFamily: story.theme.font2
         }
       });
+    return (
+      <>
+      <View style={styles.card} >
+
+            <View style={themeSheet.sinopsys} >
+              <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
+            </View>
+
+            <View style={themeSheet.credits} >
+              <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+              <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+            </View>
+
+
+          {distance && (
+            <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
+          )}
+          <ButtonGroup
+            style={styles.menu}
+            containerStyle={themeSheet.NavContainer}
+            buttons={dlbuttons}
+            buttonStyle={themeSheet.NavButton}
+            onPress={this.updateDlIndex}
+            selectedIndex={dlIndex}
+            selectedButtonStyle={{backgroundColor: 'transparent'}}
+            innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+            Component={TouchableOpacity}
+            selectedButtonStyle={{backgroundColor: 'transparent'}}
+            />
+      </View>
+      </>
+    )
+
+  }
+  renderNavBar = () => (
+  <View style={styles.navContainer}>
+    <View style={styles.statusBar} />
+    <View style={styles.navBar}>
+      <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
+        <Icon name="menu" size={36} color="#fff" reverse raised reverseColor="red"/>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconRight} onPress={() => {}}>
+        <Icon name="home" size={36} color="#fff" reverse raised reverseColor="red"/>
+      </TouchableOpacity>
+    </View>
+  </View>
+)
+  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
+  render() {
+      const {theme, themeSheet, story} = this.state;
+
       const Title = () => (
         <View>
-        <Text style={themeSheet.title}>{story.title}</Text>
-        <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+          <Text style={{flex: 1, alignSelf: 'stretch', flexGrow: 1, fontSize: 24, letterSpacing: 1, fontFamily: story.theme.font1, color: "#fff", textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2}}>{story.title}</Text>
+          <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container}>
-        <ImageBackground source={{uri: theme.banner.filePath}} imageStyle={{opacity: .6}} style={themeSheet.tile} >
-          <Header
-            style={styles.header}
-            containerStyle={styles.containerStyle}
-            leftComponent={<TouchableOpacity onPress={() => this.props.navigation.goBack()}><Button type="clear" onPress={() => this.props.navigation.goBack()} icon={{
-                name:"menu", size:38, color:"#4B4F53" }}></Button></TouchableOpacity>}
-            centerComponent={<Title style={styles.titleContainer}/>}
-          />
-          </ImageBackground>
-          <View style={styles.card} >
-              <ScrollView style={styles.scrollview}>
+        <ReactNativeParallaxHeader
+          headerMinHeight={HEADER_HEIGHT}
+          headerMaxHeight={250}
+          extraScrollHeight={20}
+          navbarColor={story.theme.color1}
+          title={<Title/>}
+          titleStyle={styles.titleStyle}
+          backgroundImage={{uri: theme.banner.filePath}}
+          backgroundImageScale={1.2}
+          renderNavBar={this.renderNavBar}
+          renderContent={this.renderContent}
+          containerStyle={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          innerContainerStyle={styles.container}
+          scrollViewProps={{
+            onScrollBeginDrag: () => console.log('onScrollBeginDrag'),
+            onScrollEndDrag: () => console.log('onScrollEndDrag'),
+          }}
+      />
 
-                <View style={themeSheet.sinopsys} >
-                  <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
-                </View>
-
-                <View style={themeSheet.credits} >
-                  <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-                  <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
-                </View>
-
-              </ScrollView>
-
-              {distance && (
-                <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
-              )}
-          </View>
-          <View style={themeSheet.nav}>
-              <ButtonGroup
-                style={styles.menu}
-                containerStyle={themeSheet.NavContainer}
-                buttons={dlbuttons}
-                buttonStyle={themeSheet.NavButton}
-                onPress={this.updateDlIndex}
-                selectedIndex={dlIndex}
-                selectedButtonStyle={{backgroundColor: 'transparent'}}
-                innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-                Component={TouchableOpacity}
-                selectedButtonStyle={{backgroundColor: 'transparent'}}
-                />
-          </View>
         </SafeAreaView>
       </ThemeProvider>
     );
@@ -459,73 +454,47 @@ export default class Story extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
     backgroundColor: '#D8D8D8',
     padding: 0,
     margin: 0,
   },
-  containerStyle: {
-    backgroundColor: '#C8C1B8',
-    justifyContent: 'space-around',
-    borderWidth: 0,
-    paddingTop: 25,
-    paddingBottom: 25,
-    borderWidth: 0
+  contentContainer: {
+    flexGrow: 1,
   },
-  titleContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 0,
-    margin: 0,
+  navContainer: {
+    height: HEADER_HEIGHT,
+    marginHorizontal: 10,
   },
-  header: {
-    flex: 1,
-    flexDirection: 'row',
+  statusBar: {
+    height: STATUS_BAR_HEIGHT,
+    backgroundColor: 'transparent',
+  },
+  navBar: {
+    height: NAV_BAR_HEIGHT,
     justifyContent: 'space-between',
-    borderWidth: 0,
-    margin: 0,
-    padding: 0,
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+  },
+  titleStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
-    flex: 3,
-    flexDirection: 'column',
     padding: 0,
     margin: 0,
     borderWidth: 0,
   },
   location: {
     flex: 1,
+    alignSelf: 'stretch',
+    flexGrow: 1,
     fontFamily: 'ATypewriterForMe',
     fontSize: 11,
     textAlign: 'center',
     color: '#fff',
-    textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1
-  },
-  scrollview: {
-    flex: 2,
-    backgroundColor: '#D8D8D8',
-  },
-  loader: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    backgroundColor: 'whitesmoke',
-  },
-  logo: {
-    color: '#9E1C00',
-    fontSize: 40,
-    textShadowColor: 'rgba(0, 0, 0, 0.35)',
-    textShadowOffset: {width: 1, height: 1},
-    textShadowRadius: 3,
-  },
-  menssage: {
-    fontSize: 12,
-    color: '#000',
-    textAlign: 'center',
-    paddingTop: 5,
-    fontFamily: 'OpenSansCondensed-Light',
+    textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,
   },
   menu: {
     flex: 1,
