@@ -410,7 +410,7 @@ export default class Story extends Component {
   <View style={styles.navContainer}>
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
-      <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
+      <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
         <Icon name="menu" size={36} color="#fff" reverse raised reverseColor="red"/>
       </TouchableOpacity>
     </View>
