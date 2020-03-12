@@ -513,9 +513,6 @@ const styles = StyleSheet.create({
     alignContent: 'stretch',
     justifyContent:'center'
   },
-  titleStyleItemTitle: {
-
-  },
   card: {
     padding: 0,
     margin: 0,
