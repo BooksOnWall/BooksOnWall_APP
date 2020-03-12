@@ -10,9 +10,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { TouchableOpacity, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { fromRight, fromLeft,  fromTop, fromBottom, fadeIn,fadeout, zoomIn, zoomOut } from 'react-navigation-transitions';
-
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { fromRight, zoomIn, zoomOut } from 'react-navigation-transitions'
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as RNLocalize from "react-native-localize";
@@ -37,7 +35,24 @@ import ToPath from './src/api/stories/stage/toPath';
 import SplashScreen from 'react-native-splash-screen';
 
 
-
+const transition = fromRight() // Or whichever you prefer
+const config = {
+  animation: 'timing',
+  config: transition.transitionSpec
+}
+const cardStyleInterpolator = ({ current, next, index, closing, layouts }) => {
+  const { progress } = closing._value ? next : current
+  const { width, height } = layouts.screen
+  const containerStyle = transition.screenInterpolator({
+    layout: {
+      initWidth: width,
+      initHeight: height
+    },
+    position: progress,
+    scene: { index: 1 }
+  })
+  return { containerStyle }
+}
 const MainNavigator = createStackNavigator({
   Intro: { screen: Intro},
   Stories: { screen: Stories},
@@ -49,10 +64,16 @@ const MainNavigator = createStackNavigator({
   ToPath: { screen: ToPath}
 },
 {
+    defaultNavigationOptions: {
+      transitionSpec: {
+        open: config,
+        close: config
+      },
+      cardStyleInterpolator
+    },
     initialRouteName: 'Intro',
-    transitionConfig: () => zoomIn(3000),
     navigationOptions: {
-      headerShown: false
+      headerShown: false,
     }
 
 });
