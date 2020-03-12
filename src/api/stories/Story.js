@@ -250,13 +250,16 @@ export default class Story extends Component {
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyPlay = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchStory()} />;
     const storyDelete = () => <Icon size={40} name='trash' color='white' onPress={() => this.deleteStory(story.id)} />;
-    const storyInstall = () => <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} />;
+    const storyInstall = () => <Text> Descarga <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} /> </Text>;
     const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
         color: '#fff',
+      },
+      card:{
+        backgroundColor: story.theme.color1,
       },
       credits: {
         backgroundColor: story.theme.color2,
@@ -267,9 +270,10 @@ export default class Story extends Component {
         color: story.theme.color3,
       },
       sinopsys: {
-        paddingTop: 20,
+        paddingTop: 40,
         paddingBottom: 50,
         paddingHorizontal: 26,
+        backgroundColor: '#D8D8D8',
       },
       subtitle: {
         fontWeight: 'bold',
@@ -281,28 +285,19 @@ export default class Story extends Component {
         fontFamily: 'OpenSansCondensed-bold',
         color: story.theme.color3,
       },
-      nav: {
-        flex: 1,
-        justifyContent: 'center',
-        fontSize: 20,
-        backgroundColor: story.theme.color1,
-        padding: 0,
-        margin: 0,
-        textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 2,
-        maxHeight: 55
-      },
       NavButton: {
           backgroundColor: story.theme.color1,
           borderWidth: 0,
           margin: 0,
       },
-      NavContainer: {
+      BtnNavContainer: {
         flex: 1,
         borderWidth: 0,
         borderRadius: 0,
-        margin: 0,
-        padding: 0,
+        marginTop: 0,
+        padding: 20,
         backgroundColor: story.theme.color1,
+        height: 50
       },
       menssage: {
         fontSize: 12,
@@ -321,16 +316,26 @@ export default class Story extends Component {
         maxHeight: 40,
         margin: 0,
         padding: 0
+      },
+      p: { fontFamily: 'OpenSansCondensed-Light',
+      },
+      b: { fontFamily: 'OpenSansCondensed-Bold'
+      },
+      menu: {
+        flex: 1,
+        margin: 0,
+        padding: 0,
+        backgroundColor: story.theme.color1,
       }
-    });
+      });
 
     const creditsThemeSheet = StyleSheet.create({
       p: {
-          fontSize: 14,
+          fontSize: 16,
           lineHeight: 20,
           letterSpacing: 0,
-          fontFamily: 'OpenSansCondensed-ligth',
-          color: story.theme.color3
+          fontFamily: 'OpenSansCondensed-Light',
+          color: story.theme.color3,
         },
         b: {
           fontFamily: 'OpenSansCondensed-Bold'},
@@ -341,6 +346,9 @@ export default class Story extends Component {
           backgroundColor: '#D8D8D8',
           padding: 0,
         },
+        strong: {
+          fontFamily: 'OpenSansCondensed-Bold',
+        }
       });
     const sinopsysThemeSheet = StyleSheet.create({
       p: {
@@ -368,33 +376,31 @@ export default class Story extends Component {
       });
     return (
       <>
-      <View style={styles.card} >
+      <View style={themeSheet.card} >
 
-            <View style={themeSheet.sinopsys} >
-              <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
-            </View>
+            {distance && (
+              <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
+            )}
+            <ButtonGroup
+              style={themeSheet.menu}
+              containerStyle={themeSheet.BtnNavContainer}
+              buttons={dlbuttons}
+              buttonStyle={themeSheet.NavButton}
+              onPress={this.updateDlIndex}
+              selectedIndex={dlIndex}
+              selectedButtonStyle={{backgroundColor: 'transparent'}}
+              innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
+              Component={TouchableOpacity}
+              selectedButtonStyle={{backgroundColor: 'transparent'}}
+              />
+              <View style={themeSheet.sinopsys} >
+                <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
+              </View>
 
-            <View style={themeSheet.credits} >
+              <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
               <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
             </View>
-
-
-          {distance && (
-            <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
-          )}
-          <ButtonGroup
-            style={styles.menu}
-            containerStyle={themeSheet.NavContainer}
-            buttons={dlbuttons}
-            buttonStyle={themeSheet.NavButton}
-            onPress={this.updateDlIndex}
-            selectedIndex={dlIndex}
-            selectedButtonStyle={{backgroundColor: 'transparent'}}
-            innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-            Component={TouchableOpacity}
-            selectedButtonStyle={{backgroundColor: 'transparent'}}
-            />
       </View>
       </>
     )
@@ -407,9 +413,6 @@ export default class Story extends Component {
       <TouchableOpacity style={styles.iconLeft} onPress={() => {}}>
         <Icon name="menu" size={36} color="#fff" reverse raised reverseColor="red"/>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.iconRight} onPress={() => {}}>
-        <Icon name="home" size={36} color="#fff" reverse raised reverseColor="red"/>
-      </TouchableOpacity>
     </View>
   </View>
 )
@@ -419,7 +422,7 @@ export default class Story extends Component {
 
       const Title = () => (
         <View>
-          <Text style={{flex: 1, alignSelf: 'stretch', flexGrow: 1, fontSize: 24, letterSpacing: 1, fontFamily: story.theme.font1, color: "#fff", textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2}}>{story.title}</Text>
+          <Text style={{flex: 1, alignSelf: 'stretch', fontSize: 24, letterSpacing: 1, fontFamily: story.theme.font1, color: "#fff", textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2}}>{story.title}</Text>
           <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
@@ -512,17 +515,10 @@ const styles = StyleSheet.create({
   location: {
     flex: 1,
     alignSelf: 'stretch',
-    flexGrow: 1,
     fontFamily: 'ATypewriterForMe',
     fontSize: 11,
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,
-  },
-  menu: {
-    flex: 1,
-    minHeight: 40,
-    margin: 0,
-    padding: 0,
   }
 });
