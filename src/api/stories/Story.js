@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
 import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
+import NavigationView from "./stage/NavigationView";
+import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -46,6 +48,8 @@ export default class Story extends Component {
   constructor(props) {
     super(props);
     this.loadStories = this.props.loadStories;
+    let coordinates = this.props.navigation.getParam('story').stages[0].geometry.coordinates;
+    console.log(coordinates);
     this.state = {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
@@ -63,10 +67,11 @@ export default class Story extends Component {
       lastPosition: null,
       fromLat: null,
       fromLong: null,
-      toLat: null ,
-      toLong: null,
+      toLat: coordinates[1],
+      toLong: coordinates[0],
       distance: null,
     };
+    console.log(this.props.navigation.getParam('story').stages[0]);
     this.updateTransportIndex = this.updateTransportIndex.bind(this);
     this.updateDlIndex = this.updateDlIndex.bind(this);
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
@@ -167,7 +172,7 @@ export default class Story extends Component {
           "properties": {},
             "geometry": {
               "type": "Point",
-              "coordinates": [this.state.fromLat, this.state.fromLong]
+              "coordinates": [this.state.fromLong,this.state.fromLat ]
             }
           };
           let to = {
@@ -175,7 +180,7 @@ export default class Story extends Component {
             "properties": {},
               "geometry": {
                 "type": "Point",
-                "coordinates": [this.state.toLat, this.state.fromLong]
+                "coordinates": [this.state.toLong,this.state.toLat ]
               }
             };
           let units = I18n.t("kilometers","kilometers");
@@ -211,7 +216,17 @@ export default class Story extends Component {
     }
   }
 
-  launchStory = () => this.props.navigation.navigate('ToStage', {'story': this.state.story, 'position': 1, state: this.state })
+  launchNavigation = () => {
+    const {story,fromLat, fromLong, toLat, toLong} = this.state;
+    NativeModules.MapboxNavigation.navigate(
+      fromLat,
+      fromLong,
+      toLat,
+      toLong,
+      // profile,
+      // access_token
+    );
+  }
   deleteStory = async (sid) => {
     try {
       await Alert.alert(
@@ -248,11 +263,11 @@ export default class Story extends Component {
   renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyPlay = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchStory()} />;
+    const storyNavigate = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchNavigation()} />;
     const storyDelete = () => <Icon size={40} name='trash' color='white' onPress={() => this.deleteStory(story.id)} />;
     const storyInstall = () => <Text> Descarga <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} /> </Text>;
     const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
-    const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyPlay }, { element: storyAr} ]: [ { element: storyInstall }];
+    const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyNavigate }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
