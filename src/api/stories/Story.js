@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
-import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider } from 'react-native-elements';
+import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
 import NavigationView from "./stage/NavigationView";
 import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
@@ -13,7 +13,7 @@ import * as RNFS from 'react-native-fs';
 import Reactotron from 'reactotron-react-native';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
-import Icon from "../../utils/Icon";
+import IconSet from "../../utils/Icon";
 import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
 
@@ -23,7 +23,7 @@ const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
-
+registerCustomIconType('booksonwall', IconSet);
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
     if(Math.abs(bytes) < thresh) {
@@ -71,7 +71,6 @@ export default class Story extends Component {
       toLong: coordinates[0],
       distance: null,
     };
-    console.log(this.props.navigation.getParam('story').stages[0]);
     this.updateTransportIndex = this.updateTransportIndex.bind(this);
     this.updateDlIndex = this.updateDlIndex.bind(this);
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
@@ -262,10 +261,10 @@ export default class Story extends Component {
   renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyNavigate = () => (distance) ? <Icon size={40} name='geopoint' color='white' onPress={() => this.launchNavigation()} /> : null;
-    const storyDelete = () => <Icon size={40} name='trash' color='white' onPress={() => this.deleteStory(story.id)} />;
-    const storyInstall = () => <Text> Descarga <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} /> </Text>;
-    const storyAr = () => (distance) ? <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />: null;
+    const storyNavigate = () => (distance) ? <Button type='clear' onPress={() => this.launchNavigation()} icon={{ name: 'geopoint', type: 'booksonwall', size: 40, color: 'white'}} /> : null;
+    const storyDelete = () => <Button type='clear' onPress={() => this.deleteStory(story.id)} icon={{ name: 'trash', type: 'booksonwall', size: 40, color: 'white'}} />;
+  const storyInstall = () => <Button type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 40, color: 'white'}} title='Download'/>;
+const storyAr = () => (distance) ? <Button type='clear' onPress={() => this.launchAR()} icon={{ name: 'play', type: 'booksonwall', size: 40, color: 'white'}} />: null;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyNavigate }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
       title: {
@@ -393,7 +392,7 @@ export default class Story extends Component {
       <View style={themeSheet.card} >
 
             {distance && (
-              <Text> {I18n.t("distance", "You are at {distance} km from the beginning of your story.")}</Text>
+              <Text> {I18n.t("distance", "You are at ")}{distance}{I18n.t(" km from the beginning of your story.")}</Text>
             )}
             <ButtonGroup
               style={themeSheet.menu}
