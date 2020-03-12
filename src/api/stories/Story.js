@@ -185,7 +185,6 @@ export default class Story extends Component {
             };
           let units = I18n.t("kilometers","kilometers");
           let dis = distance(from, to, "kilometers");
-          console.log('from story distance:', dis);
           if (dis) {
             this.setState({distance: dis.toFixed(2)});
           };
@@ -263,10 +262,10 @@ export default class Story extends Component {
   renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyNavigate = () => <Icon size={40} name='geopoint' color='white' onPress={() => this.launchNavigation()} />;
+    const storyNavigate = () => (distance) ? <Icon size={40} name='geopoint' color='white' onPress={() => this.launchNavigation()} /> : null;
     const storyDelete = () => <Icon size={40} name='trash' color='white' onPress={() => this.deleteStory(story.id)} />;
     const storyInstall = () => <Text> Descarga <Icon size={40} name='download' color='white' onPress={() => this.downloadStory(story.id)} /> </Text>;
-    const storyAr = () => <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />;
+    const storyAr = () => (distance) ? <Icon size={40} name='play' color='white' onPress={() => this.launchAR()} />: null;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyNavigate }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
       title: {
