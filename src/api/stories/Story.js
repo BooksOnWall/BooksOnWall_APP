@@ -261,10 +261,10 @@ export default class Story extends Component {
   renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyNavigate = () => (distance) ? <Button type='clear' onPress={() => this.launchNavigation()} icon={{ name: 'geopoint', type: 'booksonwall', size: 40, color: 'white'}} /> : null;
-    const storyDelete = () => <Button type='clear' onPress={() => this.deleteStory(story.id)} icon={{ name: 'trash', type: 'booksonwall', size: 40, color: 'white'}} />;
-  const storyInstall = () => <Button type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 40, color: 'white'}} title='Download'/>;
-const storyAr = () => (distance) ? <Button type='clear' onPress={() => this.launchAR()} icon={{ name: 'play', type: 'booksonwall', size: 40, color: 'white'}} />: null;
+    const storyNavigate = () => (distance) ? <Button rounded={true} type='clear' onPress={() => this.launchNavigation()} icon={{ name: 'geopoint', type: 'booksonwall', size: 40, color: 'white'}} /> : null;
+    const storyDelete = () => <Button rounded={true} raised={true} onPress={() => this.deleteStory(story.id)} icon={{ name: 'trash', type: 'booksonwall', size: 40, color: 'white'}} />;
+    const storyInstall = () => <Button rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 40, color: 'white'}} title='Download'/>;
+    const storyAr = () => (distance) ? <Button rounded={true} type='clear' onPress={() => this.launchAR()} icon={{ name: 'play', type: 'booksonwall', size: 40, color: 'white'}} />: null;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyNavigate }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
       title: {
@@ -424,7 +424,7 @@ const storyAr = () => (distance) ? <Button type='clear' onPress={() => this.laun
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Icon name="menu" size={36} color="#fff" reverse raised reverseColor="red"/>
+        <Button onPress={() => this.props.navigation.goBack()} type='clear' rounded raised underlayColor='#FFFFFF' icon={{name:'menu', size:25, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
@@ -434,8 +434,14 @@ const storyAr = () => (distance) ? <Button type='clear' onPress={() => this.laun
       const {theme, themeSheet, story} = this.state;
 
       const Title = () => (
-        <View>
-          <Text style={{flex: 1, alignSelf: 'stretch', fontSize: 24, letterSpacing: 1, fontFamily: story.theme.font1, color: "#fff", textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2}}>{story.title}</Text>
+        <View style={styles.titleStyle}>
+          <Text style={{  fontSize: 24,
+            letterSpacing: 1,
+            color: "#fff",
+            textShadowColor: 'rgba(0, 0, 0, 0.85)',
+            textShadowOffset: {width: 1, height: 1},
+            textShadowRadius: 2,
+            fontFamily: story.theme.font1}} >{story.title}</Text>
           <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
@@ -500,25 +506,15 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     borderWidth: 0
   },
-  navContainer: {
-    height: HEADER_HEIGHT,
-    marginHorizontal: 10,
-  },
-  statusBar: {
-    height: STATUS_BAR_HEIGHT,
-    backgroundColor: 'transparent',
-  },
-  navBar: {
-    height: NAV_BAR_HEIGHT,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-  },
   titleStyle: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection:'column',
+    alignItems:'stretch',
+    alignContent: 'stretch',
+    justifyContent:'center'
+  },
+  titleStyleItemTitle: {
+
   },
   card: {
     padding: 0,
@@ -526,8 +522,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   location: {
-    flex: 1,
-    alignSelf: 'stretch',
     fontFamily: 'ATypewriterForMe',
     fontSize: 11,
     textAlign: 'center',
