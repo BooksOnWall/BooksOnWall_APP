@@ -30,7 +30,6 @@ import Stories from './src/api/stories/Stories';
 import Story from './src/api/stories/Story';
 import Stages from './src/api/stories/stages/Stages';
 import Stage from './src/api/stories/stage/Stage';
-import ToStage from './src/api/stories/stage/toStage';
 import ToPath from './src/api/stories/stage/toPath';
 import SplashScreen from 'react-native-splash-screen';
 
@@ -59,7 +58,6 @@ const MainNavigator = createStackNavigator({
   Story: { screen: Story},
   Stages: { screen: Stages},
   Stage: { screen: Stage},
-  ToStage: { screen: ToStage},
   ToAr: { screen: ToAr},
   ToPath: { screen: ToPath}
 },
