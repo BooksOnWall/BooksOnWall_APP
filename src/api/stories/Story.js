@@ -263,7 +263,7 @@ export default class Story extends Component {
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const storyNavigate = () => (distance) ? <Button rounded={true} type='clear' onPress={() => this.launchNavigation()} icon={{ name: 'geopoint', type: 'booksonwall', size: 40, color: 'white'}} /> : null;
     const storyDelete = () => <Button rounded={true} raised={true} onPress={() => this.deleteStory(story.id)} icon={{ name: 'trash', type: 'booksonwall', size: 40, color: 'white'}} />;
-    const storyInstall = () => <Button rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 40, color: 'white'}} title='Download'/>;
+    const storyInstall = () => <Button rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 30, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/>;
     const storyAr = () => (distance) ? <Button rounded={true} type='clear' onPress={() => this.launchAR()} icon={{ name: 'play', type: 'booksonwall', size: 40, color: 'white'}} />: null;
     const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyNavigate }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
@@ -432,7 +432,7 @@ export default class Story extends Component {
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Button onPress={() => this.props.navigation.goBack()} type='clear' rounded raised underlayColor='#FFFFFF' icon={{name:'menu', size:25, color:'#fff', type:'booksonwall'}} />
+        <Button onPress={() => this.props.navigation.goBack()} type='clear' rounded raised underlayColor='#FFFFFF' icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
@@ -443,7 +443,8 @@ export default class Story extends Component {
 
       const Title = () => (
         <View style={styles.titleStyle}>
-          <Text style={{  fontSize: 24,
+          <Text style={{
+            fontSize: 26,
             letterSpacing: 1,
             color: "#fff",
             textShadowColor: 'rgba(0, 0, 0, 0.85)',

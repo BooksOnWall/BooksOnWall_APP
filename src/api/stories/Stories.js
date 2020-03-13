@@ -269,8 +269,8 @@ export default class Stories extends Component {
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
             rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button style={styles.reload} type="clear" loading={this.state.loading} onPress={() => this.storiesUpdate()} icon={
               <Icon
-                name="reload-circle"
-                size={38}
+                name="reload"
+                size={44}
                 color="#ece2d6"
               />
             }></Button></TouchableOpacity>}
@@ -336,6 +336,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   reload: {
-    color: '#9b948e',paddingTop: 12,paddingBottom: 10,  paddingHorizontal: 7
+    color: '#9b948e', borderRadius: 30
   }
 });
