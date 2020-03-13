@@ -91,6 +91,9 @@
 		F9303517AE39488287465B69 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 517E7A800768460BBCE4FDB5 /* libKCKeepAwake.a */; };
 		FC57351840164AD0A9D5A39D /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F0C963739654C1184523380 /* MaterialCommunityIcons.ttf */; };
 		49DC168FB7024479BCBDA7BB /* booksonwall.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B6C4B95B5B9B42F7998F4FAC /* booksonwall.ttf */; };
+		CB286A50D9C44C0A9EF02399 /* btn_map_point.png in Resources */ = {isa = PBXBuildFile; fileRef = 110F82A0FF6C47FD86B33D8B /* btn_map_point.png */; };
+		618547D9A057445185233B93 /* btn_next.png in Resources */ = {isa = PBXBuildFile; fileRef = D547597EF8A449E8B1EF22F6 /* btn_next.png */; };
+		E111966A738F4A77AC90122D /* btn_reload.png in Resources */ = {isa = PBXBuildFile; fileRef = 961E1EFBB37443E6B903FD53 /* btn_reload.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -627,6 +630,9 @@
 		FB49657073474C0EBDA4A776 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		FC8E40C1C36F430892E86FC8 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; };
 		B6C4B95B5B9B42F7998F4FAC /* booksonwall.ttf */ = {isa = PBXFileReference; name = "booksonwall.ttf"; path = "../assets/nav/booksonwall.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		110F82A0FF6C47FD86B33D8B /* btn_map_point.png */ = {isa = PBXFileReference; name = "btn_map_point.png"; path = "../assets/nav/btn_map_point.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D547597EF8A449E8B1EF22F6 /* btn_next.png */ = {isa = PBXFileReference; name = "btn_next.png"; path = "../assets/nav/btn_next.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		961E1EFBB37443E6B903FD53 /* btn_reload.png */ = {isa = PBXFileReference; name = "btn_reload.png"; path = "../assets/nav/btn_reload.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -955,6 +961,9 @@
 				4241AA24E0D14D15B1C439DA /* BadScript-Regular.otf */,
 				667FBC0F19564D3C9FF5D299 /* TrashHand.otf */,
 				B6C4B95B5B9B42F7998F4FAC /* booksonwall.ttf */,
+				110F82A0FF6C47FD86B33D8B /* btn_map_point.png */,
+				D547597EF8A449E8B1EF22F6 /* btn_next.png */,
+				961E1EFBB37443E6B903FD53 /* btn_reload.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1834,6 +1843,9 @@
 				449D553997C44C86A6311CA3 /* BadScript-Regular.otf in Resources */,
 				0421F243431C46B9BDE8DFA0 /* TrashHand.otf in Resources */,
 				49DC168FB7024479BCBDA7BB /* booksonwall.ttf in Resources */,
+				CB286A50D9C44C0A9EF02399 /* btn_map_point.png in Resources */,
+				618547D9A057445185233B93 /* btn_next.png in Resources */,
+				E111966A738F4A77AC90122D /* btn_reload.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
