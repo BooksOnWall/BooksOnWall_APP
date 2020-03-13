@@ -299,9 +299,9 @@ export default class Story extends Component {
         color: story.theme.color3,
       },
       NavButton: {
-          backgroundColor: story.theme.color1,
-          borderWidth: 0,
-          margin: 0,
+        backgroundColor: story.theme.color1,
+        borderWidth: 0,
+        margin: 0,
       },
       BtnNavContainer: {
         flex: 1,
@@ -312,12 +312,20 @@ export default class Story extends Component {
         backgroundColor: story.theme.color1,
         height: 50
       },
-      menssage: {
+      distance: {
+        color: '#FFF',
+        fontWeight: 'bold',
+        fontSize: 22,
+        textAlign: 'center',
+        paddingTop: 5,
+        fontFamily: 'OpenSansCondensed-Light'
+      },
+      message: {
         fontSize: 12,
         color: '#000',
         textAlign: 'center',
         paddingTop: 5,
-        fontFamily: 'OpenSansCondensed-Light',
+        fontFamily: 'OpenSansCondensed-Light'
       },
       transport: {
         flex: 1,
@@ -392,7 +400,7 @@ export default class Story extends Component {
       <View style={themeSheet.card} >
 
             {distance && (
-              <Text> {I18n.t("distance", "You are at ")}{distance}{I18n.t(" km from the beginning of your story.")}</Text>
+              <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
             <ButtonGroup
               style={themeSheet.menu}

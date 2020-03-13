@@ -8,7 +8,8 @@ export default {
   Enjoy: "Amusez vous !",
   Press: "Appuyer sur terminé pour commencer",
   Bip: "ah!, n'oubliez pas, attention à la circulation! bip-bip!",
-  kilometers: "kilometres",
+  Better_headphones: "Encore meilleur avec un casque",
+  Kilometers: "km",
   Stories: "Contes",
   Story_downloaded: "Conte téléchargé par BooksOnWall.",
   ACCESS_FINE_LOCATION: "BooksOnWall a besoin de la permission ACCESS_FINE_LOCATION",
@@ -18,9 +19,10 @@ export default {
   Later: "Plus tard",
   Cancel: "Annuler",
   Yes_destroy: "Oui efface le!",
+  Distance_to_beginning: "Début du conte dans ",
   Auto:"Auto",
   Pedestrian: "Pieton",
   Bicycle: "Bicyclette",
   Transportation: "Choisissez votre mode de transport et appuyez sur Commencer.",
-  credits: "Crédits" 
+  credits: "Crédits"
 };

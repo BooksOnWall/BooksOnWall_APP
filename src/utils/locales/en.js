@@ -9,7 +9,7 @@ export default {
   Press: "Choose the story next to you and begin the adventure",
   Bip: "oh! please pay attention to the trafic, beep beep!",
   Better_headphones: "Better whit headphone",
-  kilometers: "kilometers",
+  Kilometers: "kilometers",
   Stories: "Stories",
   Story_downloaded: "Story downloaded by BooksOnWall.",
   ACCESS_FINE_LOCATION: "Mapbox navigation needs ACCESS_FINE_LOCATION",
@@ -19,9 +19,10 @@ export default {
   Later: "Ask me later",
   Cancel: "Cancel",
   Yes_destroy: "Yes destroy it!",
+  Distance_to_beginning: "Distance to the beginning of the story ",
   Auto:"Auto",
   Pedestrian: "Pedestrian",
   Bicycle: "Bicycle",
   Transportation: "Please choose your mode of transportation and press Start Navigation.",
-  credits: "Credits" 
+  credits: "Credits"
 };
