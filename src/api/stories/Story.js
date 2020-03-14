@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
-import { Header, Card, ListItem, ButtonGroup, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
+import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
 import NavigationView from "./stage/NavigationView";
 import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
@@ -16,14 +16,15 @@ import I18n from "../../utils/i18n";
 import IconSet from "../../utils/Icon";
 import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
-
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 registerCustomIconType('booksonwall', IconSet);
+
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
     if(Math.abs(bytes) < thresh) {
@@ -39,7 +40,6 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
-
 export default class Story extends Component {
   static navigationOptions = {
     title: 'Story',
@@ -347,7 +347,9 @@ export default class Story extends Component {
         margin: 0,
         padding: 0,
         backgroundColor: story.theme.color1,
-      }
+      },
+      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 4, paddingVertical: 6 },
+      button: { marginHorizontal: 1, backgroundColor: 'rgba(0, 0, 0, 0.10)'}
       });
 
     const creditsThemeSheet = StyleSheet.create({
@@ -395,6 +397,21 @@ export default class Story extends Component {
           fontFamily: story.theme.font2
         }
       });
+      const ButtonGroup = () => {
+        return (
+          <View style={themeSheet.nav}>
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'trash', type:'booksonwall', size: 40, color: 'white'}}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
+            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 40, color: 'white'}}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 40, color: 'white'}}/>
+          </TouchableOpacity>
+          </View>
+        );
+      };
     return (
       <>
       <View style={themeSheet.card} >
@@ -402,18 +419,7 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            <ButtonGroup
-              style={themeSheet.menu}
-              containerStyle={themeSheet.BtnNavContainer}
-              buttons={dlbuttons}
-              buttonStyle={themeSheet.NavButton}
-              onPress={this.updateDlIndex}
-              selectedIndex={dlIndex}
-              selectedButtonStyle={{backgroundColor: 'transparent'}}
-              innerBorderStyle={{color: 'rgba(0, 0, 0, 0.3)'}}
-              Component={TouchableOpacity}
-              selectedButtonStyle={{backgroundColor: 'transparent'}}
-              />
+              <ButtonGroup />
               <View style={themeSheet.sinopsys} >
                 <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
               </View>
