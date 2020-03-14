@@ -23,6 +23,7 @@ import { Overlay } from 'react-native-elements';
 import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME  } from 'react-native-dotenv';
 import KeepAwake from 'react-native-keep-awake';
 import Toast from 'react-native-simple-toast';
+import I18n from "./src/utils/i18n";
 
 import ToAr from './src/api/stories/stage/toAr';
 import Intro from './src/api/intro/intro';
@@ -118,7 +119,7 @@ export default class App extends Component {
       .then( (exists) => {
           if (!exists) {
             this.setState({FistRun: true})
-            Toast.showWithGravity('Please wait while we are installing your application !', Toast.LONG, Toast.TOP);
+            Toast.showWithGravity(I18n.t("WAIT_INSTALL","Please wait while we are installing your application !"), Toast.LONG, Toast.TOP);
             return this.loadStories();
           } else {
             // load stories from Stories.json file
@@ -174,7 +175,7 @@ export default class App extends Component {
     NetInfo.fetch().then(state => {
       // console.warn("Connection type", state.type);
       // console.warn("Is connected?", state.isConnected);
-      !state.isConnected ? Toast.showWithGravity('Error: No internet connection!', Toast.LONG, Toast.TOP) : '';
+      !state.isConnected ? Toast.showWithGravity(I18n.t("ERROR_NO_INTERNET","Error: No internet connection!"), Toast.LONG, Toast.TOP) : '';
     });
   }
   checkFileSystem = async () => {
@@ -206,7 +207,7 @@ export default class App extends Component {
               AppDir = dirs.DocumentDir +'/'+ this.state.appName;
           }
       });
-      if (AppDir === '')  Toast.showWithGravity('Error: No access to your filesystem to install the application!', Toast.LONG, Toast.TOP);
+      if (AppDir === '')  Toast.showWithGravity(I18n.t("ERROR_ACCESS_FILESYSTEM","Error: No access to your filesystem to install the application!"), Toast.LONG, Toast.TOP);
 
       // check if directory to store .zip exist
       await RNFS.exists(AppDir)
@@ -283,10 +284,10 @@ export default class App extends Component {
       })
       .then(data => {
           if(data) {
-            Toast.showWithGravity('Receiving data', Toast.SHORT, Toast.TOP);
+            Toast.showWithGravity(I18n.t("Receiving_data", "Receiving data"), Toast.SHORT, Toast.TOP);
             return this.storeStories(data.stories);
           } else {
-            Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
+            Toast.showWithGravity(I18n.t("NO_DATA", "No Data received from the server"), Toast.LONG, Toast.TOP);
           }
       })
       .catch((error) => {
@@ -308,7 +309,7 @@ export default class App extends Component {
           if (exists === false) {
               RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
-                Toast.showWithGravity('Creating banners ...', Toast.SHORT, Toast.TOP);
+                Toast.showWithGravity(I18n.t("Creating_banners","Creating banners ..."), Toast.SHORT, Toast.TOP);
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
@@ -348,7 +349,7 @@ export default class App extends Component {
       // store stories list in Stories.json file
       await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
-        Toast.showWithGravity('Installation complete', Toast.SHORT, Toast.TOP);
+        Toast.showWithGravity(I18n.t("Installation_complete","Installation complete"), Toast.SHORT, Toast.TOP);
       })
       .catch((err) => {
         console.log(err.message);
@@ -373,7 +374,7 @@ export default class App extends Component {
               width="auto"
               height="auto"
             >
-              <Text>Hello please wait, we are installing the application</Text>
+              <Text>{I18n.t("Hello_please_wait", "Hello please wait, we are installing the application")}</Text>
 
             </Overlay>
             <ActivityIndicator size="large" color="#0000ff" />

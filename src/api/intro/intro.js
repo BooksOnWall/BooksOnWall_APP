@@ -1,10 +1,12 @@
 import React , { Component } from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { ImageBackground, TouchableOpacity,Image, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
+import { Icon, registerCustomIconType } from 'react-native-elements';
 import I18n from "../../utils/i18n";
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { Images } from '../../../assets/intro';
-import Icon from '../../utils/Icon';
+import IconSet from '../../utils/Icon';
+registerCustomIconType('booksonwall', IconSet);
 
 const slides = [
   {
@@ -76,9 +78,20 @@ const styles = StyleSheet.create({
     marginTop: 70,
     paddingHorizontal: 30,
   },
+  skip: {
+    color: '#FFF'
+  },
   icon: {
     textAlign: 'center',
     backgroundColor: 'transparent',
+  },
+  buttonCircle: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'rgba(0, 0, 0, .2)',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
@@ -96,6 +109,7 @@ export default class Intro extends Component {
          <Icon
             style={styles.icon}
             name={item.icon}
+            type="booksonwall"
             size={60}
             color="white"
             />
@@ -105,12 +119,52 @@ export default class Intro extends Component {
       </View>
     );
   }
+  renderNextButton= () => {
+    return (
+      <View style={styles.buttonCircle}>
+        <Icon
+          name="md-arrow-round-forward"
+          color="rgba(255, 255, 255, .9)"
+          type="ionicon"
+          size={24}
+          style={{ backgroundColor: 'transparent' }}
+        />
+      </View>
+    );
+  }
+  renderDoneButton = () => {
+    return (
+      <View style={styles.buttonCircle}>
+        <Icon
+          name="md-checkmark"
+          type="ionicon"
+          color="rgba(255, 255, 255, .9)"
+          size={24}
+          style={{ backgroundColor: 'transparent' }}
+        />
+      </View>
+    );
+  }
+  renderSkipButton = () => {
+    return (
+      <View style={styles.buttonCircle}>
+        <Text style={styles.skip}>{I18n.t("Skip","Skip")}</Text>
+      </View>
+    );
+  }
   onDone = () => this.props.navigation.navigate('Stories',{params: {loadStories: this.props.loadStories, storeStories: this.props.storeStories}});
 
   render() {
 
       return (
-        <AppIntroSlider renderItem={this.renderItem} slides={slides} onDone={this.onDone} showSkipButton/>
+        <AppIntroSlider
+          renderItem={this.renderItem}
+          slides={slides}
+          renderDoneButton={this.renderDoneButton}
+          renderNextButton={this.renderNextButton}
+          renderSkipButton={this.renderSkipButton}
+          onDone={this.onDone}
+          showSkipButton/>
       );
     }
 
