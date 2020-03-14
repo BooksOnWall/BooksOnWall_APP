@@ -148,13 +148,13 @@ export default class Stories extends Component {
     NetInfo.fetch().then(state => {
       // console.warn("Connection type", state.type);
       // console.warn("Is connected?", state.isConnected);
-      !state.isConnected ? Toast.showWithGravity('Error: No internet connection!', Toast.LONG, Toast.TOP) : '';
+      !state.isConnected ? Toast.showWithGravity(I18n.t("ERROR_NO_INTERNET","Error: No internet connection!"), Toast.LONG, Toast.TOP) : '';
     });
   }
   loadStories = async () => {
     try {
       await this.networkCheck();
-      Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
+      Toast.showWithGravity(I18n.t("Loading","Loading"), Toast.SHORT, Toast.TOP);
       await fetch(this.state.storiesURL, {
         method: 'get',
         headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
@@ -167,7 +167,7 @@ export default class Stories extends Component {
           if(data) {
             return this.storeStories(data.stories);
           } else {
-            Toast.showWithGravity('No Data received from the server', Toast.LONG, Toast.TOP);
+            Toast.showWithGravity(I18n.t("NO_DATA","No Data received from the server"), Toast.LONG, Toast.TOP);
           }
       })
       .catch((error) => {
@@ -188,7 +188,7 @@ export default class Stories extends Component {
           if (exists === false) {
               RNFetchBlob.fs.mkdir(bannerPath).then((result) => {
                 // banner folder created successfully
-                Toast.showWithGravity('Creating banners', Toast.SHORT, Toast.TOP);
+                Toast.showWithGravity(I18n.t("Creating_banners","Creating banners ..."), Toast.SHORT, Toast.TOP);
               }).catch((err) => {
                 console.log('mkdir err', err)
               });
@@ -228,7 +228,7 @@ export default class Stories extends Component {
       // store stories list in Stories.json file
       await RNFS.writeFile(this.state.appDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
-        Toast.showWithGravity('Update complete', Toast.SHORT, Toast.TOP);
+        Toast.showWithGravity(I18n.t("Update_complete","Update complete"), Toast.SHORT, Toast.TOP);
       })
       .catch((err) => {
         console.log(err.message);

@@ -20,7 +20,7 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
-const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 22) : 0;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 registerCustomIconType('booksonwall', IconSet);
@@ -49,7 +49,6 @@ export default class Story extends Component {
     super(props);
     this.loadStories = this.props.loadStories;
     let coordinates = this.props.navigation.getParam('story').stages[0].geometry.coordinates;
-    console.log(coordinates);
     this.state = {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
@@ -250,7 +249,7 @@ export default class Story extends Component {
       let sid = this.state.story.id;
       let storyPath = this.state.appDir+'/stories/'+sid;
       await RNFetchBlob.fs.unlink(storyPath).then(success => {
-        Toast.showWithGravity(I18n.t("Story deleted !"), Toast.LONG, Toast.TOP);
+        Toast.showWithGravity(I18n.t("Story_deleted","Story deleted !"), Toast.LONG, Toast.TOP);
         return this.props.navigation.goBack();
       });
     } catch(e) {

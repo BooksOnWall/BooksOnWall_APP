@@ -21,6 +21,8 @@ export default {
   NO_DATA: "Erreur: Pas de données reçues du serveur",
   Receiving_data: "Reception de données",
   Creating_banners: "Creation des bannières ...",
+  Update_complete: "Mise à jour terminée",
+  Loading: "Chargement",
   Installation_complete: "Installation complète",
   Hello_please_wait: "Salut , Merci de patienter pendant que l'application s'installe",
   Delete_story: "Effacer le conte",

@@ -21,6 +21,8 @@ export default {
   NO_DATA: "Nenhum dado recebido do servidor",
   Receiving_data: "Recebendo dados",
   Creating_banners: "Criando anúncios ...",
+  Update_complete: "Update complete",
+  Loading: "Loading",
   Installation_complete: "Instalação completa",
   Hello_please_wait: "Olá por favor espere estamos a instalar a aplicação",
   Delete_story: "Apagar estória",
