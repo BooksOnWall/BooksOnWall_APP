@@ -20,7 +20,7 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
-const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 22) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 registerCustomIconType('booksonwall', IconSet);
@@ -261,11 +261,6 @@ export default class Story extends Component {
   renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    const storyNavigate = () => (distance) ? <Button rounded={true} type='clear' onPress={() => this.launchNavigation()} icon={{ name: 'geopoint', type: 'booksonwall', size: 40, color: 'white'}} /> : null;
-    const storyDelete = () => <Button rounded={true} raised={true} onPress={() => this.deleteStory(story.id)} icon={{ name: 'trash', type: 'booksonwall', size: 40, color: 'white'}} />;
-    const storyInstall = () => <Button rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 30, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/>;
-    const storyAr = () => (distance) ? <Button rounded={true} type='clear' onPress={() => this.launchAR()} icon={{ name: 'play', type: 'booksonwall', size: 40, color: 'white'}} />: null;
-    const dlbuttons = (story.isInstalled) ? [ { element: storyDelete }, { element: storyNavigate }, { element: storyAr} ]: [ { element: storyInstall }];
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
@@ -315,7 +310,7 @@ export default class Story extends Component {
       distance: {
         color: '#FFF',
         fontWeight: 'bold',
-        fontSize: 22,
+        fontSize: 16,
         textAlign: 'center',
         paddingTop: 5,
         fontFamily: 'OpenSansCondensed-Light'
@@ -400,14 +395,17 @@ export default class Story extends Component {
       const ButtonGroup = () => {
         return (
           <View style={themeSheet.nav}>
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'trash', type:'booksonwall', size: 40, color: 'white'}}/>
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 40, color: 'white'}}/>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 40, color: 'white'}}/>
+          {distance && (
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchNavigation()}>
+            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 40, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 40, color: 'white'}}/>
+          )}
+
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchAR()} >
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 40, color: 'white'}} onPress={() => this.launchAR()}  />
           </TouchableOpacity>
           </View>
         );
@@ -419,7 +417,8 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-              <ButtonGroup />
+            {(story.isInstalled) ? <ButtonGroup /> :  <Button rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 30, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/> }
+
               <View style={themeSheet.sinopsys} >
                 <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
               </View>
@@ -477,10 +476,6 @@ export default class Story extends Component {
           containerStyle={styles.container}
           contentContainerStyle={styles.contentContainer}
           innerContainerStyle={styles.container}
-          scrollViewProps={{
-            onScrollBeginDrag: () => console.log('onScrollBeginDrag'),
-            onScrollEndDrag: () => console.log('onScrollEndDrag'),
-          }}
       />
 
         </SafeAreaView>
