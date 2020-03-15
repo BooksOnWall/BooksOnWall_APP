@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		004155131E6144BCB018D146 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8E40C1C36F430892E86FC8 /* libRNGestureHandler-tvOS.a */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -94,6 +95,10 @@
 		CB286A50D9C44C0A9EF02399 /* btn_map_point.png in Resources */ = {isa = PBXBuildFile; fileRef = 110F82A0FF6C47FD86B33D8B /* btn_map_point.png */; };
 		618547D9A057445185233B93 /* btn_next.png in Resources */ = {isa = PBXBuildFile; fileRef = D547597EF8A449E8B1EF22F6 /* btn_next.png */; };
 		E111966A738F4A77AC90122D /* btn_reload.png in Resources */ = {isa = PBXBuildFile; fileRef = 961E1EFBB37443E6B903FD53 /* btn_reload.png */; };
+		BFE16EB755E0483CBE2A5CFC /* libRNZipArchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94720124F4914097B664F7C6 /* libRNZipArchive.a */; };
+		9F11A12C667E45E3B8A0BF1B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 46DA51ACDD84468084647D60 /* libz.tbd */; };
+		F6FC3B72248640D399E1FC8B /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F54464E26CD743DB8C1A3642 /* libiconv.tbd */; };
+		6E375D0D5058405A8B840391 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E2218BE5D434D2B97E24B5D /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -633,6 +638,11 @@
 		110F82A0FF6C47FD86B33D8B /* btn_map_point.png */ = {isa = PBXFileReference; name = "btn_map_point.png"; path = "../assets/nav/btn_map_point.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D547597EF8A449E8B1EF22F6 /* btn_next.png */ = {isa = PBXFileReference; name = "btn_next.png"; path = "../assets/nav/btn_next.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		961E1EFBB37443E6B903FD53 /* btn_reload.png */ = {isa = PBXFileReference; name = "btn_reload.png"; path = "../assets/nav/btn_reload.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		831AEFD246F4478AA4F04E0F /* RNZipArchive.xcodeproj */ = {isa = PBXFileReference; name = "RNZipArchive.xcodeproj"; path = "../node_modules/react-native-zip-archive/ios/RNZipArchive.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		94720124F4914097B664F7C6 /* libRNZipArchive.a */ = {isa = PBXFileReference; name = "libRNZipArchive.a"; path = "libRNZipArchive.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		46DA51ACDD84468084647D60 /* libz.tbd */ = {isa = PBXFileReference; name = "libz.tbd"; path = "usr/lib/libz.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		F54464E26CD743DB8C1A3642 /* libiconv.tbd */ = {isa = PBXFileReference; name = "libiconv.tbd"; path = "usr/lib/libiconv.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		8E2218BE5D434D2B97E24B5D /* Security.framework */ = {isa = PBXFileReference; name = "Security.framework"; path = "System/Library/Frameworks/Security.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -677,6 +687,10 @@
 				4BFA9DD58B53490F9903B154 /* libRNCNetInfo.a in Frameworks */,
 				F9303517AE39488287465B69 /* libKCKeepAwake.a in Frameworks */,
 				2DD509D6716D496D9178BB4E /* libLRDRCTSimpleToast.a in Frameworks */,
+				BFE16EB755E0483CBE2A5CFC /* libRNZipArchive.a in Frameworks */,
+				9F11A12C667E45E3B8A0BF1B /* libz.tbd in Frameworks */,
+				F6FC3B72248640D399E1FC8B /* libiconv.tbd in Frameworks */,
+				6E375D0D5058405A8B840391 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,6 +849,9 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
+				46DA51ACDD84468084647D60 /* libz.tbd */,
+				F54464E26CD743DB8C1A3642 /* libiconv.tbd */,
+				8E2218BE5D434D2B97E24B5D /* Security.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -888,6 +905,7 @@
 				D4A1C2F017004D72991829B6 /* RNCNetInfo.xcodeproj */,
 				61209ABC9309497A84B87144 /* KCKeepAwake.xcodeproj */,
 				1ABAACA574994D808C63B88D /* LRDRCTSimpleToast.xcodeproj */,
+				831AEFD246F4478AA4F04E0F /* RNZipArchive.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1985,12 +2003,14 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWallTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2046,12 +2066,14 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWallTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2108,6 +2130,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2144,6 +2167,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2187,11 +2211,13 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2256,11 +2282,13 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2324,11 +2352,13 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2392,11 +2422,13 @@
 					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
+					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
