@@ -59,7 +59,7 @@ ListStories = (props) => {
  });
 
   return (
-    <TouchableOpacity onPress={() => props.navigate('Story', {story: story})}>
+    <TouchableOpacity onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}>
       <View >
       {
         stories.map((story, i) => (
@@ -73,7 +73,7 @@ ListStories = (props) => {
                 titleStyle={{ color: 'white', fontFamily: story.theme.font1, fontSize: 26, textAlign: 'center', letterSpacing: 1, margin: 0, paddingBottom:0, paddingLeft: 35, textShadowColor: 'rgba(0, 0, 0, 0.8)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2}}
                 subtitle={story.city+' • '+story.state}
                 subtitleStyle={{ color: 'white', fontFamily: "ATypewriterForMe", fontSize: 14, textAlign: 'center', letterSpacing: 0, margin: 0, paddingLeft:35, textShadowColor: 'rgba(0, 0, 0, 0.8)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1 }}
-                onPress={() => props.navigate('Story', {story: story})}
+                onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}
                 bottomDivider
                 chevron
               />
@@ -278,7 +278,7 @@ export default class Stories extends Component {
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
           <ScrollView refreshControl={<RefreshControl progressBackgroundColor={'#8C1B8'} progressViewOffset={25} refreshing={this.state.reloadLoading} onRefresh={this.storiesUpdate} /> } style={styles.scrollView} onScrollToTop={() => this.storiesUpdate()}>
             <View style={styles.wrapList} >
-              <ListStories loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
+              <ListStories storiesUpdate={this.storiesUpdate} loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
               </View>
           </ScrollView>
           </Card>
