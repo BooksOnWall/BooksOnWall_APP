@@ -458,7 +458,7 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            {(story.isInstalled) ? <ButtonGroup /> :  <Button loading={this.state.dlLoading} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 30, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/> }
+            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 6}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 40, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
 
               <View style={themeSheet.sinopsys} >
                 <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
