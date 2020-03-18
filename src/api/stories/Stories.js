@@ -267,13 +267,9 @@ export default class Stories extends Component {
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
             centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
-            rightComponent={<TouchableOpacity onPress={() => this.storiesUpdate()}><Button style={styles.reload} type="clear" loading={this.state.loading} onPress={() => this.storiesUpdate()} icon={
-              <Icon
-                name="reload"
-                size={44}
-                color="#ece2d6"
-              />
-            }></Button></TouchableOpacity>}
+            rightComponent={<TouchableOpacity style={styles.reload}  onPress={() => this.storiesUpdate()}>
+            <Button   type='clear' underlayColor='#FFFFFF' loading={this.state.loading} onPress={() => this.storiesUpdate()} iconContainerStyle={{ marginLeft: -7, marginTop: -5}} icon={{name:'reload', size:42, color:'#fff', type:'booksonwall'}} ></Button>
+            </TouchableOpacity>}
             />
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
           <ScrollView refreshControl={<RefreshControl progressBackgroundColor={'#8C1B8'} progressViewOffset={25} refreshing={this.state.reloadLoading} onRefresh={this.storiesUpdate} /> } style={styles.scrollView} onScrollToTop={() => this.storiesUpdate()}>
@@ -336,6 +332,12 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   reload: {
-    color: '#9b948e', borderRadius: 30
+    width: 44,
+    height: 44,
+    backgroundColor: 'rgba(0, 0, 0, .12)',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0
   }
 });

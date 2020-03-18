@@ -476,7 +476,7 @@ export default class Story extends Component {
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
+        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: -4}} icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
@@ -577,8 +577,8 @@ const styles = StyleSheet.create({
   iconLeft: {
     width: 45,
     height: 45,
-    backgroundColor: 'rgba(0, 0, 0, .2)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, .12)',
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 0
