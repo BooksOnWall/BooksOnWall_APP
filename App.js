@@ -11,6 +11,7 @@ import { StyleSheet, Text, ActivityIndicator, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { fromRight, zoomIn, zoomOut } from 'react-navigation-transitions'
+import { isTablet, isLandscape } from 'react-native-device-info';
 
 import * as RNLocalize from "react-native-localize";
 import RNFetchBlob from 'rn-fetch-blob';
@@ -27,6 +28,7 @@ import I18n from "./src/utils/i18n";
 import ToAr from './src/api/stories/stage/toAr';
 import Intro from './src/api/intro/intro';
 import Stories from './src/api/stories/Stories';
+import TabletLayout from './src/api/stories/TabletLayout';
 import Story from './src/api/stories/Story';
 import Stages from './src/api/stories/stages/Stages';
 import Stage from './src/api/stories/stage/Stage';
@@ -55,6 +57,7 @@ const cardStyleInterpolator = ({ current, next, index, closing, layouts }) => {
 const MainNavigator = createStackNavigator({
   Intro: { screen: Intro},
   Stories: { screen: Stories},
+  TabletLayout: {screen: TabletLayout},
   Story: { screen: Story},
   Stages: { screen: Stages},
   Stage: { screen: Stage},
@@ -89,6 +92,8 @@ export default class App extends Component {
       AppDir: '',
       FirstRun: false,
       stories: [],
+      isTablet: isTablet(),
+      isLandscape: isLandscape(),
       storiesURL: SERVER_URL + '/stories',
       loadStories: this.loadStories,
       storeStories: this.storeStories,
