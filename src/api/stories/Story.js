@@ -387,7 +387,6 @@ export default class Story extends Component {
       nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 4, paddingVertical: 6 },
       button: { marginHorizontal: 1, backgroundColor: 'rgba(0, 0, 0, 0.10)'}
       });
-
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 16,
@@ -471,14 +470,13 @@ export default class Story extends Component {
       </View>
       </>
     )
-
   }
   renderNavBar = () => (
   <View style={styles.navContainer}>
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Button onPress={() => this.props.navigation.goBack()} type='clear' rounded raised underlayColor='#FFFFFF' icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
+        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
@@ -575,5 +573,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,
+  },
+  iconLeft: {
+    width: 45,
+    height: 45,
+    backgroundColor: 'rgba(0, 0, 0, .2)',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0
   }
 });
