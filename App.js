@@ -7,12 +7,11 @@ if(__DEV__) {
 }
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
-import { TouchableOpacity, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
+import { StyleSheet, Text, ActivityIndicator, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { fromRight, zoomIn, zoomOut } from 'react-navigation-transitions'
 
-import Icon from 'react-native-vector-icons/Ionicons';
 import * as RNLocalize from "react-native-localize";
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
