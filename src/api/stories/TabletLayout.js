@@ -44,7 +44,6 @@ export default class TabletLayout extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevState.story !== this.state.story) {
-      console.log('story state has changed.');
       this.setState({refreshing: true});
     }
   }
