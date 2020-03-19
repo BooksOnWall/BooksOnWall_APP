@@ -1,4 +1,4 @@
-import React, {Component, useState, useCallback} from 'react';
+import React, {Component, useState, useEffect, useCallback} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { RefreshControl, Platform, ImageBackground, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
@@ -11,7 +11,8 @@ const  Default = () => {
   return (
     <Text>Default</Text>
   )
-}
+};
+
 export default class TabletLayout extends Component {
   static navigationOptions = {
     title: 'Stories landscape',
@@ -41,10 +42,15 @@ export default class TabletLayout extends Component {
       dlIndex: null,
     };
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.story !== this.state.story) {
+      console.log('story state has changed.');
+      this.setState({refreshing: true});
+    }
+  }
+  stopRefresh = () => this.setState({refreshing: false})
   renderStory = (story) => {
     this.setState({story: story});
-    this.setState({refreshing: true});
-
   }
   renderStories = () => {
     let {stories} = this.state;
@@ -86,8 +92,8 @@ export default class TabletLayout extends Component {
                 bottomDivider
                 chevron
               />
-              </ImageBackground>
-              </TouchableOpacity>
+            </ImageBackground>
+          </TouchableOpacity>
       ))
       }
       </ScrollView>
@@ -98,7 +104,7 @@ export default class TabletLayout extends Component {
       <Drawer
         type="static"
         ref={(ref) => this._drawer = ref}
-        content={this.state.refreshing ? <RefreshControl refreshing={this.state.refreshing}  ><Story story={this.state.story} state={this.state} navigation={this.props.navigation}/></RefreshControl> : <Default />}
+        content={this.state.story ? <Story story={this.state.story} state={this.state} navigation={this.props.navigation} /> : <Default style={styles.story}/>}
         open={true}
         openDrawerOffset={100}
         styles={drawerStyles}
@@ -116,6 +122,11 @@ const drawerStyles = {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: 'transparent',
+  },
+  story: {
+    flex: 1,
+    backgroundColor: '#000',
+    color: '#FFF',
   },
   wrapList: {
     paddingBottom: 85

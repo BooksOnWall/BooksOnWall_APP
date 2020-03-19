@@ -82,8 +82,15 @@ export default class Story extends Component {
         await this.requestFineLocationPermission();
       }
       await this.getCurrentLocation();
+      (this.props.stopRefresh) ? this.props.stopRefresh(): null ;
     } catch(e) {
       console.log(e);
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.story !== this.state.story) {
+      console.log('story inside state has changed.');
+      this.setState({story: this.props.story});
     }
   }
   componentWillUnmount = async () => {
