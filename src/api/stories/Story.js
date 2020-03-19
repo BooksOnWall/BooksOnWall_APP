@@ -384,6 +384,16 @@ export default class Story extends Component {
       },
       b: { fontFamily: 'OpenSansCondensed-Bold'
       },
+
+      iconLeft: {
+        width: 45,
+        height: 45,
+        backgroundColor: story.theme.color1,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 0
+      },
       menu: {
         flex: 1,
         margin: 0,
@@ -441,19 +451,21 @@ export default class Story extends Component {
       const ButtonGroup = () => {
         return (
           <View style={themeSheet.nav}>
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 40, color: 'white'}}/>
-          </TouchableOpacity>
           {distance && (
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchNavigation()}>
             <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 40, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
-
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchAR()} >
+          
+          <TouchableOpacity style={{flex:2, flexGrow: 2,}} onPress={() => this.launchAR()} >
             <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 40, color: 'white'}} onPress={() => this.launchAR()}  />
           </TouchableOpacity>
-          </View>
+
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 40, color: 'white'}}/>
+          </TouchableOpacity>
+
+        </View>
         );
       };
     return (
@@ -477,20 +489,32 @@ export default class Story extends Component {
       </>
     )
   }
-  renderNavBar = () => (
+  renderNavBar = () => {
+  const {theme, themeSheet, story} = this.state;
+  const themeSheetStyle = StyleSheet.create({
+    iconLeft: {
+      width: 45,
+      height: 45,
+      backgroundColor: story.theme.color1+40,
+      borderRadius: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 0,
+    },
+  });
+  return(
   <View style={styles.navContainer}>
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
-      <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
+      <TouchableOpacity style={themeSheetStyle.iconLeft} onPress={() => this.props.navigation.goBack()}>
         <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: -4}} icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
-)
+)}
   launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   render() {
       const {theme, themeSheet, story} = this.state;
-
       const Title = () => (
         <View style={styles.titleStyle}>
           <Text style={{
@@ -579,14 +603,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,
-  },
-  iconLeft: {
-    width: 45,
-    height: 45,
-    backgroundColor: 'rgba(0, 0, 0, .12)',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 0
   }
 });
