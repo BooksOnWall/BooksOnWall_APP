@@ -49,14 +49,14 @@ export default class Story extends Component {
   constructor(props) {
     super(props);
     this.loadStories = this.props.loadStories;
-    let coordinates = this.props.navigation.getParam('story').stages[0].geometry.coordinates;
+    let coordinates = (this.props.story) ? this.props.story.stages[0].geometry.coordinates :this.props.navigation.getParam('story').stages[0].geometry.coordinates;
     this.state = {
-      server: this.props.screenProps.server,
-      appName: this.props.screenProps.appName,
-      appDir: this.props.screenProps.AppDir,
+      server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
+      appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
+      appDir: (this.props.state) ? this.props.state.appDir : this.props.screenProps.AppDir,
       downloadProgress: 0,
-      story: this.props.navigation.getParam('story'),
-      theme: this.props.navigation.getParam('story').theme,
+      story: (this.props.story) ? this.props.story : this.props.navigation.getParam('story'),
+      theme: (this.props.story) ? this.props.story.theme: this.props.navigation.getParam('story').theme,
       granted: Platform.OS === 'ios',
       transportIndex: 0,
       dlIndex: null,
@@ -76,7 +76,6 @@ export default class Story extends Component {
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
   }
   componentDidMount = async () => {
-    if (!this.props.navigation.getParam('story') ) this.props.navigation.navigate('Stories');
     try {
       await KeepAwake.activate();
       if (!this.state.granted) {

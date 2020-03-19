@@ -3,6 +3,8 @@ package com.booksonwall;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.yamill.orientation.OrientationPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.rnziparchive.RNZipArchivePackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
@@ -43,6 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new OrientationPackage(),
+            new RNDeviceInfo(),
             new RNZipArchivePackage(),
             new KCKeepAwakePackage(),
             new NetInfoPackage(),

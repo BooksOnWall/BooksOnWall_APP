@@ -2,6 +2,8 @@ import React, {Component, useState, useCallback} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { RefreshControl, Platform, ImageBackground, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elements';
+import Orientation from 'react-native-orientation';
+
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import  distance from '@turf/distance';
@@ -59,11 +61,11 @@ ListStories = (props) => {
  });
 
   return (
-    <TouchableOpacity onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}>
+
       <View >
       {
         stories.map((story, i) => (
-
+          <TouchableOpacity key={'tb'+i} onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}>
             <ImageBackground key={'b'+i} source={story.banner_default} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
               <ListItem
                 containerStyle={{backgroundColor: 'transparent', flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'flex-start', backgroundColor: 'transparent', }}
@@ -78,15 +80,16 @@ ListStories = (props) => {
                 chevron
               />
               </ImageBackground>
+              </TouchableOpacity>
       ))
       }
       </View>
-      </TouchableOpacity>
+
   );
 }
 export default class Stories extends Component {
   static navigationOptions = {
-    title: 'Story',
+    title: 'Stories',
     headerShown: false
   };
 
@@ -101,6 +104,8 @@ export default class Stories extends Component {
       storiesURL: this.props.screenProps.server + '/stories',
       bannerPath: this.props.screenProps.AppDir + '/banner/',
       granted: Platform.OS === 'ios',
+      isTablet: this.props.screenProps.isTablet,
+      isLandscape: null,
       transportIndex: 0,
       reloadLoading: false,
       dlIndex: null,
@@ -109,9 +114,30 @@ export default class Stories extends Component {
     this.storiesUpdate = this.storiesUpdate.bind(this);
     this.storiesCheck = this.storiesCheck.bind(this);
   }
-
+  _orientationDidChange = (orientation) => {
+    if (orientation === 'LANDSCAPE') {
+      this.setState({isLandscape: false});
+    } else {
+      this.setState({isLandscape: true});
+      (this.state.isTablet && this.state.isLandscape) ? this.props.navigation.navigate('TabletLayout') : null;
+    }
+  }
   componentDidMount = async () => {
+    // if tablet and landscape navigate to tabletLayout
+
     try {
+      const initial = await Orientation.getInitialOrientation();
+      if (initial === 'PORTRAIT') {
+        this.setState({isLandscape: false});
+      } else {
+        this.setState({isLandscape: true});
+      }
+      Orientation.addOrientationListener(this._orientationDidChange);
+      console.log('is tablet',this.props.screenProps.isTablet);
+      console.log('is landscape',this.state.isLandscape);
+
+      (this.state.isTablet && this.state.isLandscape) ? this.props.navigation.navigate('TabletLayout') : null;
+
       await KeepAwake.activate();
       // await this.getCurrentLocation();
       await this.storiesCheck();
@@ -119,7 +145,14 @@ export default class Stories extends Component {
       console.log(e);
     }
   }
-  componentWillUnmount = async () => KeepAwake.deactivate();
+  componentWillUnmount = async () => {
+    await KeepAwake.deactivate();
+    Orientation.getOrientation((err, orientation) => {
+      console.log(`Current Device Orientation: ${orientation}`);
+    });
+    // Remember to remove listener
+   Orientation.removeOrientationListener(this._orientationDidChange);
+  }
   storiesCheck = async () => {
     let stories = this.state.stories;
     try {
