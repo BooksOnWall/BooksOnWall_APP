@@ -1,7 +1,8 @@
 # OSX
 #
 .DS_Store
-
+.env
+yarn.lock
 # Xcode
 #
 build/
