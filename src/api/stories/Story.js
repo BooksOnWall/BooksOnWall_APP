@@ -48,8 +48,7 @@ export default class Story extends Component {
   };
   constructor(props) {
     super(props);
-    console.log('props.story', this.props.story);
-    console.log('navigation.story', this.props.navigation.getParam('story'));
+
     this.loadStories = this.props.loadStories;
     let coordinates = (this.props.story) ? this.props.story.stages[0].geometry.coordinates :this.props.navigation.getParam('story').stages[0].geometry.coordinates;
     this.state = {

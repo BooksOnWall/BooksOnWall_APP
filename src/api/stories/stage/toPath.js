@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {View, StyleSheet} from 'react-native';
+import {Platform, View, StyleSheet} from 'react-native';
+import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button} from 'react-native-elements';
 import {lineString as makeLineString} from '@turf/helpers';
 
@@ -57,6 +58,13 @@ class ToPath extends Component {
   };
   constructor(props) {
     super(props);
+    const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
+    const stages = this.props.navigation.getParam('story').stages;
+    const routes = stages.map((stage, i) => {
+      return {coordinates: stage.geometry.coordinates};
+    });
+    console.log('stages',stages);
+    console.log('routes', routes);
     this.state = {
       prevLatLng: null,
       track: null,
@@ -64,9 +72,10 @@ class ToPath extends Component {
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin:[-56.17891507941232,-34.90949779775191],
-      destination: [-56.177511043686316,-34.909745005492645],
+      origin:routes[0].coordinates,
+      destination: routes[1].coordinates,
       route: null,
+      routes: routes,
       currentPoint: null,
       routeSimulator: null,
       server: this.props.screenProps.server,
@@ -90,10 +99,7 @@ class ToPath extends Component {
   componentDidMount = async () => {
     try {
       const reqOptions = {
-        waypoints: [
-          {coordinates: this.state.origin},
-          {coordinates: this.state.destination },
-        ],
+        waypoints: this.state.routes,
         profile: 'walking',
         geometries: 'geojson',
       };
