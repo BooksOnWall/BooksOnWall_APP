@@ -5,12 +5,12 @@ import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button} from 'react-native-elements';
 import {lineString as makeLineString} from '@turf/helpers';
 
-import RouteSimulator from './utils/RouteSimulator';
+import RouteSimulator from './mapbox-gl/showDirection/RouteSimulator';
 import {directionsClient} from './MapboxClient';
 import sheet from './mapbox-gl/styles/sheet';
 
 import Page from './mapbox-gl/common/Page';
-import PulseCircleLayer from './mapbox-gl/common/PulseCircleLayer';
+import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
 
 const styles = StyleSheet.create({
   buttonCnt: {
@@ -63,7 +63,6 @@ class ToPath extends Component {
     const routes = stages.map((stage, i) => {
       return {coordinates: stage.geometry.coordinates};
     });
-    console.log('stages',stages);
     console.log('routes', routes);
     this.state = {
       prevLatLng: null,
@@ -98,6 +97,7 @@ class ToPath extends Component {
   }
   componentDidMount = async () => {
     try {
+      MapboxGL.setTelemetryEnabled(false);
       const reqOptions = {
         waypoints: this.state.routes,
         profile: 'walking',
@@ -126,7 +126,7 @@ class ToPath extends Component {
       await navigator.geolocation.getCurrentPosition(
         (position) => {
           this.setState({position: position});
-          console.log(JSON.stringify(position));
+          console.log('position',JSON.stringify(position));
         },
         (error) => alert(JSON.stringify(error)),
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 1}
@@ -249,20 +249,29 @@ class ToPath extends Component {
     return (
       <Page {...this.props}>
         <MapboxGL.MapView
+          logoEnabled={false}
+          compassEnabled={true}
+          localizeLabels={true}
           ref={c => (this._map = c)}
           style={sheet.matchParent}
+          pitch={90}
           styleURL={MapboxGL.StyleURL.Dark}
           >
           <MapboxGL.Camera
-            zoomLevel={18}
-            centerCoordinate={this.state.origin}
+            zoomLevel={22}
+            centerCoordinate={(this.state.location) ? this.state.location : this.state.origin}
+            animationMode='flyTo'
+            animationDuration={5000}
+            followUserLocation={true}
+            followUserMode='compass'
+            onUserTrackingModeChange={false}
             />
 
           {this.renderOrigin()}
           {this.renderRoute()}
           {this.renderCurrentPoint()}
           {this.renderProgressLine()}
-
+          <MapboxGL.UserLocation animated={true} visible={true} />
           <MapboxGL.ShapeSource
             id="destination"
             shape={MapboxGL.geoUtils.makePoint(this.state.destination)}
