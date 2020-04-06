@@ -4,11 +4,11 @@ import {Platform, View, StyleSheet} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button} from 'react-native-elements';
 import {lineString as makeLineString} from '@turf/helpers';
-
+import Toast from 'react-native-simple-toast';
 import RouteSimulator from './mapbox-gl/showDirection/RouteSimulator';
 import {directionsClient} from './MapboxClient';
 import sheet from './mapbox-gl/styles/sheet';
-
+import I18n from "../../../utils/i18n";
 import Page from './mapbox-gl/common/Page';
 import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
 
@@ -56,6 +56,8 @@ class ToPath extends Component {
     title: 'To Stage',
     headerShown: false
   };
+
+
   constructor(props) {
     super(props);
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
@@ -73,6 +75,9 @@ class ToPath extends Component {
       showUserLocation: true,
       origin:routes[0].coordinates,
       destination: routes[1].coordinates,
+      goto: (location) ? location : routes[0].coordinates ,
+      zoom: 18,
+      followUserLocation: true,
       route: null,
       routes: routes,
       currentPoint: null,
@@ -128,7 +133,7 @@ class ToPath extends Component {
           this.setState({position: position});
           console.log('position',JSON.stringify(position));
         },
-        (error) => alert(JSON.stringify(error)),
+        (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 1}
       );
 
@@ -142,7 +147,7 @@ class ToPath extends Component {
           this.setState({ prevLatLng: newLatLng });
         }
       },
-      (error) => alert(JSON.stringify(error)),
+      (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 0, distanceFilter: 1});
     } catch(e) {
       console.log(e);
@@ -234,17 +239,36 @@ class ToPath extends Component {
     }
     return (
       <View style={styles.buttonCnt}>
-        <Button
-          raised
-          title="Start"
-          onPress={this.onStart}
-          style={styles.button}
-          disabled={!this.state.route}
-          />
+          <Button
+            raised
+            title="Localize"
+            onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)}
+            style={styles.button}
+            disabled={!this.state.route}
+            />
+          <Button
+            raised
+            title="Origin"
+            onPress={() => this.goTo(this.state.origin, false)}
+            style={styles.button}
+            disabled={!this.state.route}
+            />
+            <Button
+              raised
+              title="Dest"
+              onPress={() => this.goTo(this.state.destination, false)}
+              style={styles.button}
+              disabled={!this.state.route}
+              />
       </View>
     );
   }
-
+  goTo = (coordinates,followUserLocation ) => {
+    (!followUserLocation) ? this.setState({followUserLocation: false, goto: coordinates}) : this.setState({followUserLocation: true, goto: coordinates}) ;
+  }
+  onUserLocationUpdate = (newUserLocation) => {
+    this.setState({position: newUserLocation})
+  }
   render() {
     return (
       <Page {...this.props}>
@@ -257,12 +281,14 @@ class ToPath extends Component {
           pitch={90}
           styleURL={MapboxGL.StyleURL.Dark}
           >
+
           <MapboxGL.Camera
-            zoomLevel={22}
-            centerCoordinate={(this.state.location) ? this.state.location : this.state.origin}
+            zoomLevel={this.state.zoom}
+            centerCoordinate={this.state.goto}
             animationMode='flyTo'
-            animationDuration={5000}
-            followUserLocation={true}
+            animationDuration={2000}
+            followUserLocation={this.state.followUserLocation}
+            ref={d => (this.camera = d)}
             followUserMode='compass'
             onUserTrackingModeChange={false}
             />
@@ -271,7 +297,10 @@ class ToPath extends Component {
           {this.renderRoute()}
           {this.renderCurrentPoint()}
           {this.renderProgressLine()}
-          <MapboxGL.UserLocation animated={true} visible={true} />
+          <MapboxGL.UserLocation
+            onUpdate={newUserLocation => this.onUserLocationUpdate(newUserLocation)}
+            animated={true}
+            visible={true} />
           <MapboxGL.ShapeSource
             id="destination"
             shape={MapboxGL.geoUtils.makePoint(this.state.destination)}
