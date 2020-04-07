@@ -24,6 +24,7 @@
     "@turf/along": "^6.0.1",
     "@turf/distance": "^6.0.1",
     "@turf/helpers": "^6.1.4",
+    "@turf/turf": "^5.1.6",
     "i18n-js": "^3.5.1",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",

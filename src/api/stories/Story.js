@@ -16,6 +16,8 @@ import I18n from "../../utils/i18n";
 import IconSet from "../../utils/Icon";
 import { Banner } from '../../../assets/banner';
 import Toast from 'react-native-simple-toast';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import {lineString as makeLineString, bbox} from '@turf/turf';
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
 
@@ -51,6 +53,13 @@ export default class Story extends Component {
 
     this.loadStories = this.props.loadStories;
     let coordinates = (this.props.story) ? this.props.story.stages[0].geometry.coordinates :this.props.navigation.getParam('story').stages[0].geometry.coordinates;
+    const stages = (this.props.story) ? this.props.story.stages : this.props.navigation.getParam('story').stages;
+    const storyPoints = stages.map((stage, i) => {
+      return stage.geometry.coordinates;
+    });
+    console.log(storyPoints);
+    var line = makeLineString(storyPoints);
+    var mbbox = bbox(line);
     this.state = {
       server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
       appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
@@ -65,7 +74,9 @@ export default class Story extends Component {
       profile: 'mapbox/walking',
       themeSheet: null,
       initialPosition: null,
+      mbbox: mbbox,
       lastPosition: null,
+      styleURL: MapboxGL.StyleURL.Dark,
       fromLat: null,
       fromLong: null,
       toLat: coordinates[1],
@@ -169,6 +180,7 @@ export default class Story extends Component {
           // TOAST message installation complete :
           Toast.showWithGravity(I18n.t("Installation_complete","Installation complete."), Toast.SHORT, Toast.TOP);
           // recheck if story is well installed and display buttons
+          this.offlineSave();
           return this.storyCheck();
         })
         .catch((err) => { console.log(err); })
@@ -176,6 +188,30 @@ export default class Story extends Component {
     .catch((error) => {
       console.log(error)
     });
+  }
+  offlineSave = async () => {
+    try {
+      Toast.showWithGravity(I18n.t("Start_download_map","Start map download"), Toast.SHORT, Toast.TOP);
+
+      const progressListener = (offlineRegion, status) => console.log(offlineRegion, status);
+      const errorListener = (offlineRegion, err) => console.log(offlineRegion, err);
+      const box= this.state.mbbox;
+      const name = 'story'+this.state.story.id;
+      // check if offline db still exist
+      const offlinePack = await MapboxGL.offlineManager.getPack(name);
+      if(offlinePack) await MapboxGL.offlineManager.deletePack(name);
+      await MapboxGL.offlineManager.createPack({
+        name: name,
+        styleURL: this.state.styleURL,
+        minZoom: 14,
+        maxZoom: 20,
+        bounds: [[box[0], box[1]], [box[2], box[3]]]
+      }, progressListener, errorListener);
+      Toast.showWithGravity(I18n.t("End_download_map","End map download"), Toast.SHORT, Toast.TOP);
+      return progressListener;
+    } catch(e) {
+      console.log(e);
+    }
   }
   storyCheck = async () => {
     let story = this.state.story;

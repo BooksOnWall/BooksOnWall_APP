@@ -3,14 +3,16 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {Platform, View, StyleSheet} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button} from 'react-native-elements';
-import {lineString as makeLineString} from '@turf/helpers';
+import {lineString as makeLineString, bbox} from '@turf/turf';
 import Toast from 'react-native-simple-toast';
 import RouteSimulator from './mapbox-gl/showDirection/RouteSimulator';
 import {directionsClient} from './MapboxClient';
 import sheet from './mapbox-gl/styles/sheet';
 import I18n from "../../../utils/i18n";
 import Page from './mapbox-gl/common/Page';
+import { MAPBOX_KEY  } from 'react-native-dotenv';
 import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
+// import PulseCircle from './mapbox-gl/PulseCircleLayer';
 
 const styles = StyleSheet.create({
   buttonCnt: {
@@ -49,7 +51,7 @@ const layerStyles = {
   },
 };
 
-MapboxGL.setAccessToken('pk.eyJ1IjoiY3JvbGwiLCJhIjoiY2p4cWVmZDA2MDA0aTNkcnQxdXhldWxwZCJ9.3pr6-2NQQDd59UBRCEeenA');
+MapboxGL.setAccessToken(MAPBOX_KEY);
 
 class ToPath extends Component {
   static navigationOptions = {
@@ -65,7 +67,11 @@ class ToPath extends Component {
     const routes = stages.map((stage, i) => {
       return {coordinates: stage.geometry.coordinates};
     });
-    console.log('routes', routes);
+    const storyPoints = stages.map((stage, i) => {
+      return stage.geometry.coordinates;
+    });
+    var line = makeLineString(storyPoints);
+    var mbbox = bbox(line);
     this.state = {
       prevLatLng: null,
       track: null,
@@ -73,15 +79,19 @@ class ToPath extends Component {
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin:routes[0].coordinates,
+      origin: routes[0].coordinates,
       destination: routes[1].coordinates,
       goto: (location) ? location : routes[0].coordinates ,
       zoom: 18,
       followUserLocation: true,
       route: null,
+      stages: stages,
       routes: routes,
+      mbbox: mbbox,
+      offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
+      styleURL: MapboxGL.StyleURL.Dark, // todo import story map styles
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
       AppDir: this.props.screenProps.AppDir,
@@ -102,6 +112,7 @@ class ToPath extends Component {
   }
   componentDidMount = async () => {
     try {
+      await this.offlineLoad();
       MapboxGL.setTelemetryEnabled(false);
       const reqOptions = {
         waypoints: this.state.routes,
@@ -134,7 +145,7 @@ class ToPath extends Component {
           console.log('position',JSON.stringify(position));
         },
         (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 1}
+        {enableHighAccuracy: true, timeout: 30000, maximumAge: 1000, distanceFilter: 1}
       );
 
       this.watchID = await navigator.geolocation.watchPosition((lastPosition) => {
@@ -148,7 +159,7 @@ class ToPath extends Component {
         }
       },
       (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 0, distanceFilter: 1});
+      {enableHighAccuracy: true, timeout: 30000, maximumAge: 1, distanceFilter: 1});
     } catch(e) {
       console.log(e);
     }
@@ -232,7 +243,37 @@ class ToPath extends Component {
       </MapboxGL.ShapeSource>
     );
   }
-
+  offlineLoad =  async () => {
+    console.load('offlineLoad');
+    const name = 'story'+this.state.story.id;
+    const offlinePack = await MapboxGL.offlineManager.getPack(name);
+    this.setState({offlinePack: offlinePack});
+    console.log('offlinePack',offlinePack);
+    return offlinePack;
+  }
+  offlineSave = async () => {
+    try {
+      Toast.showWithGravity(I18n.t("Start_download_map","Start map download"), Toast.SHORT, Toast.TOP);
+      const progressListener = (offlineRegion, status) => console.log(offlineRegion, status);
+      const errorListener = (offlineRegion, err) => console.log(offlineRegion, err);
+      const box= this.state.mbbox;
+      const name = 'story'+this.state.story.id;
+      // check if offline db still exist
+      const offlinePack = await MapboxGL.offlineManager.getPack(name);
+      if(offlinePack) await MapboxGL.offlineManager.deletePack(name);
+      await MapboxGL.offlineManager.createPack({
+        name: name,
+        styleURL: this.state.styleURL,
+        minZoom: 14,
+        maxZoom: 20,
+        bounds: [[box[0], box[1]], [box[2], box[3]]]
+      }, progressListener, errorListener);
+      Toast.showWithGravity(I18n.t("End_download_map","End map download"), Toast.SHORT, Toast.TOP);
+      return progressListener;
+    } catch(e) {
+      console.log(e);
+    }
+  }
   renderActions() {
     if (this.state.routeSimulator) {
       return null;
@@ -241,30 +282,37 @@ class ToPath extends Component {
       <View style={styles.buttonCnt}>
           <Button
             raised
-            title="Localize"
+            title="Locate"
             onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)}
             style={styles.button}
-            disabled={!this.state.route}
+            disabled={false}
             />
           <Button
             raised
             title="Origin"
             onPress={() => this.goTo(this.state.origin, false)}
             style={styles.button}
-            disabled={!this.state.route}
+            disabled={false}
             />
             <Button
               raised
               title="Dest"
               onPress={() => this.goTo(this.state.destination, false)}
               style={styles.button}
-              disabled={!this.state.route}
+              disabled={false}
               />
+              <Button
+                raised
+                title="Save"
+                onPress={() => this.offlineSave()}
+                style={styles.button}
+                disabled={!this.state.route}
+                />
       </View>
     );
   }
   goTo = (coordinates,followUserLocation ) => {
-    (!followUserLocation) ? this.setState({followUserLocation: false, goto: coordinates}) : this.setState({followUserLocation: true, goto: coordinates}) ;
+    (!followUserLocation) ? this.setState({ followUserLocation: followUserLocation, goto: coordinates}) : this.setState({ followUserLocation: followUserLocation, goto: coordinates}) ;
   }
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
@@ -279,7 +327,7 @@ class ToPath extends Component {
           ref={c => (this._map = c)}
           style={sheet.matchParent}
           pitch={90}
-          styleURL={MapboxGL.StyleURL.Dark}
+          styleURL={this.state.styleURL}
           >
 
           <MapboxGL.Camera
@@ -301,6 +349,7 @@ class ToPath extends Component {
             onUpdate={newUserLocation => this.onUserLocationUpdate(newUserLocation)}
             animated={true}
             visible={true} />
+
           <MapboxGL.ShapeSource
             id="destination"
             shape={MapboxGL.geoUtils.makePoint(this.state.destination)}
