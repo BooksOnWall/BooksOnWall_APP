@@ -442,16 +442,16 @@ export default class Story extends Component {
         return (
           <View style={themeSheet.nav}>
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 40, color: 'white'}}/>
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 24, color: 'white'}}/>
           </TouchableOpacity>
           {distance && (
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchNavigation()}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 40, color: 'white'}} onPress={() => this.launchNavigation()} />
+            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
 
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchAR()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 40, color: 'white'}} onPress={() => this.launchAR()}  />
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchAR()}  />
           </TouchableOpacity>
           </View>
         );
@@ -463,7 +463,7 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 6}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 40, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
+            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 6}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading} loadingStyle={{ size: 24, color: 'white'}} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
 
               <View style={themeSheet.sinopsys} >
                 <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
@@ -482,7 +482,7 @@ export default class Story extends Component {
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: -4}} icon={{name:'left-arrow', size:35, color:'#fff', type:'booksonwall'}} />
+        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
