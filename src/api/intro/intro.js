@@ -59,8 +59,9 @@ const styles = StyleSheet.create({
     color: '#D9D9D9',
     backgroundColor: 'transparent',
     fontFamily: "OpenSansCondensed-Light",
-    fontSize: 20,
+    fontSize: 19,
     textAlign: 'center',
+    paddingTop: 10,
     paddingLeft: 60,
     paddingRight: 60,
     marginBottom: 0,
@@ -79,7 +80,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   skip: {
-    color: '#FFF'
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight:'bold',
+    fontFamily: "OpenSansCondensed-Bold",
   },
   icon: {
     textAlign: 'center',
@@ -102,7 +106,7 @@ export default class Intro extends Component {
 
   renderItem = ({ item }) => {
     return (
-      <View style={styles.slide}>
+      <View style={styles.slide}  >
         <ImageBackground source={item.image} style={{width: '100%', height: '100%'}}>
           <Text style={styles.title}>{item.title}</Text>
         {item.icon &&
@@ -110,7 +114,7 @@ export default class Intro extends Component {
             style={styles.icon}
             name={item.icon}
             type="booksonwall"
-            size={60}
+            size={35}
             color="white"
             />
         }
@@ -123,10 +127,10 @@ export default class Intro extends Component {
     return (
       <View style={styles.buttonCircle}>
         <Icon
-          name="md-arrow-round-forward"
+          name="right-arrow"
           color="rgba(255, 255, 255, .9)"
-          type="ionicon"
-          size={24}
+          type="booksonwall"
+          size={22}
           style={{ backgroundColor: 'transparent' }}
         />
       </View>
@@ -139,7 +143,7 @@ export default class Intro extends Component {
           name="md-checkmark"
           type="ionicon"
           color="rgba(255, 255, 255, .9)"
-          size={24}
+          size={20}
           style={{ backgroundColor: 'transparent' }}
         />
       </View>
