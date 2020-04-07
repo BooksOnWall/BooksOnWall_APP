@@ -244,7 +244,7 @@ class ToPath extends Component {
     );
   }
   offlineLoad =  async () => {
-    console.load('offlineLoad');
+    console.log('offlineLoad');
     const name = 'story'+this.state.story.id;
     const offlinePack = await MapboxGL.offlineManager.getPack(name);
     this.setState({offlinePack: offlinePack});
