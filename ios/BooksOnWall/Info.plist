@@ -73,12 +73,20 @@
 		<string>Zocial.ttf</string>
 		<string>Iconset-Bookonwall.ttf</string>
 		<string>ATypewriterForMe.otf</string>
-		<string>OpenSansCondensed-Bold.otf</string>
-		<string>OpenSansCondensed-Light.otf</string>
 		<string>Typewriterhand.otf</string>
 		<string>WaitingfortheSunrise.otf</string>
 		<string>TrashHand.otf</string>
 		<string>booksonwall.ttf</string>
+		<string>Roboto-Bold.otf</string>
+		<string>Roboto-Italic.otf</string>
+		<string>Roboto-Regular.otf</string>
+		<string>RobotoCondensed-Bold.otf</string>
+		<string>RobotoCondensed-Italic.otf</string>
+		<string>RobotoCondensed-LightItalic.otf</string>
+		<string>Roboto-Light.otf</string>
+		<string>Roboto-LightItalic.otf</string>
+		<string>RobotoCondensed-Light.otf</string>
+		<string>RobotoCondensed-Regular.ttf</string>
 	</array>
 </dict>
 </plist>
