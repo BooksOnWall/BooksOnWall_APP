@@ -14,28 +14,28 @@ const slides = [
     title: I18n.t("Welcome","BooksOnWall"),
     text: I18n.t("Invite","welcome! we invite you to explore a story..."),
     image: Images['image1'],
-    backgroundColor: '#9E1C00',
+    backgroundColor: '#A19887',
   },
   {
     key: 'p2',
     title:  I18n.t("Each_story","...each story has many walls to discover..."),
     text: I18n.t("discover","Soon in your city"),
     image: Images['image2'],
-    backgroundColor: '#257466',
+    backgroundColor: '#A19887',
   },
   {
     key: 'p3',
     title: I18n.t("Each_wall","...Each wall has many secrets to reveal..."),
     text: I18n.t("reveal","whit art, music, animation..."),
     image: Images['image3'],
-    backgroundColor: '#CC7116',
+    backgroundColor: '#A19887',
   },
   {
     key: 'p4',
     title: I18n.t("Enjoy","Enjoy it"),
     text: I18n.t("Press","Choose the story next to you and begin the adventure"),
     image: Images['image4'],
-    backgroundColor: '#593274',
+    backgroundColor: '#A19887',
   },
   {
     key: 'p5',
@@ -43,7 +43,7 @@ const slides = [
     text: I18n.t("Better_headphones","Better whit headphone"),
     icon: 'headphones',
     image: Images['image5'],
-    backgroundColor: '#255C97',
+    backgroundColor: '#A19887',
   }
 ];
 const styles = StyleSheet.create({
@@ -56,34 +56,40 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    color: '#D9D9D9',
+    color: '#EFF0ED',
     backgroundColor: 'transparent',
-    fontFamily: "OpenSansCondensed-Light",
-    fontSize: 19,
+    fontFamily: "RobotoCondensed-Regular",
+    fontSize: 17,
     textAlign: 'center',
     paddingTop: 10,
     paddingLeft: 60,
     paddingRight: 60,
     marginBottom: 0,
-  },
+    textShadowColor: 'rgba(0, 0, 0, 0.65)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 4,
+    },
   title: {
     flex: 2,
-    fontSize: 34,
-    color: '#D9D9D9',
+    fontSize: 30,
+    color: '#A5392C',
     backgroundColor: 'transparent',
     fontFamily: "TrashHand",
     letterSpacing: 2,
     textAlign: 'center',
     lineHeight: 36,
     marginBottom: 20,
-    marginTop: 70,
-    paddingHorizontal: 30,
+    marginTop: 0,
+    paddingHorizontal: 40,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 1,
   },
   skip: {
     color: '#FFF',
     fontSize: 10,
     fontWeight:'bold',
-    fontFamily: "OpenSansCondensed-Bold",
+    fontFamily: "Roboto-Bold",
   },
   icon: {
     textAlign: 'center',
@@ -107,7 +113,7 @@ export default class Intro extends Component {
   renderItem = ({ item }) => {
     return (
       <View style={styles.slide}  >
-        <ImageBackground source={item.image} style={{width: '100%', height: '100%'}}>
+        <ImageBackground source={item.image} style={{width: '100%', height: '100%', backgroundColor: item.backgroundColor, }}>
           <Text style={styles.title}>{item.title}</Text>
         {item.icon &&
          <Icon
@@ -115,7 +121,7 @@ export default class Intro extends Component {
             name={item.icon}
             type="booksonwall"
             size={35}
-            color="white"
+            color="#756F63"
             />
         }
           <Text style={styles.text}>{item.text}</Text>
