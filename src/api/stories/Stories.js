@@ -42,7 +42,7 @@ ListStories = (props) => {
   const default_theme = {
     font1: 'TrashHand',
     font2: 'ATypewriterForMe',
-    font3: 'OpenSansCondensed-ligth',
+    font3: 'Roboto-Regular',
     banner: {
       name: null,
       path: null,

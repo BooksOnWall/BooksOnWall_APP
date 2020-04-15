@@ -354,7 +354,7 @@ export default class Story extends Component {
       },
       credits: {
         backgroundColor: story.theme.color2,
-        fontFamily: 'OpenSansCondensed-Light',
+        fontFamily: 'Roboto-Regular',
         paddingTop: 60,
         paddingBottom: 60,
         paddingHorizontal: 26,
@@ -363,7 +363,7 @@ export default class Story extends Component {
       sinopsys: {
         paddingTop: 40,
         paddingBottom: 50,
-        paddingHorizontal: 26,
+        paddingHorizontal: 32,
         backgroundColor: '#D8D8D8',
       },
       subtitle: {
@@ -373,7 +373,7 @@ export default class Story extends Component {
         marginBottom: 30,
         fontSize: 12,
         textTransform: 'uppercase',
-        fontFamily: 'OpenSansCondensed-bold',
+        fontFamily: 'Roboto-bold',
         color: story.theme.color3,
       },
       NavButton: {
@@ -396,14 +396,14 @@ export default class Story extends Component {
         fontSize: 16,
         textAlign: 'center',
         paddingTop: 5,
-        fontFamily: 'OpenSansCondensed-Light'
+        fontFamily: 'Roboto-Regular'
       },
       message: {
         fontSize: 12,
         color: '#000',
         textAlign: 'center',
         paddingTop: 5,
-        fontFamily: 'OpenSansCondensed-Light'
+        fontFamily: 'Roboto-Regular'
       },
       transport: {
         flex: 1,
@@ -416,9 +416,9 @@ export default class Story extends Component {
         margin: 0,
         padding: 0
       },
-      p: { fontFamily: 'OpenSansCondensed-Light',
+      p: { fontFamily: 'Roboto-Light',
       },
-      b: { fontFamily: 'OpenSansCondensed-Bold'
+      b: { fontFamily: 'Roboto-bold'
       },
       menu: {
         flex: 1,
@@ -434,11 +434,11 @@ export default class Story extends Component {
           fontSize: 16,
           lineHeight: 20,
           letterSpacing: 0,
-          fontFamily: 'OpenSansCondensed-Light',
+          fontFamily: 'Roboto-Regular',
           color: story.theme.color3,
         },
         b: {
-          fontFamily: 'OpenSansCondensed-Bold'},
+          fontFamily: 'Roboto-bold'},
           container: {
           flex: 1,
           flexDirection: 'column',
@@ -447,20 +447,20 @@ export default class Story extends Component {
           padding: 0,
         },
         strong: {
-          fontFamily: 'OpenSansCondensed-Bold',
+          fontFamily: 'Roboto-bold',
         }
       });
     const sinopsysThemeSheet = StyleSheet.create({
       p: {
-          fontSize: 16,
-          lineHeight: 24,
+          fontSize: 18,
+          lineHeight: 26,
           letterSpacing: 0,
           fontFamily: '',
           color: '#111',
-          fontFamily: 'OpenSansCondensed-Light',
+          fontFamily: 'RobotoCondensed-Light',
         },
         b: {
-          fontFamily: 'OpenSansCondensed-Bold'
+          fontFamily: 'Roboto-bold'
         },
         container: {
           flex: 1,

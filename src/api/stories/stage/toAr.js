@@ -90,9 +90,9 @@ export default class ToAR extends Component {
       onPictureMatch: this.state.stage.onPictureMatch,
       appDir: this.state.appDir,
     };
-    const storyReload = () => <Icon size={40} name='reload-circle' color='#4D0101' onPress={() => this.reload()} />;
-    const storyMap = () => <Icon size={40} name='geopoint-circle' color='#4D0101' onPress={() => this.map()} />;
-    const storyNext = () => <Icon size={40} name='next-circle' color='#4D0101' onPress={() => this.next()} />;
+    const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
+    const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
+    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} />;
     const arButtons = [ { element: storyReload }, { element: storyMap }, { element: storyNext} ];
     const arScene = {
       'vip':  { scene: VIP },
@@ -108,13 +108,13 @@ export default class ToAR extends Component {
       <SafeAreaView style={styles.mainContainer}>
         <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={arScene[type]} style={styles.viroContainer}/>
         <ButtonGroup style={styles.menu}
-          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 50, maxHeight: 50}}
+          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
           onPress={this.updateDlIndex}
           selectedIndex={this.state.arIndex}
           selectedButtonStyle= {{backgroundColor: '#750000'}}
           buttons={arButtons}
-          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 50, maxHeight: 50, backgroundColor: 'transparent', borderRadius: 0, margin: 0, padding: 0}}
-          innerBorderStyle= {{ color: '#750000' }}
+          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
+          innerBorderStyle= {{ color: '#570402' }}
           />
       </SafeAreaView>
     );
@@ -124,13 +124,13 @@ export default class ToAR extends Component {
 var styles = StyleSheet.create({
   mainContainer: {
     flex : 1,
-    backgroundColor: "transparent",
+    backgroundColor: "#750000",
   },
   menu: {
-    backgroundColor: "transparent",
+    backgroundColor: "#750000",
   },
   viroContainer :{
     flex : 1,
-    backgroundColor: "transparent",
+    backgroundColor: "#750000",
   }
 });
