@@ -100,7 +100,7 @@ export default class ToAR extends Component {
       'vaamp':  { scene: VAAMP },
       'portal':  { scene: PORTAL}
     };
-    let types = ['vip', 'vaap', 'vaamp', 'portal'];
+    let types = ['null','vip', 'vaap', 'vaamp', 'portal'];
     let type = (this.state.stage.scene_type) ? types[this.state.stage.scene_type] : 'vip';
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
