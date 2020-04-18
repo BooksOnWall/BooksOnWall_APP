@@ -12,7 +12,7 @@ const slides = [
   {
     key: 'p1',
     title: I18n.t("Welcome","BooksOnWall"),
-    text: I18n.t("Invite","welcome! we invite you to explore a story..."),
+    text: I18n.t("Invite","Welcome! We invite you to explore a story..."),
     image: Images['image1'],
     backgroundColor: '#A19887',
   },
@@ -26,21 +26,21 @@ const slides = [
   {
     key: 'p3',
     title: I18n.t("Each_wall","...Each wall has many secrets to reveal..."),
-    text: I18n.t("reveal","whit art, music, animation..."),
+    text: I18n.t("reveal","With art, music, animation..."),
     image: Images['image3'],
     backgroundColor: '#A19887',
   },
   {
     key: 'p4',
     title: I18n.t("Enjoy","Enjoy it"),
-    text: I18n.t("Press","Choose the story next to you and begin the adventure"),
+    text: I18n.t("Press","Choose the story next to you and begin the adventure."),
     image: Images['image4'],
     backgroundColor: '#A19887',
   },
   {
     key: 'p5',
     title: I18n.t("Bip","oh! please pay attention to the trafic, beep beep!"),
-    text: I18n.t("Better_headphones","Better whit headphone"),
+    text: I18n.t("Better_headphones","Better use a headphone."),
     icon: 'headphones',
     image: Images['image5'],
     backgroundColor: '#A19887',
