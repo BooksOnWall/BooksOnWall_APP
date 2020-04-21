@@ -51,6 +51,7 @@
     "react-native-safe-area-view": "^1.0.0",
     "react-native-screens": "~1.0.0-alpha.23",
     "react-native-simple-toast": "^1.0.0",
+    "react-native-sound": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",
     "react-native-vector-icons": "^6.6.0",
     "react-native-zip-archive": "4.1.5",
