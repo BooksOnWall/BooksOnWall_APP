@@ -15,6 +15,7 @@ const slides = [
     text: I18n.t("Invite","welcome! we invite you to explore a story..."),
     image: Images['image1'],
     backgroundColor: '#A19887',
+    icon: 'bow-isologo',
   },
   {
     key: 'p2',
@@ -22,6 +23,7 @@ const slides = [
     text: I18n.t("discover","Soon in your city"),
     image: Images['image2'],
     backgroundColor: '#A19887',
+    icon: 'bow-isologo',
   },
   {
     key: 'p3',
@@ -29,6 +31,7 @@ const slides = [
     text: I18n.t("reveal","whit art, music, animation..."),
     image: Images['image3'],
     backgroundColor: '#A19887',
+    icon: 'bow-isologo',
   },
   {
     key: 'p4',
@@ -36,6 +39,7 @@ const slides = [
     text: I18n.t("Press","Choose the story next to you and begin the adventure"),
     image: Images['image4'],
     backgroundColor: '#A19887',
+    icon: 'bow-isologo',
   },
   {
     key: 'p5',
@@ -47,21 +51,19 @@ const slides = [
   }
 ];
 const styles = StyleSheet.create({
-  mainContent: {
-    flex: 1,
-    alignItems: 'flex-end',
-    flexDirection: 'column-reverse',
-    justifyContent: 'space-between',
+  slide: {
     backgroundColor: 'transparent',
   },
-  text: {
+  content: {
     flex: 1,
+  },
+    text: {
     color: '#EFF0ED',
     backgroundColor: 'transparent',
     fontFamily: "RobotoCondensed-Regular",
     fontSize: 17,
     textAlign: 'center',
-    paddingTop: 10,
+    paddingTop: 5,
     paddingLeft: 60,
     paddingRight: 60,
     marginBottom: 0,
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
     },
   title: {
-    flex: 2,
+    flexGrow: 1,
     fontSize: 30,
     color: '#A5392C',
     backgroundColor: 'transparent',
@@ -78,9 +80,9 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     textAlign: 'center',
     lineHeight: 36,
-    marginBottom: 20,
-    marginTop: 0,
-    paddingHorizontal: 40,
+    marginBottom: 5,
+    marginTop: 40,
+    paddingHorizontal: 30,
     textShadowColor: 'rgba(0, 0, 0, 0.35)',
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 1,
@@ -91,9 +93,13 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     fontFamily: "Roboto-Bold",
   },
-  icon: {
+  iconView: {
+    justifyContent: 'flex-end',
+    flexGrow: 2,
     textAlign: 'center',
     backgroundColor: 'transparent',
+    marginTop: 60,
+    marginBottom: 80,
   },
   buttonCircle: {
     width: 40,
@@ -113,18 +119,21 @@ export default class Intro extends Component {
   renderItem = ({ item }) => {
     return (
       <View style={styles.slide}  >
-        <ImageBackground source={item.image} style={{width: '100%', height: '100%', backgroundColor: item.backgroundColor, }}>
+        <ImageBackground source={item.image} style={styles.content} style={{justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', backgroundColor: item.backgroundColor, }}>
           <Text style={styles.title}>{item.title}</Text>
-        {item.icon &&
-         <Icon
-            style={styles.icon}
-            name={item.icon}
-            type="booksonwall"
-            size={35}
-            color="#756F63"
-            />
-        }
           <Text style={styles.text}>{item.text}</Text>
+          {item.icon &&
+          <View style={styles.iconView}>
+           <Icon
+              style={styles.icon}
+              name={item.icon}
+              type="booksonwall"
+              size={120}
+              color="#fff"
+              />
+            </View>
+          }
+
         </ImageBackground>
       </View>
     );
