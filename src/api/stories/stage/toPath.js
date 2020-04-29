@@ -13,6 +13,8 @@ import Page from './mapbox-gl/common/Page';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
+// import audio lib
+import Sound from 'react-native-sound';
 
 const styles = StyleSheet.create({
   buttonCnt: {
@@ -95,8 +97,10 @@ class ToPath extends Component {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
       AppDir: this.props.screenProps.AppDir,
+      storyDir: this.props.screenProps.AppDir + '/stories/',
       story: this.props.navigation.getParam('story'),
       order: this.props.navigation.getParam('order'),
+      index: this.props.navigation.getParam('index'),
       location: [],
       position: {},
     };
@@ -121,7 +125,7 @@ class ToPath extends Component {
       };
 
       const res = await directionsClient.getDirections(reqOptions).send();
-
+      await this.audioPlay();
       this.setState({
         route: makeLineString(res.body.routes[0].geometry.coordinates),
       });
@@ -244,11 +248,9 @@ class ToPath extends Component {
     );
   }
   offlineLoad =  async () => {
-    console.log('offlineLoad');
     const name = 'story'+this.state.story.id;
     const offlinePack = await MapboxGL.offlineManager.getPack(name);
     this.setState({offlinePack: offlinePack});
-    console.log('offlinePack',offlinePack);
     return offlinePack;
   }
   offlineSave = async () => {
@@ -317,6 +319,93 @@ class ToPath extends Component {
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
+  audioPlay = async () => {
+    const story = this.state;
+    const stage = story.stages[this.state.index];
+    const count =  stage.onZoneLeave.length;
+    console.log(count);
+    if (count > 1) {
+      const audio = stage.onZoneLeave[0];
+      const audio2 = stage.onZoneLeave[1];
+      const loop = audio.loop;
+      let path = audio.path;
+      let path2 = audio2.path;
+      path = this.state.storyDir + path.replace("assets/stories/", "");
+      path2 = this.state.storyDir + path2.replace("assets/stories/", "");
+      Sound.setCategory('Playback');
+      // Load the sound file path from the app story bundle
+      // See notes below about preloading sounds within initialization code below.
+      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+        if (error) {
+          console.log('failed to load the sound', error);
+          return;
+        }
+        // loaded successfully
+        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+        // Loop indefinitely until stop() is called
+
+        // Play the sound with an onEnd callback
+        whoosh.play((success) => {
+          if (success) {
+            console.log('successfully finished playing');
+            var nextaudio = new Sound(path2, Sound.MAIN_BUNDLE, (error) => {
+              if (error) {
+                console.log('failed to load the sound', error);
+                return;
+              }
+              // loaded successfully
+              console.log('duration in seconds: ' + nextaudio.getDuration() + 'number of channels: ' + nextaudio.getNumberOfChannels());
+
+              // Play the sound with an onEnd callback
+              nextaudio.play((success) => {
+                if (success) {
+                  console.log('successfully finished playing');
+                  nextaudio.release();
+                } else {
+                  console.log('playback failed due to audio decoding errors');
+                }
+              });
+            });
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
+        whoosh.release();
+      });
+    }
+    if (count === 1) {
+      const audio = stage.onZoneLeave[0];
+
+      const loop = audio.loop;
+      let path = audio.path
+      path = this.state.storyDir + path.replace("assets/stories/", "");
+      Sound.setCategory('Playback');
+      // Load the sound file path from the app story bundle
+      // See notes below about preloading sounds within initialization code below.
+      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+        if (error) {
+          console.log('failed to load the sound', error);
+          return;
+        }
+        // loaded successfully
+        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+        // Play the sound with an onEnd callback
+        whoosh.play((success) => {
+          if (success) {
+            console.log('successfully finished playing');
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
+        if(loop) {
+          whoosh.setNumberOfLoops(-1);
+        }
+      });
+      whoosh.release();
+    }
+
+  }
   render() {
     return (
       <Page {...this.props}>
@@ -326,7 +415,7 @@ class ToPath extends Component {
           localizeLabels={true}
           ref={c => (this._map = c)}
           style={sheet.matchParent}
-          pitch={90}
+          pitch={60}
           styleURL={this.state.styleURL}
           >
 
