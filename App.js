@@ -33,6 +33,7 @@ import Story from './src/api/stories/Story';
 import Stages from './src/api/stories/stages/Stages';
 import Stage from './src/api/stories/stage/Stage';
 import ToPath from './src/api/stories/stage/toPath';
+import StoryMap from './src/api/stories/storyMap';
 import SplashScreen from 'react-native-splash-screen';
 
 
@@ -62,6 +63,7 @@ const MainNavigator = createStackNavigator({
   Stages: { screen: Stages},
   Stage: { screen: Stage},
   ToAr: { screen: ToAr},
+  StoryMap: { screen: StoryMap},
   ToPath: { screen: ToPath}
 },
 {
@@ -80,7 +82,19 @@ const MainNavigator = createStackNavigator({
 });
 const AppContainer = createAppContainer(MainNavigator);
 
-
+const coordinates = [
+  [-73.98330688476561, 40.76975180901395],
+  [-73.96682739257812, 40.761560925502806],
+  [-74.00751113891602, 40.746346606483826],
+  [-73.95343780517578, 40.7849607714286],
+  [-73.99017333984375, 40.71135347314246],
+  [-73.98880004882812, 40.758960433915284],
+  [-73.96064758300781, 40.718379593199494],
+  [-73.95172119140624, 40.82731951134558],
+  [-73.9829635620117, 40.769101775774935],
+  [-73.9822769165039, 40.76273111352534],
+  [-73.98571014404297, 40.748947591479705]
+]
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -92,6 +106,7 @@ export default class App extends Component {
       AppDir: '',
       FirstRun: false,
       stories: [],
+      coordinates: coordinates,
       isTablet: isTablet(),
       isLandscape: isLandscape(),
       storiesURL: SERVER_URL + '/stories',

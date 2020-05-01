@@ -1,17 +1,20 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
+import {Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {Button, ButtonGroup, Icon, Badge} from 'react-native-elements';
-import {lineString as makeLineString, bbox} from '@turf/turf';
+import {ButtonGroup, Button, Icon, Badge} from 'react-native-elements';
+
 import Toast from 'react-native-simple-toast';
-import RouteSimulator from './mapbox-gl/showDirection/RouteSimulator';
-import {directionsClient} from './MapboxClient';
-import sheet from './mapbox-gl/styles/sheet';
-import I18n from "../../../utils/i18n";
-import Page from './mapbox-gl/common/Page';
+import RouteSimulator from './stage/mapbox-gl/showDirection/RouteSimulator';
+import {directionsClient} from './stage/MapboxClient';
+import sheet from './stage/mapbox-gl/styles/sheet';
+import I18n from "../../utils/i18n";
+import Page from './stage/mapbox-gl/common/Page';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
-import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
+import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
+import mapIcon from '../../../assets/nav/btn_map_point.png';
+import {featureCollection, feature} from '@turf/helpers';
+import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
@@ -21,6 +24,45 @@ const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
+const circleStyles = {
+  innerCircle: {
+    circleStrokeWidth: 2,
+    circleStrokeColor: '#750000',
+    circleRadius: 20,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+    textOpacity: 1,
+    textColor: '#000',
+    textHaloColor: '#99FF99',
+    textHaloWidth: 10,
+    textHaloBlur: .7,
+  },
+  innerCirclePulse: {
+    circleStrokeWidth: 2,
+    circleStrokeColor: '#750000',
+    circleRadius: 60,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+    textOpacity: 1,
+    textColor: '#000',
+    textHaloColor: '#99FF99',
+    textHaloWidth: 10,
+    textHaloBlur: .7,
+  },
+  outerCircle: {
+    circleRadius: 2,
+    circleColor: '#FFF',
+    circleBlur: .8,
+    circleOpacity: .9,
+    textOpacity: 1,
+    textColor: '#000',
+    textHaloColor: '#99FF99',
+    textHaloWidth: 10,
+    textHaloBlur: .7,
+  }
+};
 
 const styles = StyleSheet.create({
   buttonCnt: {
@@ -70,108 +112,56 @@ const styles = StyleSheet.create({
     flex: 0,
   },
 });
-const iconstyles = {
-  icon: {
-    iconImage: ['get', 'icon'],
-    iconOptional: true,
-    textIgnorePlacement: true,
-    textField: '{label}',
-    textSize: 40,
-    textMaxWidth: 50,
-    textColor: '#FFF',
-    textAnchor: 'center',
-    // textTranslate: [22, -22],
-    textAllowOverlap: true,
-    iconSize: [
-      'match',
-      ['get', 'icon'],
-      'mapIcon',
-      1.2,
-      /* default */ 1,
-    ],
-  },
-};
+
+
 const layerStyles = {
   origin: {
-    circleRadius: 40,
-    circleColor: '#750000',
-    circleBlur: .8,
-    circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
-
+    circleRadius: 15,
+    circleColor: 'white',
   },
   destination: {
-    circleRadius: 40,
-    circleColor: 'black',
-    circleBlur: .8,
-    circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#FFF',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
+    circleRadius: 30,
+    circleColor: 'white',
   },
   route: {
-    lineColor: '#314ccd',
+    lineColor: 'white',
     lineCap: MapboxGL.LineJoin.Round,
-    lineWidth: 7,
+    lineWidth: 3,
     lineOpacity: 0.84,
   },
   progress: {
-    lineColor: '#750000',
-    lineWidth: 5,
+    lineColor: '#314ccd',
+    lineWidth: 3,
   },
-};
-const circleStyles = {
-  innerCircle: {
-    circleStrokeWidth: 2,
-    circleStrokeColor: '#750000',
-    circleRadius: 20,
-    circleColor: '#750000',
-    circleBlur: .8,
-    circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
-  },
-  innerCirclePulse: {
-    circleStrokeWidth: 2,
-    circleStrokeColor: '#750000',
-    circleRadius: 40,
-    circleColor: '#750000',
-    circleBlur: .8,
-    circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
-  },
-  outerCircle: {
-    circleColor: 'red',
-    circleRadius: 10,
-    circleColor: '#FFF',
-    circleBlur: .8,
-    circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
-  }
 };
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-class ToPath extends Component {
+const AnnotationContent = ({title}) => (
+  <View style={{borderColor: 'black', borderWidth: 1.0, width: 60}}>
+    <Text>{title}</Text>
+    <TouchableOpacity
+      style={{
+        backgroundColor: 'blue',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text
+        style={{
+          color: 'white',
+          fontWeight: 'bold',
+        }}>
+        Btn
+      </Text>
+    </TouchableOpacity>
+  </View>
+);
+class StoryMap extends Component {
   static navigationOptions = {
-    title: 'To Stage',
+    title: 'Story Map',
     headerShown: false
   };
 
@@ -180,69 +170,40 @@ class ToPath extends Component {
     super(props);
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
+    console.log(stages);
     const routes = stages.map((stage, i) => {
       return {coordinates: stage.geometry.coordinates};
     });
+
     const storyPoints = stages.map((stage, i) => {
       return stage.geometry.coordinates;
     });
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
-    const index = this.props.navigation.getParam('index');
-    const label = [(index+1),(index+2)];
     this.state = {
+      featureCollection: featureCollection([]),
       prevLatLng: null,
       track: null,
       distanceTotal:null,
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: routes[index].coordinates,
-      destination: routes[(index+1)].coordinates,
-      goto: (location) ? location : routes[index].coordinates ,
-      zoom: 18,
-      followUserLocation: true,
+      origin: routes[0].coordinates,
+      destination: routes[1].coordinates,
+      goto: routes[0].coordinates ,
+      zoom: 15,
+      followUserLocation: false,
       route: null,
       stages: stages,
       routes: routes,
       mbbox: mbbox,
-      features: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              id: 'Stage'+ label[0],
-              properties: {
-                type: 'circle',
-                radius: 40,
-                icon: 'mapIcon',
-                text: 'Stage '+label[0],
-                index: index,
-                label: label[0],
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: routes[index].coordinates,
-              },
-            },
-            {
-              type: 'Feature',
-              id: 'Stage'+label[1],
-              properties: {
-                type: 'circle',
-                radius: 40,
-                icon: 'mapIcon',
-                text: 'Stage '+ label[1],
-                index: (index+1),
-                label: label[1],
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: routes[index+1].coordinates,
-              },
-            }
-          ]
+      images: {
+        example: mapIcon,
+        mapIcon: mapIcon,
       },
+      radius: 20,
+      selected:1,
+      selectedMenu: null,
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -252,10 +213,9 @@ class ToPath extends Component {
       AppDir: this.props.screenProps.AppDir,
       storyDir: this.props.screenProps.AppDir + '/stories/',
       story: this.props.navigation.getParam('story'),
-      order: this.props.navigation.getParam('order'),
-      index: index,
-      selected: (index+1),
       theme: this.props.navigation.getParam('story').theme,
+      order: this.props.navigation.getParam('order'),
+      index: this.props.navigation.getParam('index'),
       location: [],
       position: {},
     };
@@ -278,11 +238,10 @@ class ToPath extends Component {
         profile: 'walking',
         geometries: 'geojson',
       };
-      const index = this.props.navigation.getParam('index');
+
       const res = await directionsClient.getDirections(reqOptions).send();
-      await this.audioPlay();
       this.setState({
-        route: makeLineString(res.body.routes[index].geometry.coordinates),
+        route: makeLineString(res.body.routes[0].geometry.coordinates),
       });
       await request(
         Platform.select({
@@ -384,36 +343,22 @@ class ToPath extends Component {
     );
   }
 
-
-  renderMarkers() {
-    let backgroundColor = '#750000';
+  renderOrigin() {
+    let backgroundColor = 'white';
 
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
     }
 
-    const style = [layerStyles.destination, {circleColor: backgroundColor}];
+    const style = [layerStyles.origin, {circleColor: backgroundColor}];
 
     return (
-      <>
       <MapboxGL.ShapeSource
-        id="destination"
-        shape={this.state.features}
+        id="origin"
+        shape={MapboxGL.geoUtils.makePoint(this.state.origin)}
         >
-        <MapboxGL.Animated.CircleLayer id="destinationInnerCircle" style={style} />
-        <MapboxGL.SymbolLayer id="destination"  style={iconstyles.icon} />
+        <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
       </MapboxGL.ShapeSource>
-      <PulseCircleLayer
-        shape={this.state.features}
-        aboveLayerID="destinationInnerCircle"
-        radius={40}
-        pulseRadius={100}
-        duration={2000}
-        innerCircleStyle={circleStyles.innerCircle}
-        outerCircleStyle={circleStyles.outerCircle}
-        innerCirclePulse={circleStyles.innerCirclePulse}
-        />
-      </>
     );
   }
   offlineLoad =  async () => {
@@ -435,7 +380,7 @@ class ToPath extends Component {
       await MapboxGL.offlineManager.createPack({
         name: name,
         styleURL: this.state.styleURL,
-        minZoom: 16,
+        minZoom: 14,
         maxZoom: 20,
         bounds: [[box[0], box[1]], [box[2], box[3]]]
       }, progressListener, errorListener);
@@ -449,36 +394,36 @@ class ToPath extends Component {
     if (this.state.routeSimulator) {
       return null;
     }
-    const index = this.state.index;
-const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index})} />;
-const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
-const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
-const storyOrigin = () => <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
-const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
-const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl} ];
 
     return (
-      <View style={styles.footer}>
-        <ButtonGroup style={styles.menu}
-          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
-          onPress={this.updateMenu}
-          selectedIndex={this.state.selectedMenu}
-          selectedButtonStyle= {{backgroundColor: '#750000'}}
-          buttons={MenuButtons}
-          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
-          innerBorderStyle= {{ color: '#570402' }}
-        />
+      <View style={styles.buttonCnt}>
+          <Button
+            raised
+            title="First"
+            onPress={() => this.goTo(this.state.routes[0].coordinates, false)}
+            style={styles.button}
+            disabled={false}
+            />
+            <Button
+              raised
+              title="Next"
+              onPress={() => this.goTo(this.state.routes[1].coordinates, false)}
+              style={styles.button}
+              disabled={false}
+              />
       </View>
     );
   }
   goTo = async (coordinates,followUserLocation ) => {
     try {
       (this.state.followUserLocation !== followUserLocation) ? await this.followUserLocationToggle() : null;
+      await this.setState({zoom: 20});
       await this.setState({goto: coordinates});
     } catch(e) {
       console.log(e);
     }
 
+    (!followUserLocation) ? this.setState({ followUserLocation: followUserLocation, goto: coordinates}) : this.setState({ followUserLocation: followUserLocation, goto: coordinates}) ;
   }
   followUserLocationToggle = () => {
     return this.setState({followUserLocation: !this.state.followUserLocation});
@@ -573,34 +518,172 @@ const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { el
     }
 
   }
+  enterStage = (e) => {
+    const feature = e.nativeEvent.payload;
+    console.log('You pressed a layer here is your feature', feature);
+    const index = feature.properties.index;
+    this.goTo(feature.geometry.coordinates);
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index});
+    Toast.showWithGravity('iEnter: '+feature.properties.text, Toast.SHORT, Toast.TOP);
+
+  }
+  renderStages = () => {
+    const {selected, routes, index, images} = this.state;
+    const id = (selected -1);
+    let features = {
+      type: 'FeatureCollection',
+      features: []
+    };
+
+    if (routes && routes.length > 1) {
+      features.features = routes.map((stage, i) => {
+        const feature = {
+          type: 'Feature',
+          id: 'Stage'+i,
+          properties: {
+            type: 'circle',
+            radius: 40,
+            icon: 'mapIcon',
+            name: i,
+            text: 'Stage '+i,
+            index: i,
+            label: (i+1),
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: stage.coordinates,
+          },
+        };
+        return feature;
+      });
+      console.log('features', features);
+
+      let backgroundColor = 'white';
+      const iconstyles = {
+        icon: {
+          iconImage: ['get', 'icon'],
+          iconOptional: true,
+          textIgnorePlacement: true,
+          textField: '{label}',
+          textSize: 40,
+          textMaxWidth: 50,
+          textColor: '#FFF',
+          textAnchor: 'center',
+          textAllowOverlap: true,
+          iconSize: [
+            'match',
+            ['get', 'icon'],
+            'mapIcon',
+            1.2,
+            /* default */ 1,
+          ],
+        },
+      };
+      const colors = ['white', 'black', '#FF9900', 'red', '#FF99FF', '#FF99BB']
+      console.log('routes', routes);
+
+      const style = [layerStyles.origin, {circleColor: colors[3]}];
+      return (
+        <>
+
+        <MapboxGL.Images
+         nativeAssetImages={['pin']}
+         images={images}
+         onImageMissing={(imageKey) =>
+           this.setState({
+             images: {...this.state.images, [imageKey]: mapIcon},
+           })
+         }
+       />
+
+       <MapboxGL.ShapeSource
+         id="StagesShapeSource"
+         hitbox={{width: 20, height: 20}}
+         onPress={this.enterStage}
+         shape={features}
+         >
+         <MapboxGL.Animated.CircleLayer id="InnerCircle" style={style} />
+         <MapboxGL.SymbolLayer id="Stage"  style={iconstyles.icon} >
+         </MapboxGL.SymbolLayer>
+
+       </MapboxGL.ShapeSource>
+       <PulseCircleLayer
+         shape={features}
+         id="circles"
+         aboveLayerID="InnerCircle"
+         onPress={this.enterStage}
+         radius={30}
+         pulseRadius={60}
+         duration={2000}
+         innerCircleStyle={circleStyles.innerCircle}
+         outerCircleStyle={circleStyles.outerCircle}
+         innerCirclePulse={circleStyles.innerCirclePulse}
+         />
+       </>
+     );
+    }
+  }
+
+  prev = () => {
+    const selected = (this.state.selected > 1) ? (this.state.selected - 1) : 1 ;
+
+    this.setState({selected: selected});
+    const id = (selected - 1);
+    this.goTo(this.state.routes[id].coordinates, false);
+  }
+  next = () => {
+    const max = this.state.routes.length;
+    const selected = (this.state.selected < max) ? (this.state.selected + 1) : max;
+    this.setState({selected: selected});
+    const id = (selected -1);
+    const coords = this.state.routes[id].coordinates;
+    this.goTo(coords, false);
+  }
   render() {
-    const {selected, theme, story, index} = this.state;
+    const {distance, selected, theme, story} = this.state;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-          <Badge  value={selected} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+        <Badge size="large" status="success" value={selected} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
           <Text style={{
             fontSize: 26,
             letterSpacing: 1,
-            color: "#fff",
+            color: "#FFF",
             textShadowColor: 'rgba(0, 0, 0, 0.85)',
             textShadowOffset: {width: 1, height: 1},
             textShadowRadius: 2,
-            fontFamily: story.theme.font1}} >{story.title}</Text>
+            fontFamily: theme.font1}} >{story.title}</Text>
           <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length}</Text>
+          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} next in {distance}m</Text>
         </ImageBackground>
 
       </View>
     );
+    const storyPrev = () => <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} />;
+    const storyMapLine = () => <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} />;
+    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} />;
+    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} />;
+    const MenuButtons = [ { element: storyPrev }, { element: launchAR }, { element: storyMapLine }, { element: storyNext} ];
 
-
+    const Footer = () => (
+      <View style={styles.footer}>
+      <ButtonGroup style={styles.menu}
+        buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
+        onPress={this.updateMenu}
+        selectedIndex={this.state.selectedMenu}
+        selectedButtonStyle= {{backgroundColor: '#750000'}}
+        buttons={MenuButtons}
+        containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
+        innerBorderStyle= {{ color: '#570402' }}
+      />
+      </View>
+    );
     return (
       <Page {...this.props}>
         <Header />
         <MapboxGL.MapView
           logoEnabled={false}
-          compassEnabled={true}
+          compassEnabled={false}
           localizeLabels={true}
           ref={c => (this._map = c)}
           style={sheet.matchParent}
@@ -618,20 +701,14 @@ const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { el
             followUserMode='compass'
             onUserTrackingModeChange={false}
             />
-          {this.renderMarkers()}
-          {this.renderRoute()}
-          {this.renderCurrentPoint()}
-          {this.renderProgressLine()}
-          <MapboxGL.UserLocation
-            onUpdate={newUserLocation => this.onUserLocationUpdate(newUserLocation)}
-            animated={true}
-            visible={true} />
-
+            {this.renderStages()}
         </MapboxGL.MapView>
+
         {this.renderActions()}
+        <Footer />
       </Page>
     );
   }
 }
 
-export default ToPath;
+export default StoryMap;
