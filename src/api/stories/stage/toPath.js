@@ -189,7 +189,7 @@ class ToPath extends Component {
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     const index = this.props.navigation.getParam('index');
-    const label = [(index+1),(index+2)];
+
     this.state = {
       prevLatLng: null,
       track: null,
@@ -197,8 +197,8 @@ class ToPath extends Component {
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: routes[index].coordinates,
-      destination: routes[(index+1)].coordinates,
+      origin: (index > 0) ? routes[index].coordinates: location,
+      destination: routes[index].coordinates,
       goto: (location) ? location : routes[index].coordinates ,
       zoom: 18,
       followUserLocation: true,
@@ -206,43 +206,7 @@ class ToPath extends Component {
       stages: stages,
       routes: routes,
       mbbox: mbbox,
-      features: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              id: 'Stage'+ label[0],
-              properties: {
-                type: 'circle',
-                radius: 40,
-                icon: 'mapIcon',
-                text: 'Stage '+label[0],
-                index: index,
-                label: label[0],
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: routes[index].coordinates,
-              },
-            },
-            {
-              type: 'Feature',
-              id: 'Stage'+label[1],
-              properties: {
-                type: 'circle',
-                radius: 40,
-                icon: 'mapIcon',
-                text: 'Stage '+ label[1],
-                index: (index+1),
-                label: label[1],
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: routes[index+1].coordinates,
-              },
-            }
-          ]
-      },
+      features: {},
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -280,7 +244,9 @@ class ToPath extends Component {
       };
       const index = this.props.navigation.getParam('index');
       const res = await directionsClient.getDirections(reqOptions).send();
+
       await this.audioPlay();
+
       this.setState({
         route: makeLineString(res.body.routes[index].geometry.coordinates),
       });
@@ -309,7 +275,7 @@ class ToPath extends Component {
 
       this.watchID = await navigator.geolocation.watchPosition((lastPosition) => {
         var { distanceTotal, record } = this.state;
-        this.setState({lastPosition});
+        (this.state.index > 0) ? this.setState({lastPosition}) : this.setState({origin: lastPosition, lastPosition: lastPosition}) ;
         if(record) {
           var newLatLng = {latitude:lastPosition.coords.latitude, longitude: lastPosition.coords.longitude};
           this.setState({ track: this.state.track.concat([newLatLng]) });
@@ -387,24 +353,80 @@ class ToPath extends Component {
 
   renderMarkers() {
     let backgroundColor = '#750000';
-
+    const {index} = this.state;
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
     }
 
     const style = [layerStyles.destination, {circleColor: backgroundColor}];
+    const label = [index,(index+1)];
+    console.log(this.state.position.coords);
+    const features = {
+      type: 'FeatureCollection',
+      features: (index > 0) ? [
+        {
+          type: 'Feature',
+          id: 'Stage'+ label[0],
+          properties: {
+            type: 'circle',
+            radius: 40,
+            icon: 'mapIcon',
+            text: 'Stage '+label[0],
+            index: (index-1),
+            label: label[0],
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: this.state.routes[(index-1)].coordinates ,
+          },
+        },
+        {
+          type: 'Feature',
+          id: 'Stage'+label[1],
+          properties: {
+            type: 'circle',
+            radius: 40,
+            icon: 'mapIcon',
+            text: 'Stage '+ label[1],
+            index: index,
+            label: label[1],
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: this.state.routes[index].coordinates,
+          },
+        }]
+        :
+        [{
+          type: 'Feature',
+          id: 'Stage'+label[1],
+          properties: {
+            type: 'circle',
+            radius: 40,
+            icon: 'mapIcon',
+            text: 'Stage '+ label[1],
+            index: index,
+            label: label[1],
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: this.state.routes[index].coordinates,
+          },
+        }]
+    };
 
+    console.log('features', features);
     return (
       <>
       <MapboxGL.ShapeSource
         id="destination"
-        shape={this.state.features}
+        shape={features}
         >
         <MapboxGL.Animated.CircleLayer id="destinationInnerCircle" style={style} />
         <MapboxGL.SymbolLayer id="destination"  style={iconstyles.icon} />
       </MapboxGL.ShapeSource>
       <PulseCircleLayer
-        shape={this.state.features}
+        shape={features}
         aboveLayerID="destinationInnerCircle"
         radius={40}
         pulseRadius={100}

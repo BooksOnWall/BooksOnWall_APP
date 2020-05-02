@@ -28,7 +28,7 @@ const circleStyles = {
   innerCircle: {
     circleStrokeWidth: 2,
     circleStrokeColor: '#750000',
-    circleRadius: 20,
+    circleRadius: 30,
     circleColor: '#750000',
     circleBlur: .8,
     circleOpacity: .9,
