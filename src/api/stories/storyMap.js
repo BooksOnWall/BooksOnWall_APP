@@ -26,41 +26,26 @@ const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 const circleStyles = {
   innerCircle: {
-    circleStrokeWidth: 2,
+    circleStrokeWidth: 3,
     circleStrokeColor: '#750000',
     circleRadius: 30,
     circleColor: '#750000',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
   },
   innerCirclePulse: {
-    circleStrokeWidth: 2,
+    circleStrokeWidth: 3,
     circleStrokeColor: '#750000',
     circleRadius: 60,
     circleColor: '#750000',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
   },
   outerCircle: {
     circleRadius: 2,
     circleColor: '#FFF',
-    circleBlur: .8,
-    circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
+    circleBlur: 0,
+    circleOpacity: .6,
   }
 };
 

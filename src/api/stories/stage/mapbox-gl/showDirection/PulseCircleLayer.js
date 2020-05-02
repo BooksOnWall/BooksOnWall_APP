@@ -34,7 +34,7 @@ class PulseCircleLayer extends React.Component {
   };
 
   static defaultProps = {
-    radius: 30,
+    radius: 20,
     pulseRadius: 50,
     duration: 600,
   };

@@ -97,11 +97,6 @@ const layerStyles = {
     circleColor: '#750000',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
 
   },
   destination: {
@@ -109,11 +104,7 @@ const layerStyles = {
     circleColor: 'black',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#FFF',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
+
   },
   route: {
     lineColor: '#314ccd',
@@ -128,42 +119,30 @@ const layerStyles = {
 };
 const circleStyles = {
   innerCircle: {
-    circleStrokeWidth: 2,
+    circleStrokeWidth: 3,
     circleStrokeColor: '#750000',
-    circleRadius: 20,
+    circleRadius: 5,
     circleColor: '#750000',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
+
   },
   innerCirclePulse: {
-    circleStrokeWidth: 2,
+    circleStrokeWidth: 3,
     circleStrokeColor: '#750000',
-    circleRadius: 40,
+    circleRadius: 2,
     circleColor: '#750000',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
+
   },
   outerCircle: {
-    circleColor: 'red',
-    circleRadius: 10,
+    circleRadius: 2,
+    circleStrokeWidth: 1,
+    circleStrokeColor: '#750000',
     circleColor: '#FFF',
     circleBlur: .8,
     circleOpacity: .9,
-    textOpacity: 1,
-    textColor: '#000',
-    textHaloColor: '#99FF99',
-    textHaloWidth: 10,
-    textHaloBlur: .7,
   }
 };
 
@@ -430,7 +409,7 @@ class ToPath extends Component {
         aboveLayerID="destinationInnerCircle"
         radius={40}
         pulseRadius={100}
-        duration={2000}
+        duration={600}
         innerCircleStyle={circleStyles.innerCircle}
         outerCircleStyle={circleStyles.outerCircle}
         innerCirclePulse={circleStyles.innerCirclePulse}
