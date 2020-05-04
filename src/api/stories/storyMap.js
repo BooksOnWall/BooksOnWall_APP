@@ -11,6 +11,8 @@ import sheet from './stage/mapbox-gl/styles/sheet';
 import I18n from "../../utils/i18n";
 import Page from './stage/mapbox-gl/common/Page';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
+import RNFetchBlob from 'rn-fetch-blob';
+import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
 import mapIcon from '../../../assets/nav/btn_map_point.png';
 import openIcon from '../../../assets/nav/btn_map_point.png';
@@ -213,6 +215,7 @@ class StoryMap extends Component {
       };
 
       const res = await directionsClient.getDirections(reqOptions).send();
+      await this.history();
       this.setState({
         route: makeLineString(res.body.routes[0].geometry.coordinates),
       });
@@ -362,7 +365,32 @@ class StoryMap extends Component {
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
-
+  history= async () =>  {
+    const {AppDir} = this.state;
+    // get history from file
+    const storyHF = AppDir + '/stories/' + this.state.story.id + '/complete.txt';
+    console.log(storyHF);
+    // // check if file exist
+    await RNFS.exists(storyHF)
+    .then( (exists) => {
+        if (exists) {
+            console.log("History File exist");
+            // get id from file
+            RNFetchBlob.fs.readFile(storyHF, 'utf8')
+            .then((data) => {
+              // handle the data ..
+              this.setState({selected: data});
+              return data;
+            })
+        } else {
+            console.log("File need to be created with index 1");
+            RNFetchBlob.fs.createFile(storyHF, '1', 'utf8').then(()=>{
+              this.setState({selected: 1});
+              console.log('file created');
+             });
+        }
+    });
+  }
   enterStage = (e) => {
     const feature = e.nativeEvent.payload;
     console.log('You pressed a layer here is your feature', feature);
