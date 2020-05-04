@@ -14,7 +14,8 @@ import KeepAwake from 'react-native-keep-awake';
 import SafeAreaView from 'react-native-safe-area-view';
 import { ButtonGroup } from 'react-native-elements';
 import Icon from "../../../utils/Icon";
-
+import RNFetchBlob from 'rn-fetch-blob';
+import * as RNFS from 'react-native-fs';
 
 /*
 AR Scene type:
@@ -51,6 +52,7 @@ export default class ToAR extends Component {
       story: this.props.navigation.getParam('story'),
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
+      selected: 1,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
@@ -60,7 +62,10 @@ export default class ToAR extends Component {
     title: 'To Augmented Reality',
     headerShown: false
   };
-  componentDidMount = async () => await KeepAwake.activate();
+  componentDidMount = async () => {
+    await KeepAwake.activate();
+    await this.getSelected();
+  }
   componentWillUnmount = async () => {
     try {
       await this.setState({ navigatorType : UNSET });
@@ -71,8 +76,66 @@ export default class ToAR extends Component {
   }
   reload = () => this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
   map = () => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
-  next = () => {
+  getSelected = async() => {
+      const {appDir, story,selected, index} = this.state;
+      console.log(appDir);
+      // get history from file
+      const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
+      console.log(storyHF);
+      // // check if file exist
+      await RNFS.exists(storyHF)
+      .then( (exists) => {
+          if (exists) {
+              console.log("History File exist");
+              // get id from file
+              RNFetchBlob.fs.readFile(storyHF, 'utf8')
+              .then((data) => {
+                // handle the data ..
+                this.setState({selected: parseInt(data)});
+                return data;
+              })
+          } else {
+              console.log("File need to be created with index 1");
+              RNFetchBlob.fs.createFile(storyHF, '1', 'utf8').then(()=>{
+                this.setState({selected: 1});
+                console.log('file created');
+              });
+          }
+      });
+  }
+  next = async () => {
 
+    const {appDir, story, selected, index} = this.state;
+    let newIndex = (index === (selected-1)) ? (index+1) : (index+1);
+    // get history from file
+    const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
+    // // check if file exist
+    await RNFS.exists(storyHF)
+    .then( (exists) => {
+        if (exists) {
+            console.log("History File exist");
+            // get write new value to file
+            // rimraf file
+            RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+              this.setState({selected: (newIndex+1)});
+              console.log('file writen');
+            });
+
+        } else {
+            console.log("File need to be created with index 1");
+            RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+              this.setState({selected: (newIndex+1)});
+              console.log('file created');
+            });
+        }
+    });
+    if (selected < story.stages.length)
+    {
+      return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
+    } else {
+      // story complete go back to story map menu
+      return await this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
+    }
   }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
@@ -92,7 +155,7 @@ export default class ToAR extends Component {
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
     const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
-    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} />;
+    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [ { element: storyReload }, { element: storyMap }, { element: storyNext} ];
     const arScene = {
       'vip':  { scene: VIP },

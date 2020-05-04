@@ -149,14 +149,15 @@ class StoryMap extends Component {
     });
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
+    const index = this.props.navigation.getParam('index');
     this.state = {
       featureCollection: featureCollection([]),
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: routes[0].coordinates,
-      destination: routes[1].coordinates,
-      goto: routes[0].coordinates ,
+      origin: routes[index].coordinates,
+      destination: routes[(index+1)].coordinates,
+      goto: routes[index].coordinates ,
       zoom: 15,
       followUserLocation: false,
       route: null,
@@ -190,7 +191,7 @@ class StoryMap extends Component {
       story: this.props.navigation.getParam('story'),
       theme: this.props.navigation.getParam('story').theme,
       order: this.props.navigation.getParam('order'),
-      index: this.props.navigation.getParam('index'),
+      index: index,
       location: [],
       position: {},
     };
@@ -366,7 +367,7 @@ class StoryMap extends Component {
     this.setState({position: newUserLocation})
   }
   history= async () =>  {
-    const {AppDir} = this.state;
+    const {AppDir, routes, index, selected} = this.state;
     // get history from file
     const storyHF = AppDir + '/stories/' + this.state.story.id + '/complete.txt';
     console.log(storyHF);
@@ -380,6 +381,7 @@ class StoryMap extends Component {
             .then((data) => {
               // handle the data ..
               this.setState({selected: parseInt(data)});
+              this.goTo(routes[(data-1)].coordinates, false);
               return data;
             })
         } else {
