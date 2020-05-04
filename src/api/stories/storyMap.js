@@ -363,6 +363,7 @@ class StoryMap extends Component {
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
+  woosh = null
   audioPlay = async () => {
     const story = this.state;
     const stage = story.stages[this.state.index];
@@ -379,7 +380,7 @@ class StoryMap extends Component {
       Sound.setCategory('Playback');
       // Load the sound file path from the app story bundle
       // See notes below about preloading sounds within initialization code below.
-      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
@@ -389,7 +390,7 @@ class StoryMap extends Component {
         // Loop indefinitely until stop() is called
 
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        this.whoosh.play((success) => {
           if (success) {
             console.log('successfully finished playing');
             var nextaudio = new Sound(path2, Sound.MAIN_BUNDLE, (error) => {
@@ -414,7 +415,7 @@ class StoryMap extends Component {
             console.log('playback failed due to audio decoding errors');
           }
         });
-        whoosh.release();
+        this.whoosh.release();
       });
     }
     if (count === 1) {
@@ -426,7 +427,7 @@ class StoryMap extends Component {
       Sound.setCategory('Playback');
       // Load the sound file path from the app story bundle
       // See notes below about preloading sounds within initialization code below.
-      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
@@ -435,7 +436,7 @@ class StoryMap extends Component {
         console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
 
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        this.whoosh.play((success) => {
           if (success) {
             console.log('successfully finished playing');
           } else {
@@ -443,10 +444,10 @@ class StoryMap extends Component {
           }
         });
         if(loop) {
-          whoosh.setNumberOfLoops(-1);
+          this.whoosh.setNumberOfLoops(-1);
         }
       });
-      whoosh.release();
+      this.whoosh.release();
     }
 
   }

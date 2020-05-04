@@ -157,6 +157,7 @@ class ToPath extends Component {
 
   constructor(props) {
     super(props);
+    let whoosh = null;
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
     const routes = stages.map((stage, i) => {
@@ -227,9 +228,7 @@ class ToPath extends Component {
       };
       const index = this.props.navigation.getParam('index');
       const res = await directionsClient.getDirections(reqOptions).send();
-
       await this.audioPlay();
-
       this.setState({
         route: makeLineString(res.body.routes[index].geometry.coordinates),
       });
@@ -273,7 +272,7 @@ class ToPath extends Component {
     }
   }
   componentWillUnmount() {
-    this.whoosh.release();
+    (this.whoosh) ? this.whoosh.release() : '';
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
     }
@@ -483,6 +482,7 @@ class ToPath extends Component {
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
+
   audioPlay = async () => {
     const story = this.state;
     const stage = story.stages[this.state.index];
@@ -505,7 +505,7 @@ class ToPath extends Component {
           return;
         }
         // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+        console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
         // Loop indefinitely until stop() is called
 
         // Play the sound with an onEnd callback
@@ -563,7 +563,7 @@ class ToPath extends Component {
           }
         });
         if(loop) {
-          whoosh.setNumberOfLoops(-1);
+          this.whoosh.setNumberOfLoops(-1);
         }
       });
       this.whoosh.release();
@@ -581,7 +581,7 @@ class ToPath extends Component {
       // access_token
     );
   }
-  whoosh = null
+
   render() {
     const {distanceTotal, selected, theme, story, index} = this.state;
     const Header = () => (
