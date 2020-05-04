@@ -150,9 +150,6 @@ class StoryMap extends Component {
     var mbbox = bbox(line);
     this.state = {
       featureCollection: featureCollection([]),
-      prevLatLng: null,
-      track: null,
-      distanceTotal:null,
       latitude: null,
       record: null,
       showUserLocation: true,
@@ -172,7 +169,9 @@ class StoryMap extends Component {
         unknownIcon: unknownIcon,
         mapIcon: mapIcon,
       },
-      distanceTotal: 0,
+      prevLatLng: null,
+      track: null,
+      distanceTotal:null,
       record: null,
       track: null,
       prevLatLng: null,
@@ -570,7 +569,7 @@ class StoryMap extends Component {
     this.goTo(coords, false);
   }
   render() {
-    const {distance, selected, theme, story} = this.state;
+    const {distanceTotal, selected, theme, story} = this.state;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -584,7 +583,7 @@ class StoryMap extends Component {
             textShadowRadius: 2,
             fontFamily: theme.font1}} >{story.title}</Text>
           <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} next in {distance}m</Text>
+          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} next in {distanceTotal}m</Text>
         </ImageBackground>
 
       </View>

@@ -273,9 +273,11 @@ class ToPath extends Component {
     }
   }
   componentWillUnmount() {
+    this.whoosh.release();
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
     }
+
   }
 
   renderRoute() {
@@ -497,7 +499,7 @@ class ToPath extends Component {
       Sound.setCategory('Playback');
       // Load the sound file path from the app story bundle
       // See notes below about preloading sounds within initialization code below.
-      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
@@ -507,7 +509,7 @@ class ToPath extends Component {
         // Loop indefinitely until stop() is called
 
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        this.whoosh.play((success) => {
           if (success) {
             console.log('successfully finished playing');
             var nextaudio = new Sound(path2, Sound.MAIN_BUNDLE, (error) => {
@@ -532,7 +534,7 @@ class ToPath extends Component {
             console.log('playback failed due to audio decoding errors');
           }
         });
-        whoosh.release();
+        this.whoosh.release();
       });
     }
     if (count === 1) {
@@ -544,16 +546,16 @@ class ToPath extends Component {
       Sound.setCategory('Playback');
       // Load the sound file path from the app story bundle
       // See notes below about preloading sounds within initialization code below.
-      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
         }
         // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+        console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
 
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        this.whoosh.play((success) => {
           if (success) {
             console.log('successfully finished playing');
           } else {
@@ -564,7 +566,7 @@ class ToPath extends Component {
           whoosh.setNumberOfLoops(-1);
         }
       });
-      whoosh.release();
+      this.whoosh.release();
     }
 
   }
@@ -579,8 +581,9 @@ class ToPath extends Component {
       // access_token
     );
   }
+  whoosh = null
   render() {
-    const {selected, theme, story, index} = this.state;
+    const {distanceTotal, selected, theme, story, index} = this.state;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -594,7 +597,7 @@ class ToPath extends Component {
             textShadowRadius: 2,
             fontFamily: story.theme.font1}} >{story.title}</Text>
           <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length}</Text>
+          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} {distanceTotal}m</Text>
         </ImageBackground>
 
       </View>
