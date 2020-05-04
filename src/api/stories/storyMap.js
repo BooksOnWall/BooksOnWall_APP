@@ -379,7 +379,7 @@ class StoryMap extends Component {
             RNFetchBlob.fs.readFile(storyHF, 'utf8')
             .then((data) => {
               // handle the data ..
-              this.setState({selected: data});
+              this.setState({selected: parseInt(data)});
               return data;
             })
         } else {
@@ -503,7 +503,7 @@ class StoryMap extends Component {
   }
   next = () => {
     const max = this.state.routes.length;
-    const selected = (this.state.selected < max) ? (this.state.selected + 1) : max;
+    const selected = (parseInt(this.state.selected) < max) ? (parseInt(this.state.selected) + 1) : max;
     this.setState({selected: selected});
     const id = (selected -1);
     const coords = this.state.routes[id].coordinates;
