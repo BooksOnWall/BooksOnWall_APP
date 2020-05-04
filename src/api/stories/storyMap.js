@@ -13,6 +13,10 @@ import Page from './stage/mapbox-gl/common/Page';
 import { MAPBOX_KEY  } from 'react-native-dotenv';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
 import mapIcon from '../../../assets/nav/btn_map_point.png';
+import openIcon from '../../../assets/nav/btn_map_point.png';
+import completeIcon from '../../../assets/nav/btn_map_point.png';
+import unknownIcon from '../../../assets/nav/btn_map_point.png';
+
 import {featureCollection, feature} from '@turf/helpers';
 import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
@@ -122,28 +126,7 @@ const layerStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const AnnotationContent = ({title}) => (
-  <View style={{borderColor: 'black', borderWidth: 1.0, width: 60}}>
-    <Text>{title}</Text>
-    <TouchableOpacity
-      style={{
-        backgroundColor: 'blue',
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Text
-        style={{
-          color: 'white',
-          fontWeight: 'bold',
-        }}>
-        Btn
-      </Text>
-    </TouchableOpacity>
-  </View>
-);
+
 class StoryMap extends Component {
   static navigationOptions = {
     title: 'Story Map',
@@ -184,8 +167,15 @@ class StoryMap extends Component {
       mbbox: mbbox,
       images: {
         example: mapIcon,
+        openIcon: openIcon,
+        completeIcon: completeIcon,
+        unknownIcon: unknownIcon,
         mapIcon: mapIcon,
       },
+      distanceTotal: 0,
+      record: null,
+      track: null,
+      prevLatLng: null,
       radius: 20,
       selected:1,
       selectedMenu: null,
@@ -328,24 +318,6 @@ class StoryMap extends Component {
     );
   }
 
-  renderOrigin() {
-    let backgroundColor = 'white';
-
-    if (this.state.currentPoint) {
-      backgroundColor = '#314ccd';
-    }
-
-    const style = [layerStyles.origin, {circleColor: backgroundColor}];
-
-    return (
-      <MapboxGL.ShapeSource
-        id="origin"
-        shape={MapboxGL.geoUtils.makePoint(this.state.origin)}
-        >
-        <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
-      </MapboxGL.ShapeSource>
-    );
-  }
   offlineLoad =  async () => {
     const name = 'story'+this.state.story.id;
     const offlinePack = await MapboxGL.offlineManager.getPack(name);
@@ -374,30 +346,6 @@ class StoryMap extends Component {
     } catch(e) {
       console.log(e);
     }
-  }
-  renderActions() {
-    if (this.state.routeSimulator) {
-      return null;
-    }
-
-    return (
-      <View style={styles.buttonCnt}>
-          <Button
-            raised
-            title="First"
-            onPress={() => this.goTo(this.state.routes[0].coordinates, false)}
-            style={styles.button}
-            disabled={false}
-            />
-            <Button
-              raised
-              title="Next"
-              onPress={() => this.goTo(this.state.routes[1].coordinates, false)}
-              style={styles.button}
-              disabled={false}
-              />
-      </View>
-    );
   }
   goTo = async (coordinates,followUserLocation ) => {
     try {
@@ -513,7 +461,7 @@ class StoryMap extends Component {
 
   }
   renderStages = () => {
-    const {selected, routes, index, images} = this.state;
+    const {theme, selected, routes, index, images} = this.state;
     const id = (selected -1);
     let features = {
       type: 'FeatureCollection',
@@ -522,17 +470,16 @@ class StoryMap extends Component {
 
     if (routes && routes.length > 1) {
       features.features = routes.map((stage, i) => {
+        let icon = (index > i ) ? 'openIcon' : 'unknownIcon';
+        icon = (index === i) ? 'completeIcon' : icon;
         const feature = {
           type: 'Feature',
           id: 'Stage'+i,
           properties: {
-            type: 'circle',
             radius: 40,
-            icon: 'mapIcon',
-            name: i,
-            text: 'Stage '+i,
+            icon: icon,
             index: i,
-            label: (i+1),
+            label: (index > i) ? '?' : (i+1),
           },
           geometry: {
             type: 'Point',
@@ -541,9 +488,10 @@ class StoryMap extends Component {
         };
         return feature;
       });
-      console.log('features', features);
+
 
       let backgroundColor = 'white';
+      const font = theme.font1;
       const iconstyles = {
         icon: {
           iconImage: ['get', 'icon'],
@@ -553,25 +501,43 @@ class StoryMap extends Component {
           textSize: 40,
           textMaxWidth: 50,
           textColor: '#FFF',
+          // textFont: font,
           textAnchor: 'center',
           textAllowOverlap: true,
           iconSize: [
             'match',
             ['get', 'icon'],
             'mapIcon',
-            1.2,
+            .8,
             /* default */ 1,
           ],
         },
       };
-      const colors = ['white', 'black', '#FF9900', 'red', '#FF99FF', '#FF99BB']
-      console.log('routes', routes);
-
-      const style = [layerStyles.origin, {circleColor: colors[3]}];
       return (
         <>
 
-        <MapboxGL.Images
+
+       <PulseCircleLayer
+         shape={features}
+         id="pulse"
+         onPress={this.enterStage}
+         radius={40}
+         pulseRadius={20}
+         duration={600}
+         innerCircleStyle={circleStyles.innerCircle}
+         outerCircleStyle={circleStyles.outerCircle}
+         innerCirclePulse={circleStyles.innerCirclePulse}
+         />
+
+       <MapboxGL.ShapeSource
+         id="StagesShapeSource"
+         hitbox={{width: 20, height: 20}}
+         onPress={this.enterStage}
+         shape={features}
+         >
+         <MapboxGL.SymbolLayer id="Stage"  uponLayerID="pulse" style={iconstyles.icon} />
+       </MapboxGL.ShapeSource>
+       <MapboxGL.Images
          nativeAssetImages={['pin']}
          images={images}
          onImageMissing={(imageKey) =>
@@ -580,35 +546,14 @@ class StoryMap extends Component {
            })
          }
        />
-
-       <MapboxGL.ShapeSource
-         id="StagesShapeSource"
-         hitbox={{width: 20, height: 20}}
-         onPress={this.enterStage}
-         shape={features}
-         >
-         <MapboxGL.Animated.CircleLayer id="InnerCircle" style={style} />
-         <MapboxGL.SymbolLayer id="Stage"  style={iconstyles.icon} >
-         </MapboxGL.SymbolLayer>
-
-       </MapboxGL.ShapeSource>
-       <PulseCircleLayer
-         shape={features}
-         id="circles"
-         aboveLayerID="InnerCircle"
-         onPress={this.enterStage}
-         radius={30}
-         pulseRadius={60}
-         duration={2000}
-         innerCircleStyle={circleStyles.innerCircle}
-         outerCircleStyle={circleStyles.outerCircle}
-         innerCirclePulse={circleStyles.innerCirclePulse}
-         />
        </>
      );
     }
   }
+  updateMenu = (e) => {
+    console.log('press', e);
 
+  }
   prev = () => {
     const selected = (this.state.selected > 1) ? (this.state.selected - 1) : 1 ;
 
@@ -654,7 +599,7 @@ class StoryMap extends Component {
       <View style={styles.footer}>
       <ButtonGroup style={styles.menu}
         buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
-        onPress={this.updateMenu}
+        onPress={(e) => this.updateMenu}
         selectedIndex={this.state.selectedMenu}
         selectedButtonStyle= {{backgroundColor: '#750000'}}
         buttons={MenuButtons}
@@ -688,8 +633,6 @@ class StoryMap extends Component {
             />
             {this.renderStages()}
         </MapboxGL.MapView>
-
-        {this.renderActions()}
         <Footer />
       </Page>
     );

@@ -335,15 +335,16 @@ class ToPath extends Component {
 
 
   renderMarkers() {
-    let backgroundColor = '#750000';
+
     const {index} = this.state;
+    let backgroundColor = '#750000';
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
     }
 
     const style = [layerStyles.destination, {circleColor: backgroundColor}];
     const label = [index,(index+1)];
-    console.log(this.state.position.coords);
+
     const features = {
       type: 'FeatureCollection',
       features: (index > 0) ? [
@@ -351,11 +352,8 @@ class ToPath extends Component {
           type: 'Feature',
           id: 'Stage'+ label[0],
           properties: {
-            type: 'circle',
             radius: 40,
             icon: 'mapIcon',
-            text: 'Stage '+label[0],
-            index: (index-1),
             label: label[0],
           },
           geometry: {
@@ -367,11 +365,8 @@ class ToPath extends Component {
           type: 'Feature',
           id: 'Stage'+label[1],
           properties: {
-            type: 'circle',
             radius: 40,
             icon: 'mapIcon',
-            text: 'Stage '+ label[1],
-            index: index,
             label: label[1],
           },
           geometry: {
@@ -384,11 +379,8 @@ class ToPath extends Component {
           type: 'Feature',
           id: 'Stage'+label[1],
           properties: {
-            type: 'circle',
             radius: 40,
             icon: 'mapIcon',
-            text: 'Stage '+ label[1],
-            index: index,
             label: label[1],
           },
           geometry: {
@@ -397,27 +389,25 @@ class ToPath extends Component {
           },
         }]
     };
-
-    console.log('features', features);
     return (
       <>
-      <MapboxGL.ShapeSource
-        id="destination"
-        shape={features}
-        >
-        <MapboxGL.Animated.CircleLayer id="destinationInnerCircle" style={style} />
-        <MapboxGL.SymbolLayer id="destination"  style={iconstyles.icon} />
-      </MapboxGL.ShapeSource>
       <PulseCircleLayer
+        id="pulse"
         shape={features}
-        aboveLayerID="destinationInnerCircle"
         radius={40}
-        pulseRadius={100}
+        pulseRadius={20}
         duration={600}
         innerCircleStyle={circleStyles.innerCircle}
         outerCircleStyle={circleStyles.outerCircle}
         innerCirclePulse={circleStyles.innerCirclePulse}
         />
+      <MapboxGL.ShapeSource
+        id="destination"
+        shape={features}
+        >
+        <MapboxGL.SymbolLayer uponLayerID="pulse" id="destination"  style={iconstyles.icon} />
+      </MapboxGL.ShapeSource>
+
       </>
     );
   }
@@ -455,12 +445,12 @@ class ToPath extends Component {
       return null;
     }
     const index = this.state.index;
-const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index})} />;
-const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
-const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
-const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
-const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
-const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl} ];
+    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index})} />;
+    const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
+    const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
+    const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
+    const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
+    const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl} ];
 
     return (
       <View style={styles.footer}>
