@@ -20,8 +20,7 @@ import unknownIcon from '../../../assets/nav/btn_map_point.png';
 import {featureCollection, feature} from '@turf/helpers';
 import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
-// import audio lib
-import Sound from 'react-native-sound';
+
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -363,102 +362,15 @@ class StoryMap extends Component {
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
-  woosh = null
-  audioPlay = async () => {
-    const story = this.state;
-    const stage = story.stages[this.state.index];
-    const count =  stage.onZoneLeave.length;
-    console.log(count);
-    if (count > 1) {
-      const audio = stage.onZoneLeave[0];
-      const audio2 = stage.onZoneLeave[1];
-      const loop = audio.loop;
-      let path = audio.path;
-      let path2 = audio2.path;
-      path = this.state.storyDir + path.replace("assets/stories/", "");
-      path2 = this.state.storyDir + path2.replace("assets/stories/", "");
-      Sound.setCategory('Playback');
-      // Load the sound file path from the app story bundle
-      // See notes below about preloading sounds within initialization code below.
-      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-          console.log('failed to load the sound', error);
-          return;
-        }
-        // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
-        // Loop indefinitely until stop() is called
 
-        // Play the sound with an onEnd callback
-        this.whoosh.play((success) => {
-          if (success) {
-            console.log('successfully finished playing');
-            var nextaudio = new Sound(path2, Sound.MAIN_BUNDLE, (error) => {
-              if (error) {
-                console.log('failed to load the sound', error);
-                return;
-              }
-              // loaded successfully
-              console.log('duration in seconds: ' + nextaudio.getDuration() + 'number of channels: ' + nextaudio.getNumberOfChannels());
-
-              // Play the sound with an onEnd callback
-              nextaudio.play((success) => {
-                if (success) {
-                  console.log('successfully finished playing');
-                  nextaudio.release();
-                } else {
-                  console.log('playback failed due to audio decoding errors');
-                }
-              });
-            });
-          } else {
-            console.log('playback failed due to audio decoding errors');
-          }
-        });
-        this.whoosh.release();
-      });
-    }
-    if (count === 1) {
-      const audio = stage.onZoneLeave[0];
-
-      const loop = audio.loop;
-      let path = audio.path
-      path = this.state.storyDir + path.replace("assets/stories/", "");
-      Sound.setCategory('Playback');
-      // Load the sound file path from the app story bundle
-      // See notes below about preloading sounds within initialization code below.
-      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-          console.log('failed to load the sound', error);
-          return;
-        }
-        // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
-
-        // Play the sound with an onEnd callback
-        this.whoosh.play((success) => {
-          if (success) {
-            console.log('successfully finished playing');
-          } else {
-            console.log('playback failed due to audio decoding errors');
-          }
-        });
-        if(loop) {
-          this.whoosh.setNumberOfLoops(-1);
-        }
-      });
-      this.whoosh.release();
-    }
-
-  }
   enterStage = (e) => {
     const feature = e.nativeEvent.payload;
     console.log('You pressed a layer here is your feature', feature);
     const index = feature.properties.index;
+    console.log('index', index);
     this.goTo(feature.geometry.coordinates);
     this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index});
-    Toast.showWithGravity('iEnter: '+feature.properties.text, Toast.SHORT, Toast.TOP);
-
+    Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
   }
   renderStages = () => {
     const {theme, selected, routes, index, images} = this.state;
