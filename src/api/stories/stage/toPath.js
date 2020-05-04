@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
+import {NativeModules,Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button, ButtonGroup, Icon, Badge} from 'react-native-elements';
 import {lineString as makeLineString, bbox} from '@turf/turf';
@@ -168,7 +168,7 @@ class ToPath extends Component {
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     const index = this.props.navigation.getParam('index');
-
+    const origin = (index > 0) ? routes[index].coordinates: location;
     this.state = {
       prevLatLng: null,
       track: null,
@@ -176,7 +176,7 @@ class ToPath extends Component {
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: (index > 0) ? routes[index].coordinates: location,
+      origin: origin,
       destination: routes[index].coordinates,
       goto: (location) ? location : routes[index].coordinates ,
       zoom: 18,
@@ -198,6 +198,10 @@ class ToPath extends Component {
       order: this.props.navigation.getParam('order'),
       index: index,
       selected: (index+1),
+      fromLat: origin[1],
+      fromLong: origin[0],
+      toLat: routes[index].coordinates[1],
+      toLong: routes[index].coordinates[0],
       theme: this.props.navigation.getParam('story').theme,
       location: [],
       position: {},
@@ -454,7 +458,7 @@ class ToPath extends Component {
 const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index})} />;
 const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
 const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
-const storyOrigin = () => <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
+const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
 const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
 const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl} ];
 
@@ -573,6 +577,17 @@ const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { el
       whoosh.release();
     }
 
+  }
+  launchNavigation = () => {
+    const {story,fromLat, fromLong, toLat, toLong} = this.state;
+    NativeModules.MapboxNavigation.navigate(
+      fromLat,
+      fromLong,
+      toLat,
+      toLong,
+      // profile,
+      // access_token
+    );
   }
   render() {
     const {selected, theme, story, index} = this.state;
