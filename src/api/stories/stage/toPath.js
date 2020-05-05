@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {Platform, View, StyleSheet} from 'react-native';
+import {NativeModules,Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {Button} from 'react-native-elements';
+import {Button, ButtonGroup, Icon, Badge} from 'react-native-elements';
 import {lineString as makeLineString, bbox} from '@turf/turf';
 import Toast from 'react-native-simple-toast';
 import RouteSimulator from './mapbox-gl/showDirection/RouteSimulator';
@@ -15,6 +15,12 @@ import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
+const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
 const styles = StyleSheet.create({
   buttonCnt: {
@@ -30,27 +36,114 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: 'blue',
   },
+  header: {
+    flex: 0,
+    flexDirection:'column',
+    alignItems:'stretch',
+    minHeight: STATUS_BAR_HEIGHT,
+    backgroundColor: '#750000',
+    alignContent: 'stretch',
+    justifyContent:'center'
+  },
+  footer: {
+    flex: 0,
+    flexDirection:'column',
+    alignItems:'stretch',
+    minHeight: NAV_BAR_HEIGHT,
+    margin: 0,
+    padding: 0,
+    borderWidth: 0,
+    backgroundColor: '#750000',
+    alignContent: 'stretch',
+    justifyContent:'center'
+  },
+  menu: {
+    backgroundColor: "#750000",
+  },
+  location: {
+    color: "#FFF",
+  },
+  complete: {
+    color: "#FFF",
+  },
+  headerBackground: {
+    flex: 0,
+  },
 });
-
+const iconstyles = {
+  icon: {
+    iconImage: ['get', 'icon'],
+    iconOptional: true,
+    textIgnorePlacement: true,
+    textField: '{label}',
+    textSize: 40,
+    textMaxWidth: 50,
+    textColor: '#FFF',
+    textAnchor: 'center',
+    // textTranslate: [22, -22],
+    textAllowOverlap: true,
+    iconSize: [
+      'match',
+      ['get', 'icon'],
+      'mapIcon',
+      1.2,
+      /* default */ 1,
+    ],
+  },
+};
 const layerStyles = {
   origin: {
-    circleRadius: 5,
-    circleColor: 'white',
+    circleRadius: 40,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+
   },
   destination: {
-    circleRadius: 5,
-    circleColor: 'white',
+    circleRadius: 40,
+    circleColor: 'black',
+    circleBlur: .8,
+    circleOpacity: .9,
+
   },
   route: {
-    lineColor: 'white',
+    lineColor: '#314ccd',
     lineCap: MapboxGL.LineJoin.Round,
-    lineWidth: 3,
+    lineWidth: 7,
     lineOpacity: 0.84,
   },
   progress: {
-    lineColor: '#314ccd',
-    lineWidth: 3,
+    lineColor: '#750000',
+    lineWidth: 5,
   },
+};
+const circleStyles = {
+  innerCircle: {
+    circleStrokeWidth: 3,
+    circleStrokeColor: '#750000',
+    circleRadius: 5,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+
+  },
+  innerCirclePulse: {
+    circleStrokeWidth: 3,
+    circleStrokeColor: '#750000',
+    circleRadius: 2,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+
+  },
+  outerCircle: {
+    circleRadius: 2,
+    circleStrokeWidth: 1,
+    circleStrokeColor: '#750000',
+    circleColor: '#FFF',
+    circleBlur: .8,
+    circleOpacity: .9,
+  }
 };
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
@@ -64,6 +157,7 @@ class ToPath extends Component {
 
   constructor(props) {
     super(props);
+    let whoosh = null;
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
     const routes = stages.map((stage, i) => {
@@ -74,6 +168,8 @@ class ToPath extends Component {
     });
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
+    const index = this.props.navigation.getParam('index');
+    const origin = (index > 0) ? routes[index].coordinates: location;
     this.state = {
       prevLatLng: null,
       track: null,
@@ -81,15 +177,16 @@ class ToPath extends Component {
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: routes[0].coordinates,
-      destination: routes[1].coordinates,
-      goto: (location) ? location : routes[0].coordinates ,
+      origin: origin,
+      destination: routes[index].coordinates,
+      goto: (location) ? location : routes[index].coordinates ,
       zoom: 18,
       followUserLocation: true,
       route: null,
       stages: stages,
       routes: routes,
       mbbox: mbbox,
+      features: {},
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -100,7 +197,13 @@ class ToPath extends Component {
       storyDir: this.props.screenProps.AppDir + '/stories/',
       story: this.props.navigation.getParam('story'),
       order: this.props.navigation.getParam('order'),
-      index: this.props.navigation.getParam('index'),
+      index: index,
+      selected: (index+1),
+      fromLat: origin[1],
+      fromLong: origin[0],
+      toLat: routes[index].coordinates[1],
+      toLong: routes[index].coordinates[0],
+      theme: this.props.navigation.getParam('story').theme,
       location: [],
       position: {},
     };
@@ -123,11 +226,11 @@ class ToPath extends Component {
         profile: 'walking',
         geometries: 'geojson',
       };
-
+      const index = this.props.navigation.getParam('index');
       const res = await directionsClient.getDirections(reqOptions).send();
       await this.audioPlay();
       this.setState({
-        route: makeLineString(res.body.routes[0].geometry.coordinates),
+        route: makeLineString(res.body.routes[index].geometry.coordinates),
       });
       await request(
         Platform.select({
@@ -154,7 +257,7 @@ class ToPath extends Component {
 
       this.watchID = await navigator.geolocation.watchPosition((lastPosition) => {
         var { distanceTotal, record } = this.state;
-        this.setState({lastPosition});
+        (this.state.index > 0) ? this.setState({lastPosition}) : this.setState({origin: lastPosition, lastPosition: lastPosition}) ;
         if(record) {
           var newLatLng = {latitude:lastPosition.coords.latitude, longitude: lastPosition.coords.longitude};
           this.setState({ track: this.state.track.concat([newLatLng]) });
@@ -169,9 +272,11 @@ class ToPath extends Component {
     }
   }
   componentWillUnmount() {
+    (this.whoosh) ? this.whoosh.release() : '';
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
     }
+
   }
 
   renderRoute() {
@@ -229,22 +334,82 @@ class ToPath extends Component {
     );
   }
 
-  renderOrigin() {
-    let backgroundColor = 'white';
 
+  renderMarkers() {
+
+    const {index} = this.state;
+    let backgroundColor = '#750000';
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
     }
 
-    const style = [layerStyles.origin, {circleColor: backgroundColor}];
+    const style = [layerStyles.destination, {circleColor: backgroundColor}];
+    const label = [index,(index+1)];
 
+    const features = {
+      type: 'FeatureCollection',
+      features: (index > 0) ? [
+        {
+          type: 'Feature',
+          id: 'Stage'+ label[0],
+          properties: {
+            radius: 40,
+            icon: 'mapIcon',
+            label: label[0],
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: this.state.routes[(index-1)].coordinates ,
+          },
+        },
+        {
+          type: 'Feature',
+          id: 'Stage'+label[1],
+          properties: {
+            radius: 40,
+            icon: 'mapIcon',
+            label: label[1],
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: this.state.routes[index].coordinates,
+          },
+        }]
+        :
+        [{
+          type: 'Feature',
+          id: 'Stage'+label[1],
+          properties: {
+            radius: 40,
+            icon: 'mapIcon',
+            label: label[1],
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: this.state.routes[index].coordinates,
+          },
+        }]
+    };
     return (
+      <>
+      <PulseCircleLayer
+        id="pulse"
+        shape={features}
+        radius={40}
+        pulseRadius={20}
+        duration={600}
+        innerCircleStyle={circleStyles.innerCircle}
+        outerCircleStyle={circleStyles.outerCircle}
+        innerCirclePulse={circleStyles.innerCirclePulse}
+        />
       <MapboxGL.ShapeSource
-        id="origin"
-        shape={MapboxGL.geoUtils.makePoint(this.state.origin)}
+        id="destination"
+        shape={features}
         >
-        <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
+        <MapboxGL.SymbolLayer uponLayerID="pulse" id="destination"  style={iconstyles.icon} />
       </MapboxGL.ShapeSource>
+
+      </>
     );
   }
   offlineLoad =  async () => {
@@ -266,7 +431,7 @@ class ToPath extends Component {
       await MapboxGL.offlineManager.createPack({
         name: name,
         styleURL: this.state.styleURL,
-        minZoom: 14,
+        minZoom: 16,
         maxZoom: 20,
         bounds: [[box[0], box[1]], [box[2], box[3]]]
       }, progressListener, errorListener);
@@ -280,45 +445,44 @@ class ToPath extends Component {
     if (this.state.routeSimulator) {
       return null;
     }
+    const index = this.state.index;
+    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index})} />;
+    const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
+    const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
+    const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
+    const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
+    const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl} ];
+
     return (
-      <View style={styles.buttonCnt}>
-          <Button
-            raised
-            title="Locate"
-            onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)}
-            style={styles.button}
-            disabled={false}
-            />
-          <Button
-            raised
-            title="Origin"
-            onPress={() => this.goTo(this.state.origin, false)}
-            style={styles.button}
-            disabled={false}
-            />
-            <Button
-              raised
-              title="Dest"
-              onPress={() => this.goTo(this.state.destination, false)}
-              style={styles.button}
-              disabled={false}
-              />
-              <Button
-                raised
-                title="Save"
-                onPress={() => this.offlineSave()}
-                style={styles.button}
-                disabled={!this.state.route}
-                />
+      <View style={styles.footer}>
+        <ButtonGroup style={styles.menu}
+          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
+          onPress={this.updateMenu}
+          selectedIndex={this.state.selectedMenu}
+          selectedButtonStyle= {{backgroundColor: '#750000'}}
+          buttons={MenuButtons}
+          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
+          innerBorderStyle= {{ color: '#570402' }}
+        />
       </View>
     );
   }
-  goTo = (coordinates,followUserLocation ) => {
-    (!followUserLocation) ? this.setState({ followUserLocation: followUserLocation, goto: coordinates}) : this.setState({ followUserLocation: followUserLocation, goto: coordinates}) ;
+  goTo = async (coordinates,followUserLocation ) => {
+    try {
+      (this.state.followUserLocation !== followUserLocation) ? await this.followUserLocationToggle() : null;
+      await this.setState({goto: coordinates});
+    } catch(e) {
+      console.log(e);
+    }
+
+  }
+  followUserLocationToggle = () => {
+    return this.setState({followUserLocation: !this.state.followUserLocation});
   }
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
+
   audioPlay = async () => {
     const story = this.state;
     const stage = story.stages[this.state.index];
@@ -335,17 +499,17 @@ class ToPath extends Component {
       Sound.setCategory('Playback');
       // Load the sound file path from the app story bundle
       // See notes below about preloading sounds within initialization code below.
-      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
         }
         // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+        console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
         // Loop indefinitely until stop() is called
 
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        this.whoosh.play((success) => {
           if (success) {
             console.log('successfully finished playing');
             var nextaudio = new Sound(path2, Sound.MAIN_BUNDLE, (error) => {
@@ -370,7 +534,7 @@ class ToPath extends Component {
             console.log('playback failed due to audio decoding errors');
           }
         });
-        whoosh.release();
+        this.whoosh.release();
       });
     }
     if (count === 1) {
@@ -382,16 +546,16 @@ class ToPath extends Component {
       Sound.setCategory('Playback');
       // Load the sound file path from the app story bundle
       // See notes below about preloading sounds within initialization code below.
-      var whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
           console.log('failed to load the sound', error);
           return;
         }
         // loaded successfully
-        console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+        console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
 
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        this.whoosh.play((success) => {
           if (success) {
             console.log('successfully finished playing');
           } else {
@@ -399,16 +563,50 @@ class ToPath extends Component {
           }
         });
         if(loop) {
-          whoosh.setNumberOfLoops(-1);
+          this.whoosh.setNumberOfLoops(-1);
         }
       });
-      whoosh.release();
+      this.whoosh.release();
     }
 
   }
+  launchNavigation = () => {
+    const {story,fromLat, fromLong, toLat, toLong} = this.state;
+    NativeModules.MapboxNavigation.navigate(
+      fromLat,
+      fromLong,
+      toLat,
+      toLong,
+      // profile,
+      // access_token
+    );
+  }
+
   render() {
+    const {distanceTotal, selected, theme, story, index} = this.state;
+    const Header = () => (
+      <View style={styles.header}>
+        <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
+          <Badge  value={selected} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+          <Text style={{
+            fontSize: 26,
+            letterSpacing: 1,
+            color: "#fff",
+            textShadowColor: 'rgba(0, 0, 0, 0.85)',
+            textShadowOffset: {width: 1, height: 1},
+            textShadowRadius: 2,
+            fontFamily: story.theme.font1}} >{story.title}</Text>
+          <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} {distanceTotal}m</Text>
+        </ImageBackground>
+
+      </View>
+    );
+
+
     return (
       <Page {...this.props}>
+        <Header />
         <MapboxGL.MapView
           logoEnabled={false}
           compassEnabled={true}
@@ -429,8 +627,7 @@ class ToPath extends Component {
             followUserMode='compass'
             onUserTrackingModeChange={false}
             />
-
-          {this.renderOrigin()}
+          {this.renderMarkers()}
           {this.renderRoute()}
           {this.renderCurrentPoint()}
           {this.renderProgressLine()}
@@ -439,17 +636,7 @@ class ToPath extends Component {
             animated={true}
             visible={true} />
 
-          <MapboxGL.ShapeSource
-            id="destination"
-            shape={MapboxGL.geoUtils.makePoint(this.state.destination)}
-            >
-            <MapboxGL.CircleLayer
-              id="destinationInnerCircle"
-              style={layerStyles.destination}
-              />
-          </MapboxGL.ShapeSource>
         </MapboxGL.MapView>
-
         {this.renderActions()}
       </Page>
     );

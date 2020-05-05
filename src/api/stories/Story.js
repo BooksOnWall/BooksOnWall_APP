@@ -486,8 +486,8 @@ export default class Story extends Component {
           </TouchableOpacity>
           )}
 
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchAR()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchAR()}  />
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
         );
@@ -523,6 +523,7 @@ export default class Story extends Component {
     </View>
   </View>
 )
+  storyMap = () => this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   render() {
       const {theme, themeSheet, story} = this.state;

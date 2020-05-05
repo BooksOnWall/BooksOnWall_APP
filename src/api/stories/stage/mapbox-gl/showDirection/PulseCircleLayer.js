@@ -25,7 +25,7 @@ class PulseCircleLayer extends React.Component {
     radius: PropTypes.number,
     pulseRadius: PropTypes.number,
     duration: PropTypes.number,
-
+    innerCirclePulse: PropTypes.any,
     innerCircleStyle: PropTypes.any,
     outerCircleStyle: PropTypes.any,
     shape: PropTypes.any,
@@ -34,9 +34,9 @@ class PulseCircleLayer extends React.Component {
   };
 
   static defaultProps = {
-    radius: 6,
-    pulseRadius: 20,
-    duration: 1000,
+    radius: 20,
+    pulseRadius: 50,
+    duration: 600,
   };
 
   constructor(props) {
@@ -104,6 +104,7 @@ class PulseCircleLayer extends React.Component {
 
     const innerCirclePulseStyle = [
       styles.innerCirclePulse,
+      this.props.innerCirclePulse,
       {circleRadius: this.state.innerRadius},
     ];
 
