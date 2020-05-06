@@ -92,13 +92,13 @@ export default class ToAR extends Component {
               RNFetchBlob.fs.readFile(storyHF, 'utf8')
               .then((data) => {
                 // handle the data ..
-                this.setState({completed: parseInt(data)});
+                this.setState({completed: parseInt(data), selected: parseInt(data)});
                 return data;
               })
           } else {
               console.log("File need to be created with index 1");
               RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
-                this.setState({completed: 0});
+                this.setState({completed: 0, selected: 1});
                 console.log('file created');
               });
           }
@@ -111,6 +111,8 @@ export default class ToAR extends Component {
     // get history from file
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
     // // check if complete need to be updated
+    console.log('newIndex',newIndex);
+    console.log('selected', selected);
     if ((newIndex+1) > (selected -1)) {
       await RNFS.exists(storyHF)
       .then( (exists) => {
