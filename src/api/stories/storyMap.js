@@ -14,10 +14,10 @@ import { MAPBOX_KEY  } from 'react-native-dotenv';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
-import mapIcon from '../../../assets/nav/btn_map_point.png';
-import openIcon from '../../../assets/nav/btn_map_point.png';
-import completeIcon from '../../../assets/nav/btn_map_point.png';
-import unknownIcon from '../../../assets/nav/btn_map_point.png';
+
+import openIcon from '../../../assets/nav/point1.png';
+import completeIcon from '../../../assets/nav/point2.png';
+import unknownIcon from '../../../assets/nav/point3.png';
 
 import {featureCollection, feature} from '@turf/helpers';
 import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
@@ -105,14 +105,6 @@ const styles = StyleSheet.create({
 
 
 const layerStyles = {
-  origin: {
-    circleRadius: 15,
-    circleColor: 'white',
-  },
-  destination: {
-    circleRadius: 30,
-    circleColor: 'white',
-  },
   route: {
     lineColor: 'white',
     lineCap: MapboxGL.LineJoin.Round,
@@ -150,6 +142,8 @@ class StoryMap extends Component {
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     const index = this.props.navigation.getParam('index');
+    const id = this.props.navigation.getParam('story').id;
+
     this.state = {
       featureCollection: featureCollection([]),
       latitude: null,
@@ -165,12 +159,11 @@ class StoryMap extends Component {
       routes: routes,
       mbbox: mbbox,
       images: {
-        example: mapIcon,
         openIcon: openIcon,
         completeIcon: completeIcon,
-        unknownIcon: unknownIcon,
-        mapIcon: mapIcon,
+        unknownIcon: unknownIcon
       },
+      mapTheme: null,
       prevLatLng: null,
       track: null,
       distanceTotal:null,
@@ -195,10 +188,30 @@ class StoryMap extends Component {
       location: [],
       position: {},
     };
-
+    console.log('styleURL', this.state.styleURL);
     this.onStart = this.onStart.bind(this);
   }
+  getMapTheme = async () => {
+    const id = this.state.story.id;
+    const mapThemePath =  this.props.screenProps.AppDir+ '/stories/'+ id +'/map.json';
+    await RNFS.exists(mapThemePath)
+    .then( (exists) => {
+        if (exists) {
+            console.log("Map Theme File exist");
+            // get id from file
+            RNFetchBlob.fs.readFile(mapThemePath, 'utf8')
+            .then((data) => {
+              // handle the
+              const theme =  JSON.parse(data);
+              const style = theme.style;
+              this.setState({ mapTheme: style});
 
+              console.log(this.state.mapTheme);
+              return style;
+            })
+        }
+    });
+  }
   onStart() {
     const routeSimulator = new RouteSimulator(this.state.route);
     routeSimulator.addListener(currentPoint => this.setState({currentPoint}));
@@ -217,6 +230,7 @@ class StoryMap extends Component {
 
       const res = await directionsClient.getDirections(reqOptions).send();
       await this.history();
+      await this.getMapTheme();
       this.setState({
         route: makeLineString(res.body.routes[0].geometry.coordinates),
       });
@@ -395,9 +409,7 @@ class StoryMap extends Component {
   }
   enterStage = (e) => {
     const feature = e.nativeEvent.payload;
-    console.log('You pressed a layer here is your feature', feature);
     const index = feature.properties.index;
-    console.log('index', index);
     this.goTo(feature.geometry.coordinates);
     this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index});
     Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
@@ -412,8 +424,10 @@ class StoryMap extends Component {
 
     if (routes && routes.length > 1) {
       features.features = routes.map((stage, i) => {
-        let icon = (index > i ) ? 'openIcon' : 'unknownIcon';
-        icon = (index === i) ? 'completeIcon' : icon;
+        const selectedIndex = (selected-1);
+        let icon = (selectedIndex > i ) ? 'openIcon' : 'unknownIcon';
+        icon = (selectedIndex === i) ? 'completeIcon' : icon;
+
         const feature = {
           type: 'Feature',
           id: 'Stage'+i,
@@ -421,7 +435,7 @@ class StoryMap extends Component {
             radius: 40,
             icon: icon,
             index: i,
-            label: (index > i) ? '?' : (i+1),
+            label: (i > selectedIndex) ? '?' : (i+1),
           },
           geometry: {
             type: 'Point',
@@ -443,15 +457,14 @@ class StoryMap extends Component {
           textSize: 40,
           textMaxWidth: 50,
           textColor: '#FFF',
-          // textFont: font,
           textAnchor: 'center',
           textAllowOverlap: true,
           iconSize: [
             'match',
             ['get', 'icon'],
-            'mapIcon',
-            .8,
-            /* default */ 1,
+            'completeIcon',
+            1.4,
+            /* default */ 1.2,
           ],
         },
       };
@@ -484,7 +497,7 @@ class StoryMap extends Component {
          images={images}
          onImageMissing={(imageKey) =>
            this.setState({
-             images: {...this.state.images, [imageKey]: mapIcon},
+             images: {...this.state.images, [imageKey]: openIcon},
            })
          }
        />
@@ -512,7 +525,9 @@ class StoryMap extends Component {
     this.goTo(coords, false);
   }
   render() {
-    const {distanceTotal, selected, theme, story} = this.state;
+
+    const {distanceTotal, styleURL, selected, theme, story, mapTheme} = this.state;
+    if(!mapTheme) return false;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -550,6 +565,7 @@ class StoryMap extends Component {
       />
       </View>
     );
+
     return (
       <Page {...this.props}>
         <Header />
@@ -560,7 +576,7 @@ class StoryMap extends Component {
           ref={c => (this._map = c)}
           style={sheet.matchParent}
           pitch={60}
-          styleURL={this.state.styleURL}
+          styleURL={styleURL}
           >
 
           <MapboxGL.Camera
