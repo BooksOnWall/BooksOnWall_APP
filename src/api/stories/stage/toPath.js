@@ -15,6 +15,9 @@ import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
+import openIcon from '../../../../assets/nav/point1.png';
+import completeIcon from '../../../../assets/nav/point2.png';
+import unknownIcon from '../../../../assets/nav/point3.png';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -85,9 +88,9 @@ const iconstyles = {
     iconSize: [
       'match',
       ['get', 'icon'],
-      'mapIcon',
-      1.2,
-      /* default */ 1,
+      'completeIcon',
+      1.4,
+      /* default */ 1.4,
     ],
   },
 };
@@ -187,6 +190,11 @@ class ToPath extends Component {
       routes: routes,
       mbbox: mbbox,
       features: {},
+      images: {
+        openIcon: openIcon,
+        completeIcon: completeIcon,
+        unknownIcon: unknownIcon
+      },
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -337,7 +345,7 @@ class ToPath extends Component {
 
   renderMarkers() {
 
-    const {index} = this.state;
+    const {index, images} = this.state;
     let backgroundColor = '#750000';
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
@@ -354,7 +362,7 @@ class ToPath extends Component {
           id: 'Stage'+ label[0],
           properties: {
             radius: 40,
-            icon: 'mapIcon',
+            icon: 'unknownIcon',
             label: label[0],
           },
           geometry: {
@@ -367,7 +375,7 @@ class ToPath extends Component {
           id: 'Stage'+label[1],
           properties: {
             radius: 40,
-            icon: 'mapIcon',
+            icon: 'completeIcon',
             label: label[1],
           },
           geometry: {
@@ -381,7 +389,7 @@ class ToPath extends Component {
           id: 'Stage'+label[1],
           properties: {
             radius: 40,
-            icon: 'mapIcon',
+            icon: 'unknownIcon',
             label: label[1],
           },
           geometry: {
@@ -408,7 +416,15 @@ class ToPath extends Component {
         >
         <MapboxGL.SymbolLayer uponLayerID="pulse" id="destination"  style={iconstyles.icon} />
       </MapboxGL.ShapeSource>
-
+      <MapboxGL.Images
+        nativeAssetImages={['pin']}
+        images={images}
+        onImageMissing={(imageKey) =>
+          this.setState({
+            images: {...this.state.images, [imageKey]: openIcon},
+          })
+        }
+      />
       </>
     );
   }

@@ -462,7 +462,7 @@ class StoryMap extends Component {
           iconSize: [
             'match',
             ['get', 'icon'],
-            'completeIcon',
+            'unknownIcon',
             1.4,
             /* default */ 1.2,
           ],
