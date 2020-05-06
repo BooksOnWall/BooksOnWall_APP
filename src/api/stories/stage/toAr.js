@@ -109,26 +109,29 @@ export default class ToAR extends Component {
     let newIndex = (index === (selected-1)) ? (index+1) : (index+1);
     // get history from file
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-    // // check if file exist
-    await RNFS.exists(storyHF)
-    .then( (exists) => {
-        if (exists) {
-            console.log("History File exist");
-            // get write new value to file
-            // rimraf file
-            RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-              this.setState({selected: (newIndex+1)});
-              console.log('file writen');
-            });
+    // // check if complete need to be updated
+    console.log('newIndex',newIndex);
+    console.log('selected', selected);
+    if ((newIndex+1) > (selected -1)) {
+      await RNFS.exists(storyHF)
+      .then( (exists) => {
+          if (exists) {
+              console.log("History File exist");
+              // get write new value to file
+              // rimraf file
+              RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+                console.log('file writen');
+              });
 
-        } else {
-            console.log("File need to be created with index 1");
-            RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-              this.setState({selected: (newIndex+1)});
-              console.log('file created');
-            });
-        }
-    });
+          } else {
+              console.log("File need to be created with index 1");
+              RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+                console.log('file created');
+              });
+          }
+      });
+    }
+
     if (selected < story.stages.length)
     {
       return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
