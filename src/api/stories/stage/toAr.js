@@ -53,6 +53,7 @@ export default class ToAR extends Component {
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
       selected: 1,
+      completed: null,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
@@ -91,13 +92,13 @@ export default class ToAR extends Component {
               RNFetchBlob.fs.readFile(storyHF, 'utf8')
               .then((data) => {
                 // handle the data ..
-                this.setState({selected: parseInt(data)});
+                this.setState({completed: parseInt(data)});
                 return data;
               })
           } else {
               console.log("File need to be created with index 1");
-              RNFetchBlob.fs.createFile(storyHF, '1', 'utf8').then(()=>{
-                this.setState({selected: 1});
+              RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
+                this.setState({completed: 0});
                 console.log('file created');
               });
           }

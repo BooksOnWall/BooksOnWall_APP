@@ -207,6 +207,7 @@ class ToPath extends Component {
       order: this.props.navigation.getParam('order'),
       index: index,
       selected: (index+1),
+      completed: null,
       fromLat: origin[1],
       fromLong: origin[0],
       toLat: routes[index].coordinates[1],
@@ -599,11 +600,11 @@ class ToPath extends Component {
   }
 
   render() {
-    const {distanceTotal, selected, theme, story, index} = this.state;
+    const {distanceTotal, completed, selected, theme, story, index} = this.state;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-          <Badge  value={selected} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+          <Badge  value={completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
           <Text style={{
             fontSize: 26,
             letterSpacing: 1,

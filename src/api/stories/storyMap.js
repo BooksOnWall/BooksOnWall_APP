@@ -172,6 +172,7 @@ class StoryMap extends Component {
       prevLatLng: null,
       radius: 20,
       selected:1,
+      completed: null,
       selectedMenu: null,
       offlinePack: null,
       currentPoint: null,
@@ -205,8 +206,6 @@ class StoryMap extends Component {
               const theme =  JSON.parse(data);
               const style = theme.style;
               this.setState({ mapTheme: style});
-
-              console.log(this.state.mapTheme);
               return style;
             })
         }
@@ -394,14 +393,14 @@ class StoryMap extends Component {
             RNFetchBlob.fs.readFile(storyHF, 'utf8')
             .then((data) => {
               // handle the data ..
-              this.setState({selected: parseInt(data)});
+              this.setState({completed: parseInt(data)});
               this.goTo(routes[(data-1)].coordinates, false);
               return data;
             })
         } else {
             console.log("File need to be created with index 1");
-            RNFetchBlob.fs.createFile(storyHF, '1', 'utf8').then(()=>{
-              this.setState({selected: 1});
+            RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
+              this.setState({completed: 0});
               console.log('file created');
              });
         }
@@ -415,7 +414,7 @@ class StoryMap extends Component {
     Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
   }
   renderStages = () => {
-    const {theme, selected, routes, index, images} = this.state;
+    const {theme, completed, selected, routes, index, images} = this.state;
     const id = (selected -1);
     let features = {
       type: 'FeatureCollection',
@@ -424,9 +423,9 @@ class StoryMap extends Component {
 
     if (routes && routes.length > 1) {
       features.features = routes.map((stage, i) => {
-        const selectedIndex = (selected-1);
-        let icon = (selectedIndex > i ) ? 'openIcon' : 'unknownIcon';
-        icon = (selectedIndex === i) ? 'completeIcon' : icon;
+        const completedIndex = (completed === 0) ? 0: (completed-1);
+        let icon = (completedIndex > i ) ? 'openIcon' : 'unknownIcon';
+        icon = (completedIndex === i) ? 'completeIcon' : icon;
 
         const feature = {
           type: 'Feature',
@@ -435,7 +434,7 @@ class StoryMap extends Component {
             radius: 40,
             icon: icon,
             index: i,
-            label: (i > selectedIndex) ? '?' : (i+1),
+            label: (i > completedIndex) ? '?' : (i+1),
           },
           geometry: {
             type: 'Point',
@@ -444,7 +443,6 @@ class StoryMap extends Component {
         };
         return feature;
       });
-
 
       let backgroundColor = 'white';
       const font = theme.font1;
@@ -526,12 +524,12 @@ class StoryMap extends Component {
   }
   render() {
 
-    const {distanceTotal, styleURL, selected, theme, story, mapTheme} = this.state;
+    const {distanceTotal, styleURL, selected, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-        <Badge size="large" status="success" value={selected} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+        <Badge size="large" status="success" value={completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
           <Text style={{
             fontSize: 26,
             letterSpacing: 1,
