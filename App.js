@@ -30,6 +30,7 @@ import Intro from './src/api/intro/intro';
 import Stories from './src/api/stories/Stories';
 import TabletLayout from './src/api/stories/TabletLayout';
 import Story from './src/api/stories/Story';
+import StoryComplete from './src/api/stories/storyComplete';
 import Stages from './src/api/stories/stages/Stages';
 import Stage from './src/api/stories/stage/Stage';
 import ToPath from './src/api/stories/stage/toPath';
@@ -60,6 +61,7 @@ const MainNavigator = createStackNavigator({
   Stories: { screen: Stories},
   TabletLayout: {screen: TabletLayout},
   Story: { screen: Story},
+  StoryComplete: { screen: StoryComplete},
   Stages: { screen: Stages},
   Stage: { screen: Stage},
   ToAr: { screen: ToAr},

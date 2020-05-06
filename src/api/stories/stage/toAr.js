@@ -106,13 +106,11 @@ export default class ToAR extends Component {
   }
   next = async () => {
 
-    const {appDir, story, selected, index} = this.state;
+    const {appDir, story, selected, completed, index} = this.state;
     let newIndex = (index === (selected-1)) ? (index+1) : (index+1);
     // get history from file
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
     // // check if complete need to be updated
-    console.log('newIndex',newIndex);
-    console.log('selected', selected);
     if ((newIndex+1) > (selected -1)) {
       await RNFS.exists(storyHF)
       .then( (exists) => {
@@ -138,7 +136,7 @@ export default class ToAR extends Component {
       return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
     } else {
       // story complete go back to story map menu
-      return await this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
+      return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }
   }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
