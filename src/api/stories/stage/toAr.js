@@ -53,6 +53,7 @@ export default class ToAR extends Component {
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
       selected: 1,
+      buttonAudio: false,
       audioPaused: false,
       audioMuted: false,
       completed: null,
@@ -78,13 +79,14 @@ export default class ToAR extends Component {
     }
   }
   reload = () => {
-    this.setState({paused: true});
+    this.togglePlaySound();
     this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
   map = () => {
-    this.setState({paused: true});
+    this.togglePlaySound();
     this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
+
   getSelected = async() => {
       const {appDir, story,selected, index} = this.state;
       console.log(appDir);
@@ -110,6 +112,8 @@ export default class ToAR extends Component {
           }
       });
   }
+  toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
+  togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   next = async () => {
     const {appDir, story, selected, completed, index} = this.state;
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
@@ -155,13 +159,14 @@ export default class ToAR extends Component {
 
           }
       });
+      await this.togglePlaySound();
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }
   }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    const { audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    const { buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -177,11 +182,13 @@ export default class ToAR extends Component {
       onZoneLeave: stage.onZoneLeave,
       onPictureMatch: stage.onPictureMatch,
       appDir: appDir,
+      toggleButtonAudio: this.toggleButtonAudio,
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
+    const sound = () => (buttonaudioPaused) ? <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} /> : null;
     const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
     const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
-    const arButtons = [ { element: storyReload }, { element: storyMap }, { element: storyNext} ];
+    const arButtons = [ { element: storyReload }, { element: storyMap }, { element: sound}, { element: storyNext} ];
     const arScene = {
       'vip':  { scene: VIP },
       'vaap':  { scene: VAAP },

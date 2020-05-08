@@ -19,6 +19,7 @@ export default class VipScene extends Component {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
     // Set initial state here
+    this.toogleButtonAudio = params.toggleButtonAudio;
     this.state = {
       text : "You Found me ...",
       server: params.server,
@@ -110,6 +111,7 @@ export default class VipScene extends Component {
   }
   loadAndPlayAudio = async () => {
     try {
+      this.toggleButtonAudio();
       let path = this.state.stage.onZoneEnter[0].path.replace(" ", "\ ");
       path = 'file://'+this.state.storyDir + path.replace("assets/stories", "");
       let loop = this.state.stage.onZoneEnter[0].loop;
@@ -118,7 +120,9 @@ export default class VipScene extends Component {
       console.log(e);
     }
   }
+  toggleButtonAudio = () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
   onFinishSound = () => {
+    this.toggleButtonAudio();
     console.log("Sound terminated");
   }
   onFinishVideo = () => {
