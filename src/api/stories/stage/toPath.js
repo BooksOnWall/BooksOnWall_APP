@@ -595,7 +595,6 @@ class ToPath extends Component {
                 nextaudio.play((success) => {
                   if (success) {
                     console.log('successfully finished playing');
-                    this.toggleAudioButton();
                     this.setState({audioButton: false});
                     nextaudio.release();
                   } else {
@@ -630,7 +629,6 @@ class ToPath extends Component {
           // Play the sound with an onEnd callback
           this.whoosh.play((success) => {
             if (success) {
-              this.toggleAudioButton();
               this.setState({audioButton: false});
               console.log('successfully finished playing');
             } else {
