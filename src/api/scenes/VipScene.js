@@ -27,10 +27,12 @@ export default class VipScene extends Component {
       storyDir: params.appDir+'/stories/',
       story: params.story,
       index: params.index,
-      stage: params.story.stages[params.index],
+      stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
       audioPath: "",
+      paused: (params.paused) ? params.paused : false,
+      muted: (params.muted) ? params.muted : false,
       audioLoop: false,
       videoPath: "",
       videoLoop: false,
@@ -72,15 +74,15 @@ export default class VipScene extends Component {
     }
   }
   buildTrackingTargets = async () => {
+    const {stage, pictures, storyDir} = this.state;
     try {
-      let pictures = this.state.pictures;
       //for (let picture of pictures) {
         //let path = picture.path;
-        let path = pictures[0].path;
-        let radius = this.state.stage.radius;
-        let dimension = this.state.stage.dimension.split("x");
-        let width = parseFloat(dimension[0]);
-        let height = parseFloat(dimension[1]);
+        let path = pictures[0].path.replace(" ", "\ ");
+        let radius = stage.radius;
+        let dimension = (stage.dimension) ? stage.dimension.split("x"): null;
+        let width = (dimension) ? parseFloat(dimension[0]) : 1;
+        let height = (dimension) ? parseFloat(dimension[1]) : 1;
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
@@ -99,14 +101,16 @@ export default class VipScene extends Component {
     }
   }
   setVideoComponent = () => {
-    let path = this.state.stage.onPictureMatch[0].path;
-    path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
-    let loop = this.state.stage.onPictureMatch[0].loop;
+    const {story, index, storyDir} = this.state;
+    const stage =  story.stages[index];
+    let path = stage.onPictureMatch[0].path.replace(" ", "\ ");
+    path = 'file://' + storyDir + path.replace("assets/stories", "");
+    let loop = stage.onPictureMatch[0].loop;
     this.setState({'videoPath': path, 'videoLoop': loop});
   }
   loadAndPlayAudio = async () => {
     try {
-      let path = this.state.stage.onZoneEnter[0].path;
+      let path = this.state.stage.onZoneEnter[0].path.replace(" ", "\ ");
       path = 'file://'+this.state.storyDir + path.replace("assets/stories", "");
       let loop = this.state.stage.onZoneEnter[0].loop;
       this.setState({'audioPath': path,'audioLoop': loop });
@@ -136,26 +140,31 @@ export default class VipScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
+    const {audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
+    console.log(audioPaused);
     return (
       <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >
         <ViroSound
-           paused={false}
-           muted={false}
-           source={{uri: this.state.audioPath }}
-           loop={this.state.audioLoop}
+           paused={audioPaused}
+           muted={audioMuted}
+           source={{uri: audioPath }}
+           loop={audioLoop}
            volume={1.0}
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
         <ViroARImageMarker target={"targetOne"} >
             <ViroVideo
-              source={{uri: this.state.videoPath}}
-              dragType="FixedToPlane"
+              source={{uri: videoPath}}
+              dragType="FixedToWorld"
               onDrag={()=>{}}
+              muted={false}
+              paused={false}
               visible={true}
-              loop={this.state.videoLoop}
-              position={[0,-1,0]}
+              loop={videoLoop}
+              position={[0,0,0]}
               rotation={[-90,0,0]}
               opacity={1}
               onFinish={this.onFinishVideo}

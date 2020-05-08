@@ -57,7 +57,6 @@ export default class Story extends Component {
     const storyPoints = stages.map((stage, i) => {
       return stage.geometry.coordinates;
     });
-    console.log(storyPoints);
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     this.state = {
