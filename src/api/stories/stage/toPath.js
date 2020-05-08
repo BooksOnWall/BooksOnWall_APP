@@ -510,14 +510,14 @@ class ToPath extends Component {
     if (this.state.routeSimulator) {
       return null;
     }
-    const index = this.state.index;
+    const {index, audioButton} = this.state;
     const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
     const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
-    const sound = () => <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+    const sound = () => (audioButton) ? <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} /> : null;
     const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
-  const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl}, {element: sound} ];
+    const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl}, {element: sound} ];
 
     return (
       <View style={styles.footer}>
@@ -556,7 +556,7 @@ class ToPath extends Component {
     const stage = (index === 0) ? null : story.stages[prevIndex];
     if (stage) {
       const count =  stage.onZoneLeave.length;
-      await this.toggleAudioButton();
+      this.setState({audioButton: true});
       console.log(count);
       if (count > 1) {
         const audio = stage.onZoneLeave[0];
@@ -596,6 +596,7 @@ class ToPath extends Component {
                   if (success) {
                     console.log('successfully finished playing');
                     this.toggleAudioButton();
+                    this.setState({audioButton: false});
                     nextaudio.release();
                   } else {
                     console.log('playback failed due to audio decoding errors');
@@ -614,7 +615,7 @@ class ToPath extends Component {
 
         const loop = audio.loop;
         let path = audio.path
-        path = this.state.storyDir + path.replace("assets/stories/", "");
+        path = storyDir + path.replace("assets/stories/", "");
         Sound.setCategory('Playback');
         // Load the sound file path from the app story bundle
         // See notes below about preloading sounds within initialization code below.
@@ -630,6 +631,7 @@ class ToPath extends Component {
           this.whoosh.play((success) => {
             if (success) {
               this.toggleAudioButton();
+              this.setState({audioButton: false});
               console.log('successfully finished playing');
             } else {
               console.log('playback failed due to audio decoding errors');
