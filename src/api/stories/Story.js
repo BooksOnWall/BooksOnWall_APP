@@ -68,6 +68,8 @@ export default class Story extends Component {
       theme: (this.props.story && this.props.story.theme) ? this.props.story.theme: this.props.navigation.getParam('story').theme,
       granted: Platform.OS === 'ios',
       transportIndex: 0,
+      selected: 0,
+      completed: 0,
       dlIndex: null,
       dlLoading: false,
       profile: 'mapbox/walking',
@@ -89,6 +91,7 @@ export default class Story extends Component {
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
+      await this.getSelected();
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -98,6 +101,7 @@ export default class Story extends Component {
       console.log(e);
     }
   }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.story && prevProps.story !== this.state.story) {
       this.setState({story: this.props.story});
@@ -105,6 +109,35 @@ export default class Story extends Component {
   }
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
+  }
+  getSelected = async() => {
+    const {appDir, story,selected, index} = this.state;
+    if(this.isInstalled(story.id)) {
+      try {
+        // get history from file
+        const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
+        // // check if file exist
+        await RNFS.exists(storyHF)
+        .then( (exists) => {
+            if (exists) {
+                // get id from file
+                RNFetchBlob.fs.readFile(storyHF, 'utf8')
+                .then((data) => {
+                  // handle the data ..
+                  this.setState({completed: parseInt(data), selected: parseInt(data)});
+                  return data;
+                })
+            } else {
+                RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
+                  this.setState({completed: 0, selected: 1});
+                  console.log('file created');
+                });
+            }
+        });
+      } catch(e) {
+        console.log(e);
+      }
+    }
   }
   updateTransportIndex = (transportIndex) => this.setState({transportIndex})
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
@@ -513,17 +546,26 @@ export default class Story extends Component {
     )
   }
   renderNavBar = () => (
-  <View style={styles.navContainer}>
-    <View style={styles.statusBar} />
-    <View style={styles.navBar}>
-      <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
-      </TouchableOpacity>
+    <View style={styles.navContainer}>
+      <View style={styles.statusBar} />
+      <View style={styles.navBar}>
+        <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
+          <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-)
-  storyMap = () => this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
-  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
+  )
+  storyMap = () => {
+    const {index, story, completed} = this.state;
+  
+    (completed === story.stages.length)
+    ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
+    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
+  }
+  launchAR = () => {
+    const {index, story, completed} = this.state;
+    (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0}) ;
+  }
   render() {
       const {theme, themeSheet, story} = this.state;
 
