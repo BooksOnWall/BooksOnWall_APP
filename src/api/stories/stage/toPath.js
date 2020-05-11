@@ -510,12 +510,21 @@ class ToPath extends Component {
     if (this.state.routeSimulator) {
       return null;
     }
-    const {index, audioButton} = this.state;
+    const {index, audioButton, audioPaused} = this.state;
     const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
     const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
-    const sound = () => (audioButton) ? <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} /> : null;
+    const sound = () => {
+        if(audioButton && audioPaused) {
+          return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+        } else if (audioButton && !audioPaused) {
+          return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+        } else {
+          return null;
+        }
+    };
+
     const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
     const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl}, {element: sound} ];
 

@@ -185,7 +185,15 @@ export default class ToAR extends Component {
       toggleButtonAudio: this.toggleButtonAudio,
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
-    const sound = () => (buttonaudioPaused) ? <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} /> : null;
+    const sound = () => {
+      if(buttonaudioPaused && !audioPaused) {
+        return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+      } else if(buttonaudioPaused && audioPaused) {
+        return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+      } else {
+        return null;
+      }
+    }
     const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
     const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [ { element: storyReload }, { element: storyMap }, { element: sound}, { element: storyNext} ];
