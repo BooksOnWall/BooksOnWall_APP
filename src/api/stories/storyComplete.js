@@ -62,10 +62,13 @@ export default class StoryComplete extends Component {
 
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
+    console.log(this.props.screenProps.AppDir);
+    const storyDir = (this.props.state) ? this.props.state.appDir+'/stories/' : this.props.screenProps.AppDir +'/stories/';
     this.state = {
       server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
       appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
       appDir: (this.props.state) ? this.props.state.appDir : this.props.screenProps.AppDir,
+      storyDir: storyDir,
       downloadProgress: 0,
       story: (this.props.story) ? this.props.story : this.props.navigation.getParam('story'),
       theme: (this.props.story && this.props.story.theme) ? this.props.story.theme: this.props.navigation.getParam('story').theme,
@@ -368,7 +371,7 @@ export default class StoryComplete extends Component {
           path = storyDir + path.replace("assets/stories/", "");
           path2 = storyDir + path2.replace("assets/stories/", "");
           Sound.setCategory('Playback');
-
+          console.log(path);
           // Load the sound file path from the app story bundle
           // See notes below about preloading sounds within initialization code below.
           this.whoosh = new Sound(path, Sound.MAIN_BUNDLE, (error) => {
