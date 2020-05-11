@@ -53,6 +53,9 @@ export default class ToAR extends Component {
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
       selected: 1,
+      buttonAudio: false,
+      audioPaused: false,
+      audioMuted: false,
       completed: null,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
@@ -75,8 +78,15 @@ export default class ToAR extends Component {
       console.log(e);
     }
   }
-  reload = () => this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
-  map = () => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} )
+  reload = () => {
+    this.togglePlaySound();
+    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
+  }
+  map = () => {
+    this.togglePlaySound();
+    this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
+  }
+
   getSelected = async() => {
       const {appDir, story,selected, index} = this.state;
       console.log(appDir);
@@ -87,7 +97,6 @@ export default class ToAR extends Component {
       await RNFS.exists(storyHF)
       .then( (exists) => {
           if (exists) {
-              console.log("History File exist");
               // get id from file
               RNFetchBlob.fs.readFile(storyHF, 'utf8')
               .then((data) => {
@@ -96,7 +105,6 @@ export default class ToAR extends Component {
                 return data;
               })
           } else {
-              console.log("File need to be created with index 1");
               RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
                 this.setState({completed: 0, selected: 1});
                 console.log('file created');
@@ -104,63 +112,83 @@ export default class ToAR extends Component {
           }
       });
   }
+  toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
+  togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   next = async () => {
-
     const {appDir, story, selected, completed, index} = this.state;
-    let newIndex = (index === (selected-1)) ? (index+1) : (index+1);
-    // get history from file
+    let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-    // // check if complete need to be updated
-    console.log('newIndex',newIndex);
-    console.log('selected', selected);
-    if ((newIndex+1) > (selected -1)) {
+    if (newIndex) {
+      // get history from file
+      try  {
+        console.log('newIndex', newIndex);
+        // // check if complete need to be updated
+          await RNFS.exists(storyHF)
+          .then( (exists) => {
+              if (exists) {
+                  console.log("History File exist");
+                  // get write new value to file
+                  // rimraf file
+                  RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+                    console.log('file writen', newIndex);
+                  });
+
+              } else {
+                  console.log("File need to be created with index 1");
+                  RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+                    console.log('file created');
+                  });
+              }
+          });
+
+        await this.setState({audioPaused: true});
+        return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
+      } catch(e) {
+        console.log(e);
+      }
+    } else {
       await RNFS.exists(storyHF)
       .then( (exists) => {
           if (exists) {
               console.log("History File exist");
               // get write new value to file
               // rimraf file
-              RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-                console.log('file writen');
+              RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(story.stages.length), 'utf8').then(()=>{
+                console.log('file writen', story.stages.length);
               });
 
-          } else {
-              console.log("File need to be created with index 1");
-              RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-                console.log('file created');
-              });
           }
       });
-    }
-
-    if (selected < story.stages.length)
-    {
-      return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
-    } else {
-      // story complete go back to story map menu
+      await this.togglePlaySound();
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }
   }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
+    const { buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
-      sharedProps: this.state.sharedProps,
-      server: this.state.server,
-      story: this.state.story,
-      stages: this.state.story.stages,
-      sceneType: this.state.stage.scene_type,
-      index: this.state.index,
-      pictures: this.state.stage.pictures,
-      onZoneEnter: this.state.stage.onZoneEnter,
-      onZoneLeave: this.state.stage.onZoneLeave,
-      onPictureMatch: this.state.stage.onPictureMatch,
-      appDir: this.state.appDir,
+      sharedProps: sharedProps,
+      server: server,
+      story: story,
+      stages: story.stages,
+      stage: stage,
+      sceneType: stage.scene_type,
+      index: index,
+      audioPaused: audioPaused,
+      audioMuted: audioMuted,
+      pictures: stage.pictures,
+      onZoneEnter: stage.onZoneEnter,
+      onZoneLeave: stage.onZoneLeave,
+      onPictureMatch: stage.onPictureMatch,
+      appDir: appDir,
+      toggleButtonAudio: this.toggleButtonAudio,
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
+    const sound = () => (buttonaudioPaused) ? <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} /> : null;
     const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
     const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
-    const arButtons = [ { element: storyReload }, { element: storyMap }, { element: storyNext} ];
+    const arButtons = [ { element: storyReload }, { element: storyMap }, { element: sound}, { element: storyNext} ];
     const arScene = {
       'vip':  { scene: VIP },
       'vaap':  { scene: VAAP },
@@ -168,7 +196,7 @@ export default class ToAR extends Component {
       'portal':  { scene: PORTAL}
     };
     let types = ['null','vip', 'vaap', 'vaamp', 'portal'];
-    let type = (this.state.stage.scene_type) ? types[this.state.stage.scene_type] : 'vip';
+    let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?

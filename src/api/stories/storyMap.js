@@ -163,6 +163,8 @@ class StoryMap extends Component {
         completeIcon: completeIcon,
         unknownIcon: unknownIcon
       },
+      toPath: true,
+      toAR: true,
       mapTheme: null,
       prevLatLng: null,
       track: null,
@@ -393,8 +395,9 @@ class StoryMap extends Component {
             RNFetchBlob.fs.readFile(storyHF, 'utf8')
             .then((data) => {
               // handle the data ..
-              this.setState({completed: parseInt(data)});
-              this.goTo(routes[(data-1)].coordinates, false);
+              const toPath = (parseInt(data) === routes.length) ? false : true;
+              this.setState({toPath: toPath, completed: parseInt(data), selected: (parseInt(data))});
+              if (data > 0)   this.goTo(routes[(parseInt(data)-1)].coordinates, false);
               return data;
             })
         } else {
@@ -443,8 +446,6 @@ class StoryMap extends Component {
         };
         return feature;
       });
-
-///////////////////   EDIT Design icons  /////////////////// 
 
       let backgroundColor = 'white';
       const font = theme.font1;
@@ -526,14 +527,13 @@ class StoryMap extends Component {
   }
   render() {
 
-    const {distanceTotal, styleURL, selected, completed, theme, story, mapTheme} = this.state;
+    const {index, routes , toPath, toAR, distanceTotal, styleURL, selected, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
 
-///////////////////   EDIT HEADER  ///////////////////
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-        <Badge size="large" status="success" value={completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+        <Badge size="large" status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
           <Text style={{
             fontSize: 26,
             letterSpacing: 1,
@@ -548,12 +548,11 @@ class StoryMap extends Component {
 
       </View>
     );
-///////////////////   EDIT buttons and footer  ///////////////////
 
-    const storyPrev = () => <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} />;
-    const storyMapLine = () => <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} />;
-    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} />;
-    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} />;
+    const storyPrev = () => (selected > 0) ? <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} /> :  null;
+    const storyMapLine = () => (toPath) ? <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} /> : null;
+    const launchAR = () => (toAR) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} /> : null;
+    const storyNext = () => (selected !== routes.length) ? <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} /> : null;
     const MenuButtons = [ { element: storyPrev }, { element: launchAR }, { element: storyMapLine }, { element: storyNext} ];
 
     const Footer = () => (
