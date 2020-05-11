@@ -444,6 +444,8 @@ class StoryMap extends Component {
         return feature;
       });
 
+///////////////////   EDIT Design icons  /////////////////// 
+
       let backgroundColor = 'white';
       const font = theme.font1;
       const iconstyles = {
@@ -526,6 +528,8 @@ class StoryMap extends Component {
 
     const {distanceTotal, styleURL, selected, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
+
+///////////////////   EDIT HEADER  ///////////////////
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -544,6 +548,8 @@ class StoryMap extends Component {
 
       </View>
     );
+///////////////////   EDIT buttons and footer  ///////////////////
+
     const storyPrev = () => <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} />;
     const storyMapLine = () => <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} />;
     const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} />;
