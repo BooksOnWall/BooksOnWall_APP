@@ -167,6 +167,8 @@ export default class ToAR extends Component {
   // if you are building a specific type of experience.
   render() {
     const { buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    console.log(index);
+    console.log(story.stages[index]);
     let params = {
       sharedProps: sharedProps,
       server: server,

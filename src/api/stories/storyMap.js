@@ -550,8 +550,8 @@ class StoryMap extends Component {
     );
 
     const storyPrev = () => (selected > 0) ? <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} /> :  null;
-    const storyMapLine = () => (toPath) ? <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} /> : null;
-    const launchAR = () => (toAR) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected - 1)})} /> : null;
+    const storyMapLine = () => (toPath) ? <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
+    const launchAR = () => (toAR) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
     const storyNext = () => (selected !== routes.length) ? <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} /> : null;
     const MenuButtons = [ { element: storyPrev }, { element: launchAR }, { element: storyMapLine }, { element: storyNext} ];
 

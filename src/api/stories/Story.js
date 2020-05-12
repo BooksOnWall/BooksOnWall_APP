@@ -91,7 +91,7 @@ export default class Story extends Component {
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
-      await this.getSelected();
+
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -111,7 +111,7 @@ export default class Story extends Component {
     await KeepAwake.deactivate();
   }
   getSelected = async() => {
-    const {appDir, story,selected, index} = this.state;
+    const {appDir, story, selected, index} = this.state;
     if(this.isInstalled(story.id)) {
       try {
         // get history from file
@@ -249,7 +249,9 @@ export default class Story extends Component {
     let story = this.state.story;
     try {
         story.isInstalled = await this.isInstalled(story.id);
+
         this.setState({story: story});
+        (story.isInstalled) ? await this.getSelected() : '';
     } catch(e) {
       console.log(e);
     }
@@ -258,6 +260,7 @@ export default class Story extends Component {
     try {
       return await RNFS.exists(this.state.appDir + '/stories/' + sid)
         .then( (exists) => {
+
             return exists;
         });
     } catch(e) {
@@ -557,7 +560,7 @@ export default class Story extends Component {
   )
   storyMap = () => {
     const {index, story, completed} = this.state;
-  
+
     (completed === story.stages.length)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
