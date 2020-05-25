@@ -28,6 +28,8 @@ export default {
   Delete_story: "Delete Story",
   Story_deleted: "Story deleted !",
   Start_downloading: "Start Downloading.",
+  Start_download_map: "Start map download",
+  End_download_map: "End map download",
   Download_complete: "Download complete.",
   Installing_story: "Installing story.",
   Installation_complete: "Installation complete.",

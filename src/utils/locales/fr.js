@@ -29,6 +29,8 @@ export default {
   Story_deleted: "Conte effacé !",
   Start_downloading: "Début du téléchargement.",
   Download_complete: "Téléchargement terminé.",
+  Start_download_map: "Start map download",
+  End_download_map: "End map download",
   Installing_story: "Installation du conte.",
   Installation_complete: "Installation terminée.",
   Are_u_Sure: "Vous êtes sur de vouloir faire ça ?",

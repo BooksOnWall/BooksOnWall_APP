@@ -29,6 +29,8 @@ export default {
   Story_deleted: "Storia cancellata !",
   Start_downloading: "Avvia scaricamento.",
   Download_complete: "Scaricamento completato.",
+  Start_download_map: "Start map download",
+  End_download_map: "End map download",
   Installing_story: "Installazione dei contenuti.",
   Installation_complete: "Installazione completata.",
   Are_u_Sure: "Sei sicuro di volerlo fare?",
