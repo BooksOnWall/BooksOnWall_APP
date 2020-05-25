@@ -33,10 +33,18 @@ export default class PortalScene extends Component {
       storyDir: params.appDir+'/stories/',
       story: params.story,
       index: params.index,
-      stage: params.story.stages[params.index],
+      stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
       audioPath: "",
+      paused: (params.paused) ? params.paused : false,
+      muted: (params.muted) ? params.muted : false,
+      MatchAudioPath: null,
+      MatchAudioPaused: true,
+      MatchAudioMuted: false,
+      MatchAudioLoop: false,
+      audios: [],
+      video: {},
       audioLoop: false,
       videoPath: "",
       videoLoop: false,
@@ -142,6 +150,8 @@ export default class PortalScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
+    const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
+    console.log('audioPaused', audioPaused);
     return (
       <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >

@@ -40,7 +40,7 @@ let AR_NAVIGATOR_TYPE = "AR";
 // This determines which type of experience to launch in, or UNSET, if the user should
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
 let defaultNavigatorType = "AR";
-
+const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal'];
 export default class ToAR extends Component {
   constructor(props) {
     super(props);
@@ -53,15 +53,17 @@ export default class ToAR extends Component {
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
       selected: 1,
-      buttonaudioPaused: false,
+      buttonaudioPaused: true,
       audioPaused: false,
       audioMuted: false,
       completed: null,
+      scene_type: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_type,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
     }
     console.log('index', this.props.navigation.getParam('index'));
+    console.log('scene type',sceneTypes[this.state.scene_type]);
   }
   static navigationOptions = {
     title: 'To Augmented Reality',
@@ -92,10 +94,8 @@ export default class ToAR extends Component {
 
   getSelected = async() => {
       const {appDir, story,selected, index} = this.state;
-      console.log(appDir);
       // get history from file
       const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-      console.log(storyHF);
       // // check if file exist
       await RNFS.exists(storyHF)
       .then( (exists) => {
@@ -110,7 +110,6 @@ export default class ToAR extends Component {
           } else {
               RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
                 this.setState({completed: 0, selected: 1});
-                console.log('file created');
               });
           }
       });
@@ -122,34 +121,25 @@ export default class ToAR extends Component {
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
     if (newIndex) {
-      console.log('index',index);
-      console.log('selected', selected);
-      console.log('completed', completed);
-      console.log('newIndex', newIndex);
       // get history from file
       try  {
-        console.log('newIndex', newIndex);
         // // check if complete need to be updated
           await RNFS.exists(storyHF)
           .then( (exists) => {
               if (exists) {
-                  console.log("History File exist");
                   // get write new value to file
                   // rimraf file
                   RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-                    console.log('file writen', newIndex);
                   });
 
               } else {
-                  console.log("File need to be created with index 1");
                   RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-                    console.log('file created');
                   });
               }
           });
-
-        await this.setState({audioPaused: true});
-
+        // clean audio
+        await this.setState({buttonaudioPaused: true, audioPaused: false});
+        (this.woosh) ? this.woosh.release() : '';
         return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
       } catch(e) {
         console.log(e);
@@ -158,18 +148,19 @@ export default class ToAR extends Component {
       await RNFS.exists(storyHF)
       .then( (exists) => {
           if (exists) {
-              console.log("History File exist");
               // get write new value to file
               // rimraf file
               RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(story.stages.length), 'utf8').then(()=>{
-                console.log('file writen', story.stages.length);
               });
 
           }
       });
-      await this.togglePlaySound();
+      // clean audio
+      await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: false});
+
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }
+
   }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
@@ -196,6 +187,7 @@ export default class ToAR extends Component {
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
     const sound = () => {
       console.log('buttonaudioPaused', buttonaudioPaused);
+      console.log('audioPaused', audioPaused);
       if(buttonaudioPaused && !audioPaused) {
         return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
       } else if(buttonaudioPaused && audioPaused) {
@@ -203,7 +195,7 @@ export default class ToAR extends Component {
       } else {
         return null;
       }
-    }
+    };
     const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
     const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [ { element: storyReload }, { element: storyMap }, { element: sound}, { element: storyNext} ];

@@ -158,8 +158,6 @@ class ToPath extends Component {
     title: 'To Stage',
     headerShown: false
   };
-
-
   constructor(props) {
     super(props);
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
@@ -189,6 +187,7 @@ class ToPath extends Component {
       destination: routes[index].coordinates,
       goto: (location) ? location : routes[index].coordinates ,
       zoom: 18,
+      unset: false,
       followUserLocation: true,
       route: null,
       stages: stages,
@@ -235,6 +234,7 @@ class ToPath extends Component {
   }
   componentDidMount = async () => {
     const {routes} = this.state;
+
     try {
       await this.offlineLoad();
       await this.getSelected();
@@ -295,7 +295,7 @@ class ToPath extends Component {
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
     }
-
+    this.setState({unset: true});
   }
   getSelected = async() => {
     try {
@@ -502,22 +502,27 @@ class ToPath extends Component {
     }
   }
   switchToAR = () => {
-    const {index, story} = this.state;
+    const {index, story, unset} = this.state;
     if(this.whoosh) this.whoosh.release();
+    console.log(unset);
+    this.setState({unset: true});
     console.log('index', index);
     this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index});
   }
   renderActions() {
+    const {routeSimulator, index, audioButton, audioPaused, unset} = this.state;
+    console.log('index',index);
+    console.log('unset',unset);
     if (this.state.routeSimulator) {
       return null;
     }
-    const {index, audioButton, audioPaused} = this.state;
-    console.log('index',index);
     const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
     const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
+      console.log('audioButton', audioButton);
+      console.log('audioPaused', audioPaused);
         if(audioButton && audioPaused) {
           return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
         } else if (audioButton && !audioPaused) {
@@ -656,6 +661,7 @@ class ToPath extends Component {
   launchNavigation = () => {
     const {story,fromLat, fromLong, toLat, toLong} = this.state;
     this.whoosh.release();
+    this.setState({unset: true});
     NativeModules.MapboxNavigation.navigate(
       fromLat,
       fromLong,
@@ -674,7 +680,7 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
-    const {distanceTotal, completed, selected, theme, story, index} = this.state;
+    const {unset, distanceTotal, completed, selected, theme, story, index} = this.state;
     const Header = () => (
       <View style={styles.header}>
         <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -693,8 +699,7 @@ class ToPath extends Component {
 
       </View>
     );
-
-
+    if(unset) return null;
     return (
       <Page {...this.props}>
         <Header />
@@ -718,7 +723,7 @@ class ToPath extends Component {
             followUserMode='compass'
             onUserTrackingModeChange={false}
             />
-          {this.renderMarkers()}
+          {(!unset) ? this.renderMarkers() : null}
           {this.renderRoute()}
           {this.renderCurrentPoint()}
           {this.renderProgressLine()}
@@ -728,7 +733,7 @@ class ToPath extends Component {
             visible={true} />
 
         </MapboxGL.MapView>
-        {this.renderActions()}
+        {(!unset) ? this.renderActions() : null}
       </Page>
     );
   }

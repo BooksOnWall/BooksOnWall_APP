@@ -66,7 +66,6 @@ export default class VipScene extends Component {
   componentWillUnmount = async () => {
     try {
       await KeepAwake.deactivate();
-      if(audio) await audio.release();
     } catch(e) {
       console.log(e.message);
     }
@@ -108,6 +107,7 @@ export default class VipScene extends Component {
       console.log(e);
     }
   }
+  audio = null
   dispatchMedia = async () => {
     try  {
       const {story, index, storyDir} = this.state;
@@ -134,7 +134,6 @@ export default class VipScene extends Component {
         path = 'file://'+ storyDir + path.replace("assets/stories", "");
         let loop = audio.loop;
         this.setState({'audioPath': path,'audioLoop': loop });
-        this.toggleButtonAudio();
       }
     } catch(e) {
       console.log(e);
@@ -161,7 +160,7 @@ export default class VipScene extends Component {
       // set path & loop to audios : one by zone
       (zone === 'onPictureMatch') ? this.setState({MatchAudioPaused: false}) : this.setState({audioPaused: true});
   }
-  toggleButtonAudio = () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
+  toggleButtonAudio = async () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
   onFinishSound = () => {
     this.toggleButtonAudio();
     console.log("Sound terminated");
@@ -188,6 +187,7 @@ export default class VipScene extends Component {
   render = () => {
     const {index, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
+    console.log('audioPaused', audioPaused);
     console.log('index',index);
     return (
       <SafeAreaView>
@@ -197,7 +197,7 @@ export default class VipScene extends Component {
            muted={audioMuted}
            source={{uri: audioPath }}
            loop={audioLoop}
-           volume={1.0}
+           volume={.8}
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />

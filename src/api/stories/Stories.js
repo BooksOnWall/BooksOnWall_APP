@@ -293,13 +293,13 @@ export default class Stories extends Component {
           </SafeAreaView>
       );
     }
-
+    const size = 36;
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', borderWidth: 0, paddingTop: 25, paddingBottom: 25}}
-            centerComponent={<Icon name='bow-logo' style={styles.logo}/>}
+            centerComponent={<Icon name='bow-logo'  style={styles.logo}/>}
             rightComponent={<TouchableOpacity style={styles.reload}  onPress={() => this.storiesUpdate()}>
             <Button type='clear' underlayColor='#FFFFFF' loading={this.state.loading} onPress={() => this.storiesUpdate()} iconContainerStyle={{ height: 24, width: 24}} icon={{name:'reload', size:22, color:'#fff', type:'booksonwall'}} ></Button>
             </TouchableOpacity>}
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
     backgroundColor: "whitesmoke"
   },
   logo: {
+    minHeight: 20,
     color: '#9E1C00',
     fontSize: 36,
     textShadowColor: 'rgba(0, 0, 0, 0.35)',

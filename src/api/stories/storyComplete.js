@@ -113,113 +113,11 @@ export default class StoryComplete extends Component {
   }
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
+    await this.whoosh.release();
   }
   updateTransportIndex = (transportIndex) => this.setState({transportIndex})
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
   watchID: ?number = null;
-  downloadStory = (sid) => {
-    // add loading in download story button
-    this.setState({dlLoading: true});
-    // Toast message starting download
-    Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
-    const appDir = this.state.appDir;
-    RNFetchBlob
-    .config({
-        addAndroidDownloads : {
-            title : 'Story_'+ sid + '.zip',
-            useDownloadManager : true, // <-- this is the only thing required
-            // Optional, override notification setting (default to true)
-            notification : true,
-            // Optional, but recommended since android DownloadManager will fail when
-            // the url does not contains a file extension, by default the mime type will be text/plain
-            mime : 'application/zip',
-            description : I18n.t("Story_downloaded","Story downloaded by BooksOnWall."),
-            mediaScannable: true,
-            path : appDir + '/stories/Story_'+ sid + '.zip'
-        }
-    })
-    .fetch('POST', this.state.server + '/zip/' + sid)
-    // .progress({ interval: 250 },(received,total)=>{
-    //   console.log('progress:',received/total);
-    //   this.setState({downloadProgress:(received/total)*100});
-    // })
-    .then((resp) => {
-      // the path of downloaded file
-      //const p = resp.path(); android manager can't get the downloaded path
-      this.setState({downloadProgress:0});
-      let path_name = appDir+'/'+'stories/Story_'+ sid + '.zip'
-      console.log(path_name);
-      //TOAST message download complete
-      Toast.showWithGravity(I18n.t("Download_complete","Download complete."), Toast.SHORT, Toast.TOP);
-      this.setState({dlLoading: false});
-      return this.installStory(sid, path_name);
-    });
-  }
-  installStory = (sid, path) => {
-    // Toast message installing story
-    Toast.showWithGravity(I18n.t("Installing_story","Installing story."), Toast.SHORT, Toast.TOP);
-    // get downloaded path (in download directory) and target path (in appDir/stories)
-    const targetPath = this.state.appDir+'/stories/';
-    const sourcePath = path;
-    const charset = 'UTF-8';
-    const storyExists = targetPath+sid;
-    // if story exist and that we are in update mode
-    // Delete story first
-    RNFetchBlob.fs.exists(storyExists)
-    .then((exist) => {
-        console.log(`file ${exist ? '' : 'not'} exists`);
-        if (exist) {
-          RNFetchBlob.fs.unlink(storyExists)
-          .then(() => {
-              console.log(storyExists+' deleted !');
-            })
-            .catch((err) => { console.log(err); })
-        }
-    })
-    .catch((err) => { console.log(err); });
-    //unzip story
-    unzip(sourcePath, targetPath, charset)
-    .then((path) => {
-      console.log(`unzip completed at ${path}`);
-      //remove zip file
-      RNFetchBlob.fs.unlink(sourcePath)
-      .then(() => {
-          // TOAST message installation complete :
-          Toast.showWithGravity(I18n.t("Installation_complete","Installation complete."), Toast.SHORT, Toast.TOP);
-          // recheck if story is well installed and display buttons
-          this.offlineSave();
-          return this.storyCheck();
-        })
-        .catch((err) => { console.log(err); })
-    })
-    .catch((error) => {
-      console.log(error)
-    });
-  }
-  offlineSave = async () => {
-    try {
-      Toast.showWithGravity(I18n.t("Start_download_map","Start map download"), Toast.SHORT, Toast.TOP);
-
-      const progressListener = (offlineRegion, status) => console.log(offlineRegion, status);
-      const errorListener = (offlineRegion, err) => console.log(offlineRegion, err);
-      const box= this.state.mbbox;
-      const name = 'story'+this.state.story.id;
-      // check if offline db still exist
-      const offlinePack = await MapboxGL.offlineManager.getPack(name);
-      if(offlinePack) await MapboxGL.offlineManager.deletePack(name);
-      await MapboxGL.offlineManager.createPack({
-        name: name,
-        styleURL: this.state.styleURL,
-        minZoom: 14,
-        maxZoom: 20,
-        bounds: [[box[0], box[1]], [box[2], box[3]]]
-      }, progressListener, errorListener);
-      Toast.showWithGravity(I18n.t("End_download_map","End map download"), Toast.SHORT, Toast.TOP);
-      return progressListener;
-    } catch(e) {
-      console.log(e);
-    }
-  }
   storyCheck = async () => {
     let story = this.state.story;
     try {
@@ -583,6 +481,7 @@ export default class StoryComplete extends Component {
           fontFamily: story.theme.font2
         }
       });
+
       const ButtonGroup = () => {
         return (
           <View style={themeSheet.nav}>
@@ -621,13 +520,16 @@ export default class StoryComplete extends Component {
       </TouchableOpacity>
     </View>
   </View>
-)
+  )
   storyMap = () => this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
+  resetStory = () => {
+    return true;
+  }
   render() {
       const {theme, themeSheet, story} = this.state;
 
-      const Title = () => (
+      const Title = ({story}) => (
         <View style={styles.titleStyle}>
           <Text style={{
             fontSize: 26,
@@ -640,6 +542,11 @@ export default class StoryComplete extends Component {
           <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
+      const Reset = () => (
+        <TouchableOpacity style={styles.iconLeft} onPress={() => this.resetStory()}>
+          <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
+        </TouchableOpacity>
+      );
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
@@ -648,7 +555,7 @@ export default class StoryComplete extends Component {
           headerMaxHeight={250}
           extraScrollHeight={20}
           navbarColor={story.theme.color1}
-          title={<Title/>}
+          title={<Title story={story}/>}
           titleStyle={styles.titleStyle}
           backgroundImage={{uri: theme.banner.filePath}}
           backgroundImageScale={1.2}
@@ -658,7 +565,7 @@ export default class StoryComplete extends Component {
           contentContainerStyle={styles.contentContainer}
           innerContainerStyle={styles.container}
       />
-
+        <Reset  />
         </SafeAreaView>
       </ThemeProvider>
     );
