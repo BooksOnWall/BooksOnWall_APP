@@ -223,7 +223,7 @@ class ToPath extends Component {
       location: [],
       position: {},
     };
-
+    console.log('index', index);
     this.onStart = this.onStart.bind(this);
   }
 
@@ -504,13 +504,15 @@ class ToPath extends Component {
   switchToAR = () => {
     const {index, story} = this.state;
     if(this.whoosh) this.whoosh.release();
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: index});
+    console.log('index', index);
+    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index});
   }
   renderActions() {
     if (this.state.routeSimulator) {
       return null;
     }
     const {index, audioButton, audioPaused} = this.state;
+    console.log('index',index);
     const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
@@ -566,7 +568,6 @@ class ToPath extends Component {
     if (stage) {
       const count =  stage.onZoneLeave.length;
       this.setState({audioButton: true});
-      console.log(count);
       if (count > 1) {
         const audio = stage.onZoneLeave[0];
         const audio2 = stage.onZoneLeave[1];

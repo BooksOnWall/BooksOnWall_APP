@@ -53,7 +53,7 @@ export default class ToAR extends Component {
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
       selected: 1,
-      buttonAudio: false,
+      buttonaudioPaused: false,
       audioPaused: false,
       audioMuted: false,
       completed: null,
@@ -61,6 +61,7 @@ export default class ToAR extends Component {
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
     }
+    console.log('index', this.props.navigation.getParam('index'));
   }
   static navigationOptions = {
     title: 'To Augmented Reality',
@@ -80,10 +81,12 @@ export default class ToAR extends Component {
   }
   reload = () => {
     this.togglePlaySound();
+    this.setState({ navigatorType : UNSET });
     this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
   map = () => {
     this.togglePlaySound();
+    this.setState({ navigatorType : UNSET });
     this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
 
@@ -119,6 +122,10 @@ export default class ToAR extends Component {
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
     if (newIndex) {
+      console.log('index',index);
+      console.log('selected', selected);
+      console.log('completed', completed);
+      console.log('newIndex', newIndex);
       // get history from file
       try  {
         console.log('newIndex', newIndex);
@@ -142,7 +149,8 @@ export default class ToAR extends Component {
           });
 
         await this.setState({audioPaused: true});
-        return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
+
+        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
       } catch(e) {
         console.log(e);
       }
@@ -167,8 +175,6 @@ export default class ToAR extends Component {
   // if you are building a specific type of experience.
   render() {
     const { buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
-    console.log(index);
-    console.log(story.stages[index]);
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -179,6 +185,7 @@ export default class ToAR extends Component {
       index: index,
       audioPaused: audioPaused,
       audioMuted: audioMuted,
+      buttonaudioPaused: buttonaudioPaused,
       pictures: stage.pictures,
       onZoneEnter: stage.onZoneEnter,
       onZoneLeave: stage.onZoneLeave,
@@ -188,6 +195,7 @@ export default class ToAR extends Component {
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
     const sound = () => {
+      console.log('buttonaudioPaused', buttonaudioPaused);
       if(buttonaudioPaused && !audioPaused) {
         return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
       } else if(buttonaudioPaused && audioPaused) {
