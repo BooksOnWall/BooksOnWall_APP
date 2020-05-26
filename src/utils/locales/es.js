@@ -28,6 +28,7 @@ export default {
   Delete_story: "Eliminar este cuento",
   Story_deleted: "Story deleted !",
   Start_download_map: "Start map download",
+  Story_reset_complete: 'Story reseted !',
   End_download_map: "End map download",
   Download_complete: "Download complete.",
   Installing_story: "Installing story.",

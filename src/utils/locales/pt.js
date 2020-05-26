@@ -31,6 +31,7 @@ export default {
   Download_complete: "Download concluído.",
   Start_download_map: "Start map download",
   End_download_map: "End map download",
+  Story_reset_complete: 'Story reseted !',
   Installing_story: "Instalação de conteúdos.",
   Installation_complete: "Instalação concluída.",
   Are_u_Sure: "Tens a certeza que queres fazer isto?",

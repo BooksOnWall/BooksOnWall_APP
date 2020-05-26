@@ -515,8 +515,8 @@ export default class StoryComplete extends Component {
   <View style={styles.navContainer}>
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
-      <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
+      <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})}>
+        <Button onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
       </TouchableOpacity>
     </View>
   </View>
@@ -525,6 +525,21 @@ export default class StoryComplete extends Component {
   launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   resetStory = () => {
     return true;
+  }
+  resetStory = async () => {
+    console.log('reset');
+    let { story, appDir } = this.state;
+    try {
+      let sid = story.id;
+      story.isComplete = false;
+      let complete = appDir + '/stories/' + sid + '/complete.txt';
+      await RNFetchBlob.fs.unlink(complete).then(success => {
+        Toast.showWithGravity(I18n.t("Story_reset_complete","Story reseted !"), Toast.short, Toast.TOP);
+        return this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: story, index: 0});
+      });
+    } catch(e) {
+      console.log(e.message);
+    }
   }
   render() {
       const {theme, themeSheet, story} = this.state;
@@ -544,7 +559,7 @@ export default class StoryComplete extends Component {
       );
       const Reset = () => (
         <TouchableOpacity style={styles.iconLeft} onPress={() => this.resetStory()}>
-          <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
+          <Button onPress={() => this.resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} />
         </TouchableOpacity>
       );
       return (

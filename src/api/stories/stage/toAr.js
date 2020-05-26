@@ -138,7 +138,7 @@ export default class ToAR extends Component {
               }
           });
         // clean audio
-        await this.setState({buttonaudioPaused: true, audioPaused: false});
+        await this.setState({buttonaudioPaused: true, audioPaused: true});
         (this.woosh) ? this.woosh.release() : '';
         return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
       } catch(e) {
@@ -156,7 +156,7 @@ export default class ToAR extends Component {
           }
       });
       // clean audio
-      await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: false});
+      await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true});
 
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }

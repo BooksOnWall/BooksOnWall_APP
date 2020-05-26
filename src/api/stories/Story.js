@@ -91,7 +91,7 @@ export default class Story extends Component {
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
-
+      await this.storyCheck();
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -111,7 +111,8 @@ export default class Story extends Component {
     await KeepAwake.deactivate();
   }
   getSelected = async() => {
-    const {appDir, story, selected, index} = this.state;
+    const {appDir, selected, index} = this.state;
+    let { story } = this.state;
     if(this.isInstalled(story.id)) {
       try {
         // get history from file
@@ -125,15 +126,19 @@ export default class Story extends Component {
                 .then((data) => {
                   // handle the data ..
                   this.setState({completed: parseInt(data), selected: parseInt(data)});
+                  if (parseInt(data) === story.stages.length) {
+                    story.isComplete = true;
+                    this.setState({story: story});
+                  }
                   return data;
                 })
             } else {
                 RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
                   this.setState({completed: 0, selected: 1});
-                  console.log('file created');
                 });
             }
         });
+        return true;
       } catch(e) {
         console.log(e);
       }
@@ -245,11 +250,13 @@ export default class Story extends Component {
       console.log(e);
     }
   }
+  isComplete = (id) => {
+
+  }
   storyCheck = async () => {
     let story = this.state.story;
     try {
         story.isInstalled = await this.isInstalled(story.id);
-
         this.setState({story: story});
         (story.isInstalled) ? await this.getSelected() : '';
     } catch(e) {
@@ -560,8 +567,8 @@ export default class Story extends Component {
   )
   storyMap = () => {
     const {index, story, completed} = this.state;
-
-    (completed === story.stages.length)
+    console.log(story.isComplete);
+    (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
   }
