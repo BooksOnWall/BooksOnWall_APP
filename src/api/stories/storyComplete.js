@@ -527,7 +527,6 @@ export default class StoryComplete extends Component {
     return true;
   }
   resetStory = async () => {
-    console.log('reset');
     let { story, appDir } = this.state;
     try {
       let sid = story.id;
