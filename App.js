@@ -1,10 +1,10 @@
 import React , { Component } from 'react';
-if(__DEV__) {
+// if(__DEV__) {
   import('./src/utils/ReactotronConfig').then(() => console.log('Reactotron Configured'));
-} else {
-  console.log = () => {};
-  console.table = () => {};
-}
+// } else {
+//   console.log = () => {};
+//   console.table = () => {};
+// }
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
 import { StyleSheet, Text, ActivityIndicator, Platform } from 'react-native';
@@ -96,7 +96,7 @@ const coordinates = [
   [-73.9829635620117, 40.769101775774935],
   [-73.9822769165039, 40.76273111352534],
   [-73.98571014404297, 40.748947591479705]
-]
+];
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -135,6 +135,7 @@ export default class App extends Component {
   handleFirstRun = async () => {
     try {
       // check if application is already installed and has it's list of stories offline
+      console.log(this.state.AppDir);
       let StoryFile = this.state.AppDir+'/Stories.json';
       await RNFS.exists(StoryFile)
       .then( (exists) => {
@@ -208,7 +209,7 @@ export default class App extends Component {
       // check if BooksOnWall directory exist , we are using here the name given to the project
       // ex: ./react-bow init MyProject https://api.myproject.xx  project name is MyProject
       // if not we create the directory in user Documents directory
-      console.table(dirs);
+      //console.log(dirs);
       // we have to choose where to store the story , some pĥone have sdcard some other not
       // we also need th check if we have enough space to store the datas
       let AppDir = '';
