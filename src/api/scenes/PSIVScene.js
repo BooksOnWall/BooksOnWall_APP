@@ -14,7 +14,7 @@ import {
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 
-export default class VipScene extends Component {
+export default class PsivScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
@@ -212,7 +212,7 @@ export default class VipScene extends Component {
               paused={false}
               visible={true}
               loop={videoLoop}
-              position={[0,0,0]}
+              position={[parseFloat(scene_options.pictures[pIndex].videoPosition.x),parseFloat(scene_options.pictures[pIndex].videoPosition.y),parseFloat(scene_options.pictures[pIndex].videoPosition.z)]}
               rotation={[-90,0,0]}
               opacity={1}
               onFinish={this.onFinishVideo}

@@ -9,22 +9,17 @@ import {
   ViroVideo,
   ViroMaterials,
   ViroSound,
-  Viro360Video,
-  Viro360Image,
-  ViroUtils,
-  ViroPortal,
-  ViroPortalScene,
-  Viro3DObject,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 
-export default class PortalScene extends Component {
+export default class GpsScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
     // Set initial state here
+    this.toogleButtonAudio = params.toggleButtonAudio;
     this.state = {
       text : "You Found me ...",
       server: params.server,
@@ -33,10 +28,10 @@ export default class PortalScene extends Component {
       storyDir: params.appDir+'/stories/',
       story: params.story,
       index: params.index,
-      stage: params.stage,
-      pictures: params.pictures,
       pIndex: 0,
       scene_options: params.stage.scene_options,
+      stage: params.stage,
+      pictures: params.pictures,
       picturePath: "",
       audioPath: "",
       paused: (params.paused) ? params.paused : false,
@@ -54,6 +49,7 @@ export default class PortalScene extends Component {
       onZoneLeave: params.onZoneLeave,
       onPictureMatch: params.onPictureMatch
     };
+    console.log('index', params.index);
     this.onInitialized = this.onInitialized.bind(this);
     this.buildTrackingTargets = this.buildTrackingTargets.bind(this);
     this.setVideoComponent = this.setVideoComponent.bind(this);
@@ -62,9 +58,7 @@ export default class PortalScene extends Component {
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
-      await this.loadAndPlayAudio();
-      await this.setVideoComponent();
-      await this.buildTrackingTargets();
+      await this.dispatchMedia();
     } catch(e) {
       console.log(e);
     }
@@ -72,7 +66,6 @@ export default class PortalScene extends Component {
   componentWillUnmount = async () => {
     try {
       await KeepAwake.deactivate();
-      if(audio) await audio.release();
     } catch(e) {
       console.log(e.message);
     }
@@ -87,53 +80,53 @@ export default class PortalScene extends Component {
       // Handle loss of tracking
     }
   }
-  buildTrackingTargets = async () => {
-    try {
-      let pictures = this.state.pictures;
-      //for (let picture of pictures) {
-        //let path = picture.path;
-        let path = pictures[0].path;
-        let radius = this.state.stage.radius;
-        let dimension = this.state.stage.dimension.split("x");
-        let width = parseFloat(dimension[0]);
-        let height = parseFloat(dimension[1]);
-        path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
-        //this.setState({picturePath: path});
-        await ViroARTrackingTargets.createTargets({
-          "targetOne" : {
-            source : { uri: path },
-            orientation : "Up",
-            physicalWidth : width, // real world width in meters
-            type: 'Image'
-          },
-        });
-       //}
-       // create materials
+  audio = null
+  dispatchMedia = async () => {
+    try  {
+      const {story, index, storyDir} = this.state;
+      const stage =  story.stages[index];
+      let audios = [];
+      let videos = [];
+      audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
+      audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
+      videos['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'video') : null;
+      videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
 
+      this.setState({audios: audios, videos: videos});
+
+      if (audios['onPictureMatch'] && audios['onPictureMatch'].length > 0 ) {
+        let MatchAudio = audios['onPictureMatch'][0];
+        let Matchpath = MatchAudio.path.replace(" ", "\ ");
+        Matchpath = 'file://'+ storyDir + path.replace("assets/stories", "");
+        let Matchloop = MatchAudio.loop;
+        this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
+      }
+      if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
+        let audio = audios['onZoneEnter'][0];
+        let path = audio.path.replace(" ", "\ ");
+        path = 'file://'+ storyDir + path.replace("assets/stories", "");
+        let loop = audio.loop;
+        this.setState({'audioPath': path,'audioLoop': loop });
+      }
     } catch(e) {
       console.log(e);
     }
+
   }
-  setVideoComponent = () => {
-    let path = this.state.stage.onPictureMatch[0].path;
-    path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
-    let loop = this.state.stage.onPictureMatch[0].loop;
-    this.setState({'videoPath': path, 'videoLoop': loop});
+  loadAndPlayAudio = (zone) => {
+    // play the first audio onZoneEnter or onPictureMatch after the video is finished
+    // @zone string onZoneEnter or onPictureMatch
+    const {audios, storyDir} = this.state;
+      // set path & loop to audios : one by zone
+      (zone === 'onPictureMatch') ? this.setState({MatchAudioPaused: false}) : this.setState({audioPaused: true});
   }
-  loadAndPlayAudio = async () => {
-    try {
-      let path = this.state.stage.onZoneEnter[0].path;
-      path = 'file://'+this.state.storyDir + path.replace("assets/stories", "");
-      let loop = this.state.stage.onZoneEnter[0].loop;
-      this.setState({'audioPath': path,'audioLoop': loop });
-    } catch(e) {
-      console.log(e);
-    }
-  }
+  toggleButtonAudio = async () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
   onFinishSound = () => {
+    this.toggleButtonAudio();
     console.log("Sound terminated");
   }
   onFinishVideo = () => {
+    this.loadAndPlayAudio('onPictureMatch');
     console.log("Video terminated");
   }
   onVideoError = (event) => {
@@ -152,21 +145,32 @@ export default class PortalScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
+    const {index, pIndex, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
+    console.log('index',index);
     return (
       <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >
         <ViroSound
-           paused={false}
-           muted={false}
-           source={{uri: this.state.audioPath }}
-           loop={this.state.audioLoop}
-           volume={1.0}
+           paused={audioPaused}
+           muted={audioMuted}
+           source={{uri: audioPath }}
+           loop={audioLoop}
+           volume={.8}
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-
+        {(MatchaudioPath) ?
+          <ViroSound
+             paused={MatchAudioPaused}
+             muted={MatchAudioMuted}
+             source={{uri: MatchAudioPath }}
+             loop={MatchAudioLoop}
+             volume={1.0}
+             onFinish={this.onFinishSound}
+             onError={this.onErrorSound}
+          /> : null}
       </ViroARScene>
       </SafeAreaView>
     );

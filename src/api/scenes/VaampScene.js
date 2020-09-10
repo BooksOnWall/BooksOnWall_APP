@@ -29,6 +29,8 @@ export default class VaampScene extends Component {
       index: params.index,
       stage: params.stage,
       pictures: params.pictures,
+      pIndex: 0,
+      scene_options: params.stage.scene_options,
       picturePath: "",
       audioPath: "",
       paused: (params.paused) ? params.paused : false,
