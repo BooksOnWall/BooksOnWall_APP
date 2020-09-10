@@ -29,6 +29,7 @@ export default class VipScene extends Component {
       story: params.story,
       index: params.index,
       stage: params.stage,
+      scene_options: params.stage.scene_options,
       pictures: params.pictures,
       picturePath: "",
       audioPath: "",
@@ -81,15 +82,15 @@ export default class VipScene extends Component {
     }
   }
   buildTrackingTargets = async () => {
-    const {stage, pictures, storyDir} = this.state;
+    const {stage, pictures, storyDir, scene_options} = this.state;
     try {
-      //for (let picture of pictures) {
-        //let path = picture.path;
         let path = pictures[0].path.replace(" ", "\ ");
         let radius = stage.radius;
-        let dimension = (stage.dimension) ? stage.dimension.split("x"): null;
-        let width = (dimension) ? parseFloat(dimension[0]) : 1;
-        let height = (dimension) ? parseFloat(dimension[1]) : 1;
+        const pIndex = (scene_options.pictures.length -1);
+        console.log(pIndex);
+        console.log('vip',scene_options.pictures);
+        let width = (scene_options.pictures && scene_options.pictures.length >0 ) ? parseFloat(scene_options.pictures[pIndex].width) : 1;
+        let height = (scene_options.pictures && scene_options.pictures.length >0 ) ? parseFloat(scene_options.pictures[pIndex].height) : 1;
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
@@ -100,7 +101,7 @@ export default class VipScene extends Component {
             type: 'Image'
           },
         });
-       //}
+
        // create materials
 
     } catch(e) {

@@ -23,6 +23,9 @@ AR Scene type:
 #2 VAAP aka Video aside anchored picture
 #3 VAAMP aka Video anchored with multiple pictures
 #4 PORTAL aka Portal
+#5 PIV Picture inside Video
+#6 PSIV multiple Pictures inside Video
+#7 3D
 */
 import VIP from '../../scenes/VipScene';
 import VAAMP from '../../scenes/VaampScene';
@@ -40,7 +43,7 @@ let AR_NAVIGATOR_TYPE = "AR";
 // This determines which type of experience to launch in, or UNSET, if the user should
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
 let defaultNavigatorType = "AR";
-const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal'];
+const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal', 'PIV', 'PSIV', '3D'];
 export default class ToAR extends Component {
   constructor(props) {
     super(props);
@@ -58,11 +61,13 @@ export default class ToAR extends Component {
       audioMuted: false,
       completed: null,
       scene_type: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_type,
+      scene_options: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_options,
       index: this.props.navigation.getParam('index'),
       stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
       sharedProps : sharedProps
     }
     console.log('index', this.props.navigation.getParam('index'));
+    console.log('scene_options', this.state.scene_options);
     console.log('scene type',sceneTypes[this.state.scene_type]);
   }
   static navigationOptions = {

@@ -1,10 +1,10 @@
 import React , { Component } from 'react';
-// if(__DEV__) {
+if(__DEV__) {
   import('./src/utils/ReactotronConfig').then(() => console.log('Reactotron Configured'));
-// } else {
-//   console.log = () => {};
-//   console.table = () => {};
-// }
+} else {
+  console.log = () => {};
+  console.table = () => {};
+}
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
 import { StyleSheet, Text, ActivityIndicator, Platform } from 'react-native';

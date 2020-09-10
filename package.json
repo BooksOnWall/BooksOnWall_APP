@@ -1,6 +1,6 @@
 {
   "name": "BooksOnWall",
-  "version": "0.0.1",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "syncFromCli": "cp -r ../data/src/api ../data/src/App.js ../data/src/utils src/.",
