@@ -49,7 +49,6 @@ export default class VipScene extends Component {
       onZoneLeave: params.onZoneLeave,
       onPictureMatch: params.onPictureMatch
     };
-    console.log('index', params.index);
     this.onInitialized = this.onInitialized.bind(this);
     this.buildTrackingTargets = this.buildTrackingTargets.bind(this);
     this.setVideoComponent = this.setVideoComponent.bind(this);
@@ -116,6 +115,7 @@ export default class VipScene extends Component {
       let videos = [];
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
       audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
+      audios['onZoneLeave'] = (stage.onZoneLeave && stage.onZoneLeave.length > 0 ) ? stage.onZoneLeave.filter(item => item.type === 'audio'): null;
       videos['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'video') : null;
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
 
@@ -189,6 +189,7 @@ export default class VipScene extends Component {
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     console.log('index',index);
+    console.log('scene_options',scene_options);
     return (
       <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >

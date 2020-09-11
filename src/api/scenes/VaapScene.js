@@ -86,13 +86,13 @@ export default class VaapScene extends Component {
     try {
         let path = pictures[0].path.replace(" ", "\ ");
         let radius = stage.radius;
-        console.log('vip',scene_options.videos[0]);
+        console.log('vip',scene_options);
         let width = (scene_options.pictures && scene_options.pictures.length >0 ) ? parseFloat(scene_options.pictures[pIndex].width) : 1;
         let height = (scene_options.pictures && scene_options.pictures.length >0 ) ? parseFloat(scene_options.pictures[pIndex].height) : 1;
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
-          "targetOne" : {
+          "targetVAP" : {
             source : { uri: path },
             orientation : "Up",
             physicalWidth : width, // real world width in meters
@@ -113,6 +113,7 @@ export default class VaapScene extends Component {
       let audios = [];
       let videos = [];
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
+      audios['onZoneLeave'] = (stage.onZoneLeave && stage.onZoneLeave.length > 0 ) ? stage.onZoneLeave.filter(item => item.type === 'audio'): null;
       audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
       videos['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'video') : null;
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
@@ -198,7 +199,7 @@ export default class VaapScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-        <ViroARImageMarker target={"targetOne"} >
+      <ViroARImageMarker target={"targetVAP"} >
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"
@@ -209,7 +210,7 @@ export default class VaapScene extends Component {
               paused={false}
               visible={true}
               loop={videoLoop}
-              position={[parseFloat(scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
+              position={[parseFloat(-scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
               rotation={[-90,0,0]}
               opacity={1}
               onFinish={this.onFinishVideo}

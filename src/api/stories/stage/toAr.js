@@ -67,6 +67,7 @@ export default class ToAR extends Component {
       sharedProps : sharedProps
     }
     console.log('index', this.props.navigation.getParam('index'));
+    console.log('stage', this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')]);
     console.log('scene_options', this.state.scene_options);
     console.log('scene type',sceneTypes[this.state.scene_type]);
   }
@@ -212,6 +213,7 @@ export default class ToAR extends Component {
     };
     let types = ['null','vip', 'vaap', 'vaamp', 'portal'];
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
+    console.log(arScene[type]);
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
