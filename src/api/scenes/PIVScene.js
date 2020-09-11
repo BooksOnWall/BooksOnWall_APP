@@ -93,7 +93,7 @@ export default class PivScene extends Component {
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
-          "targetOne" : {
+          "targetPIV" : {
             source : { uri: path },
             orientation : "Up",
             physicalWidth : width, // real world width in meters
@@ -201,7 +201,7 @@ export default class PivScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-        <ViroARImageMarker target={"targetOne"} >
+      <ViroARImageMarker target={"targetPIV"} >
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"
@@ -215,6 +215,7 @@ export default class PivScene extends Component {
               position={[parseFloat(scene_options.pictures[pIndex].videoPosition.x),parseFloat(scene_options.pictures[pIndex].videoPosition.y),parseFloat(scene_options.pictures[pIndex].videoPosition.z)]}
               rotation={[-90,0,0]}
               opacity={1}
+              onError={this.onVideoError}
               onFinish={this.onFinishVideo}
               materials={["chromaKeyFilteredVideo"]}
             />

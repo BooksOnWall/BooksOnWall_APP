@@ -113,7 +113,6 @@ export default class VaapScene extends Component {
       let audios = [];
       let videos = [];
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
-      audios['onZoneLeave'] = (stage.onZoneLeave && stage.onZoneLeave.length > 0 ) ? stage.onZoneLeave.filter(item => item.type === 'audio'): null;
       audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
       videos['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'video') : null;
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
@@ -166,6 +165,7 @@ export default class VaapScene extends Component {
     console.log("Sound terminated");
   }
   onFinishVideo = () => {
+    this.loadAndPlayAudio('onPictureMatch');
     console.log("Video terminated");
   }
   onVideoError = (event) => {
@@ -210,9 +210,10 @@ export default class VaapScene extends Component {
               paused={false}
               visible={true}
               loop={videoLoop}
-              position={[parseFloat(-scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
+              position={[parseFloat(scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
               rotation={[-90,0,0]}
               opacity={1}
+              onError={this.onVideoError}
               onFinish={this.onFinishVideo}
               materials={["chromaKeyFilteredVideo"]}
             />

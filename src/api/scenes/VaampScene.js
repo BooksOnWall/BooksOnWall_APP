@@ -94,7 +94,7 @@ export default class VaampScene extends Component {
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
-          "targetOne" : {
+          "targetVAMP" : {
             source : { uri: path },
             orientation : "Up",
             physicalWidth : width, // real world width in meters
@@ -128,6 +128,7 @@ export default class VaampScene extends Component {
     console.log("Sound terminated");
   }
   onFinishVideo = () => {
+    this.loadAndPlayAudio('onPictureMatch');
     console.log("Video terminated");
   }
   onVideoError = (event) => {
@@ -160,7 +161,36 @@ export default class VaampScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
+      <ViroARImageMarker target={"targetVAMP"} >
+              <ViroVideo
+                source={{uri: videoPath}}
+                dragType="FixedToWorld"
+                onDrag={()=>{}}
+                width={parseFloat(scene_options.videos[0].width)}
+                height={parseFloat(scene_options.videos[0].height)}
+                muted={false}
+                paused={false}
+                visible={true}
+                loop={videoLoop}
+                position={[parseFloat(scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
+                rotation={[-90,0,0]}
+                opacity={1}
+                onError={this.onVideoError}
+                onFinish={this.onFinishVideo}
+                materials={["chromaKeyFilteredVideo"]}
+              />
+            {(MatchaudioPath) ?
+              <ViroSound
+                 paused={MatchAudioPaused}
+                 muted={MatchAudioMuted}
+                 source={{uri: MatchAudioPath }}
+                 loop={MatchAudioLoop}
+                 volume={1.0}
+                 onFinish={this.onFinishSound}
+                 onError={this.onErrorSound}
+              /> : null}
 
+          </ViroARImageMarker>
       </ViroARScene>
       </SafeAreaView>
     );

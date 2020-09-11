@@ -92,7 +92,7 @@ export default class VipScene extends Component {
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
         //this.setState({picturePath: path});
         await ViroARTrackingTargets.createTargets({
-          "targetOne" : {
+          "targetVIP" : {
             source : { uri: path },
             orientation : "Up",
             physicalWidth : width, // real world width in meters
@@ -115,16 +115,16 @@ export default class VipScene extends Component {
       let videos = [];
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
       audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
-      audios['onZoneLeave'] = (stage.onZoneLeave && stage.onZoneLeave.length > 0 ) ? stage.onZoneLeave.filter(item => item.type === 'audio'): null;
       videos['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'video') : null;
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
 
       this.setState({audios: audios, videos: videos});
-
+      console.log(audios['onPictureMatch'][0].path);
       if (audios['onPictureMatch'] && audios['onPictureMatch'].length > 0 ) {
         let MatchAudio = audios['onPictureMatch'][0];
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
-        Matchpath = 'file://'+ storyDir + path.replace("assets/stories", "");
+        Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
+        console.log('Matchpath',Matchpath);
         let Matchloop = MatchAudio.loop;
         this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
       }
@@ -185,10 +185,10 @@ export default class VipScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, pIndex, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
-    console.log('audioPaused', audioPaused);
-    console.log('index',index);
+    console.log('MatchAudioPaused', MatchAudioPaused);
+    console.log('MatchAudioPath',MatchAudioPath);
     console.log('scene_options',scene_options);
     return (
       <SafeAreaView>
@@ -202,7 +202,7 @@ export default class VipScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-        <ViroARImageMarker target={"targetOne"} >
+      <ViroARImageMarker target={"targetVIP"} >
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"
@@ -217,20 +217,20 @@ export default class VipScene extends Component {
               rotation={[-90,0,0]}
               opacity={1}
               onFinish={this.onFinishVideo}
+              onError={this.onVideoError}
               materials={["chromaKeyFilteredVideo"]}
             />
-          {(MatchaudioPath) ?
-            <ViroSound
-               paused={MatchAudioPaused}
-               muted={MatchAudioMuted}
-               source={{uri: MatchAudioPath }}
-               loop={MatchAudioLoop}
-               volume={1.0}
-               onFinish={this.onFinishSound}
-               onError={this.onErrorSound}
-            /> : null}
-
         </ViroARImageMarker>
+        {(MatchAudioPath) ?
+          <ViroSound
+             paused={MatchAudioPaused}
+             muted={MatchAudioMuted}
+             source={{uri: MatchAudioPath }}
+             loop={MatchAudioLoop}
+             volume={1.0}
+             onFinish={this.onFinishSound}
+             onError={this.onErrorSound}
+          /> : null}
       </ViroARScene>
       </SafeAreaView>
     );
