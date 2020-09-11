@@ -119,12 +119,11 @@ export default class VipScene extends Component {
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
 
       this.setState({audios: audios, videos: videos});
-      console.log(audios['onPictureMatch'][0].path);
+
       if (audios['onPictureMatch'] && audios['onPictureMatch'].length > 0 ) {
         let MatchAudio = audios['onPictureMatch'][0];
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
         Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
-        console.log('Matchpath',Matchpath);
         let Matchloop = MatchAudio.loop;
         this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
       }

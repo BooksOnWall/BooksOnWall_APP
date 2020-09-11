@@ -219,18 +219,19 @@ export default class PsivScene extends Component {
               onFinish={this.onFinishVideo}
               materials={["chromaKeyFilteredVideo"]}
             />
-          {(MatchaudioPath) ?
-            <ViroSound
-               paused={MatchAudioPaused}
-               muted={MatchAudioMuted}
-               source={{uri: MatchAudioPath }}
-               loop={MatchAudioLoop}
-               volume={1.0}
-               onFinish={this.onFinishSound}
-               onError={this.onErrorSound}
-            /> : null}
+
 
         </ViroARImageMarker>
+        {(MatchaudioPath) ?
+          <ViroSound
+             paused={MatchAudioPaused}
+             muted={MatchAudioMuted}
+             source={{uri: MatchAudioPath }}
+             loop={MatchAudioLoop}
+             volume={1.0}
+             onFinish={this.onFinishSound}
+             onError={this.onErrorSound}
+          /> : null}
       </ViroARScene>
       </SafeAreaView>
     );
