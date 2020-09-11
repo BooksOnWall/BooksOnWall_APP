@@ -40,6 +40,7 @@ export default class VipScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
+      anchorFound: false,
       audios: [],
       video: {},
       audioLoop: false,
@@ -107,6 +108,15 @@ export default class VipScene extends Component {
     }
   }
   audio = null
+  stopAudio = () => {
+    const {anchorFound} = this.state;
+    console.log('anchorFound', anchorFound);
+    if(anchorFound === null) {
+      console.log('stop audio');
+      this.setState({anchorFound: true, audioLoop: false});
+      this.toggleButtonAudio();
+    }
+  }
   dispatchMedia = async () => {
     try  {
       const {story, index, storyDir} = this.state;
@@ -186,12 +196,10 @@ export default class VipScene extends Component {
   render = () => {
     const {index, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
-    console.log('MatchAudioPaused', MatchAudioPaused);
-    console.log('MatchAudioPath',MatchAudioPath);
-    console.log('scene_options',scene_options);
+    // <ViroARImageMarker onAnchorFound={() => this.stopAudio()} ...
     return (
       <SafeAreaView>
-      <ViroARScene onTrackingUpdated={this.onInitialized}  >
+      <ViroARScene onTrackingUpdated={this.onInitialized} >
         <ViroSound
            paused={audioPaused}
            muted={audioMuted}
@@ -201,7 +209,7 @@ export default class VipScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARImageMarker target={"targetVIP"} >
+      <ViroARImageMarker target={"targetVIP"}   >
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"

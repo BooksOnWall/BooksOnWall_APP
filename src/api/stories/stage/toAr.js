@@ -192,8 +192,6 @@ export default class ToAR extends Component {
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
     const sound = () => {
-      console.log('buttonaudioPaused', buttonaudioPaused);
-      console.log('audioPaused', audioPaused);
       if(buttonaudioPaused && !audioPaused) {
         return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
       } else if(buttonaudioPaused && audioPaused) {
