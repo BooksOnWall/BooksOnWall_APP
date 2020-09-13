@@ -567,7 +567,6 @@ export default class Story extends Component {
   )
   storyMap = () => {
     const {index, story, completed} = this.state;
-    console.log(story.isComplete);
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
