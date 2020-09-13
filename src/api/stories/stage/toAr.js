@@ -188,6 +188,7 @@ export default class ToAR extends Component {
       onZoneLeave: stage.onZoneLeave,
       onPictureMatch: stage.onPictureMatch,
       appDir: appDir,
+      togglePlaySound: this.togglePlaySound,
       toggleButtonAudio: this.toggleButtonAudio,
     };
     const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
