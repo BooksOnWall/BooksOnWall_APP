@@ -26,11 +26,6 @@ import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
-
-import com.viromedia.bridge.ReactViroPackage;
-
-import com.viromedia.bridge.ReactViroPackage;
-
 import com.viromedia.bridge.ReactViroPackage;
 import com.facebook.soloader.SoLoader;
 import com.booksonwall.Mapbox.MapboxNavigationViewPackage;
@@ -49,9 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),,,
-          new ReactViroPackage(ReactViroPackage.ViroPlatform.valueOf(BuildConfig.VR_PLATFORM))
-          new ReactViroPackage(ReactViroPackage.ViroPlatform.valueOf(BuildConfig.VR_PLATFORM))
+            new MainReactPackage(),
             new RNSoundPackage(),
             new OrientationPackage(),
             new RNDeviceInfo(),

@@ -1,11 +1,19 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+ext {
+  buildToolsVersion = "28.0.3"
+  minSdkVersion = 16
+  compileSdkVersion = 28
+  targetSdkVersion = 28
+  supportLibVersion = "28.0.3"
+}
 buildscript {
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.5.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,28 +28,8 @@ allprojects {
             details.useVersion("3.5.0-alpha03-5252756")
         }
     }
-    // Workaround for https://issuetracker.google.com/117900475
-    // Remove when upgrading to AGP 3.4 or higher.
-    configurations.matching { it.name == '_internal_aapt2_binary' }.all { config ->
-        config.resolutionStrategy.eachDependency { details ->
-            details.useVersion("3.5.0-alpha03-5252756")
-        }
-    }
-    // Workaround for https://issuetracker.google.com/117900475
-    // Remove when upgrading to AGP 3.4 or higher.
-    configurations.matching { it.name == '_internal_aapt2_binary' }.all { config ->
-        config.resolutionStrategy.eachDependency { details ->
-            details.useVersion("3.5.0-alpha03-5252756")
-        }
-    }
     repositories {
         mavenLocal()
-        maven {
-            url 'https://maven.google.com/'
-        }
-        maven {
-            url 'https://maven.google.com/'
-        }
         maven {
             url 'https://maven.google.com/'
         }

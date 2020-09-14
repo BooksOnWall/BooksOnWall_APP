@@ -97,10 +97,6 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     flavorDimensions "platform"
-    buildToolsVersion '28.0.3'
-    flavorDimensions "platform"
-    buildToolsVersion '28.0.3'
-    flavorDimensions "platform"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -111,8 +107,6 @@ android {
         applicationId "com.booksonwall"
         minSdkVersion 23
         targetSdkVersion 28
-        multiDexEnabled true
-        multiDexEnabled true
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
@@ -133,36 +127,6 @@ android {
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
-        }
-    }
-    productFlavors {
-        ar {
-            resValue 'string', 'app_name', 'BooksOnWall-ar'
-            buildConfigField 'String', 'VR_PLATFORM', '"GVR"' //default to GVR
-        }
-        gvr {
-            resValue 'string', 'app_name', 'BooksOnWall-gvr'
-            buildConfigField 'String', 'VR_PLATFORM', '"GVR"'
-        }
-        ovr {
-            resValue 'string', 'app_name', 'BooksOnWall-ovr'
-            applicationIdSuffix '.ovr'
-            buildConfigField 'String', 'VR_PLATFORM', '"OVR_MOBILE"'
-        }
-    }
-    productFlavors {
-        ar {
-            resValue 'string', 'app_name', 'BooksOnWall-ar'
-            buildConfigField 'String', 'VR_PLATFORM', '"GVR"' //default to GVR
-        }
-        gvr {
-            resValue 'string', 'app_name', 'BooksOnWall-gvr'
-            buildConfigField 'String', 'VR_PLATFORM', '"GVR"'
-        }
-        ovr {
-            resValue 'string', 'app_name', 'BooksOnWall-ovr'
-            applicationIdSuffix '.ovr'
-            buildConfigField 'String', 'VR_PLATFORM', '"OVR_MOBILE"'
         }
     }
     productFlavors {
@@ -203,20 +167,9 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.facebook.react:react-native:+'
-    implementation project(':arcore_client') // remove this if AR not required
-    implementation project(':gvr_common')
-    implementation project(path: ':viro_renderer')
-    implementation project(path: ':react_viro')
-    implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
-    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-    implementation 'com.amazonaws:aws-android-sdk-core:2.7.7'
-    implementation 'com.amazonaws:aws-android-sdk-ddb:2.7.7'
-    implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.7.7'
-    implementation 'com.amazonaws:aws-android-sdk-cognito:2.7.7'
-    implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.7.7'
+    implementation project(':react-native-sound')
+    implementation project(':react-native-orientation')
+    implementation project(':react-native-device-info')
     implementation project(':arcore_client') // remove this if AR not required
     implementation project(':gvr_common')
     implementation project(path: ':viro_renderer')
