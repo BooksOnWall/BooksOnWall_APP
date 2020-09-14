@@ -2,6 +2,8 @@
   package="com.booksonwall">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -10,6 +12,8 @@
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
+      android:usesCleartextTraffic="true"
+      android:usesCleartextTraffic="true"
       android:usesCleartextTraffic="true"
       android:theme="@style/AppTheme">
       <activity
@@ -20,11 +24,15 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="com.google.intent.category.CARDBOARD" />
+            <category android:name="com.google.intent.category.CARDBOARD" />
      <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
             <category android:name="com.google.intent.category.CARDBOARD" />
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+      <meta-data android:name="com.google.ar.core" android:value="optional" />
+      <meta-data android:name="com.google.ar.core" android:value="optional" />
       <meta-data android:name="com.google.ar.core" android:value="optional" />
     </application>
 

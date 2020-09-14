@@ -391,7 +391,7 @@ export default class App extends Component {
           <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
             <Overlay
               isVisible={this.state.FirstRun}
-              windowBackgroundColor="rgba(255, 255, 255, .5)"
+              windowBackgroundColor="rgba(255, 255, 255, .3)"
               overlayBackgroundColor="red"
               width="auto"
               height="auto"
