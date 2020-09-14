@@ -132,6 +132,7 @@ export default class Stories extends Component {
       } else {
         this.setState({isLandscape: true});
       }
+      Orientation.unlockAllOrientations();
       Orientation.addOrientationListener(this._orientationDidChange);
       console.log('is tablet',this.props.screenProps.isTablet);
       console.log('is landscape',this.state.isLandscape);

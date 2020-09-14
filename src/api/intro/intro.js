@@ -6,6 +6,8 @@ import I18n from "../../utils/i18n";
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { Images } from '../../../assets/intro';
 import IconSet from '../../utils/Icon';
+import Orientation from 'react-native-orientation';
+
 registerCustomIconType('booksonwall', IconSet);
 
 const slides = [
@@ -126,7 +128,7 @@ export default class Intro extends Component {
   static navigationOptions = {
     headerShown: false,
   };
-
+  componentDidMount = () => Orientation.lockToPortrait()
   renderItem = ({ item }) => {
     return (
       <View style={styles.slide} >
