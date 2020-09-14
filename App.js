@@ -111,7 +111,7 @@ export default class App extends Component {
       coordinates: coordinates,
       isTablet: isTablet(),
       isLandscape: isLandscape(),
-      storiesURL: SERVER_URL + '/stories',
+      storiesURL: SERVER_URL + '/storiesPublished',
       loadStories: this.loadStories,
       storeStories: this.storeStories,
       isLoading: false,

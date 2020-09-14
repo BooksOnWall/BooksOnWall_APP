@@ -292,6 +292,7 @@ class ToPath extends Component {
   }
   componentWillUnmount() {
     (this.whoosh) ? this.whoosh.release() : '';
+    MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
     }

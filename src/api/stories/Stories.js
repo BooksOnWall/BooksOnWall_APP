@@ -101,7 +101,7 @@ export default class Stories extends Component {
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
       stories: stories,
-      storiesURL: this.props.screenProps.server + '/stories',
+      storiesURL: this.props.screenProps.server + '/storiesPublished',
       bannerPath: this.props.screenProps.AppDir + '/banner/',
       granted: Platform.OS === 'ios',
       isTablet: this.props.screenProps.isTablet,
