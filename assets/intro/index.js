@@ -1,7 +1,7 @@
 export const Images = {
-   image1: require('./bow-slider-bg_c01.png'),
-   image2: require('./bow-slider-bg_c02.png'),
-   image3: require('./bow-slider-bg_c03.png'),
-   image4: require('./bow-slider-bg_c04.png'),
-   image5: require('./bow-slider-bg_c05.png'),
+   image1: require('./1-bow-app-slider-bg-1440-h.png'),
+   image2: require('./2-bow-app-slider-bg-1440-h.png'),
+   image3: require('./3-bow-app-slider-bg-1440-h.png'),
+   image4: require('./4-bow-app-slider-bg-1440-h.png'),
+   image5: require('./5-bow-app-slider-bg-1440-h.png'),
 };
