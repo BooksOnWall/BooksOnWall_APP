@@ -87,7 +87,7 @@ export default class PivScene extends Component {
     try {
         let path = pictures[0].path.replace(" ", "\ ");
         let radius = stage.radius;
-        console.log('vip',scene_options.videos[0]);
+        console.log('piv',scene_options.videos[0]);
         let width = (scene_options.pictures && scene_options.pictures.length >0 ) ? parseFloat(scene_options.pictures[pIndex].width) : 1;
         let height = (scene_options.pictures && scene_options.pictures.length >0 ) ? parseFloat(scene_options.pictures[pIndex].height) : 1;
         path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
