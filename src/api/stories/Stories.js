@@ -126,6 +126,7 @@ export default class Stories extends Component {
     // if tablet and landscape navigate to tabletLayout
 
     try {
+
       const initial = await Orientation.getInitialOrientation();
       if (initial === 'PORTRAIT') {
         this.setState({isLandscape: false});
