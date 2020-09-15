@@ -5,13 +5,8 @@ import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elem
 import Drawer from 'react-native-drawer'
 import { Banner } from '../../../assets/banner';
 import Story from './Story';
+import TabletDefault from './TabletDefault';
 
-
-const  Default = () => {
-  return (
-    <Text>Default</Text>
-  )
-};
 
 export default class TabletLayout extends Component {
   static navigationOptions = {
@@ -103,7 +98,7 @@ export default class TabletLayout extends Component {
       <Drawer
         type="static"
         ref={(ref) => this._drawer = ref}
-        content={this.state.story ? <Story story={this.state.story} state={this.state} navigation={this.props.navigation} /> : <Default style={styles.story}/>}
+        content={this.state.story ? <Story story={this.state.story} state={this.state} navigation={this.props.navigation} /> : <TabletDefault style={styles.story}/>}
         open={true}
         openDrawerOffset={100}
         styles={drawerStyles}

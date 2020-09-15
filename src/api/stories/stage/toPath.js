@@ -14,6 +14,8 @@ import { MAPBOX_KEY  } from 'react-native-dotenv';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
+import  distance from '@turf/distance';
+import Geolocation from '@react-native-community/geolocation';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
