@@ -542,8 +542,8 @@ export default class Story extends Component {
           </TouchableOpacity>
           )}
 
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => (debug_mode) ? this.storyMap() : this.toPath()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => (debug_mode && debug_mode === true) ? this.storyMap() : this.toPath()} >
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => (debug_mode && debug_mode === true) ? this.storyMap() : this.toPath()}  />
           </TouchableOpacity>
           </View>
         );
@@ -581,15 +581,18 @@ export default class Story extends Component {
     </View>
   )
   storyMap = () => {
-    const {index, story, completed} = this.state;
+    const {index, story, completed, debug_mode} = this.state;
+    console.log('storyMap', debug_mode);
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
   }
   toPath = () => {
-    const {index, story, completed, debug_mode} = this.state;
-      console.log('completed', comppleted);
-      (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: 0}) ;
+    const {index, story, completed, selected, debug_mode} = this.state;
+      console.log('completed', completed);
+      console.log('toPath', debug_mode);
+      //this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
+      (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index:  (selected > 0) ? (selected - 1): 0}) ;
   }
   launchAR = () => {
     const {index, story, completed} = this.state;
