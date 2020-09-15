@@ -397,22 +397,15 @@ export default class Story extends Component {
       credits: {
         backgroundColor: story.theme.color2,
         fontFamily: 'Roboto-Regular',
-        paddingTop: 60,
-        paddingBottom: 60,
-        paddingHorizontal: 26,
         color: story.theme.color3,
       },
       sinopsys: {
-        paddingTop: 40,
-        paddingBottom: 50,
-        paddingHorizontal: 32,
         backgroundColor: '#D8D8D8',
       },
       subtitle: {
         fontWeight: 'bold',
         padding: 0,
         marginTop: 0,
-        marginBottom: 30,
         fontSize: 12,
         textTransform: 'uppercase',
         fontFamily: 'Roboto-bold',
@@ -495,11 +488,11 @@ export default class Story extends Component {
     const sinopsysThemeSheet = StyleSheet.create({
       p: {
           fontSize: 18,
-          lineHeight: 26,
+          lineHeight: 23,
           letterSpacing: 0,
           fontFamily: '',
-          color: '#111',
-          fontFamily: 'RobotoCondensed-Light',
+          color: '#1B1A1B',
+          fontFamily: 'Roboto-Regular',
         },
         b: {
           fontFamily: 'Roboto-bold'
@@ -509,7 +502,7 @@ export default class Story extends Component {
           flexDirection: 'column',
           justifyContent: 'space-between',
           backgroundColor: '#D8D8D8',
-          padding: 0,
+          padding: 20,
         },
         i:{
           fontSize: 24,
@@ -597,7 +590,7 @@ export default class Story extends Component {
         <ReactNativeParallaxHeader
           headerMinHeight={HEADER_HEIGHT}
           headerMaxHeight={250}
-          extraScrollHeight={20}
+          extraScrollHeight={30}
           navbarColor={story.theme.color1}
           title={<Title/>}
           titleStyle={styles.titleStyle}
@@ -627,7 +620,7 @@ const styles = StyleSheet.create({
   },
   navContainer: {
     height: HEADER_HEIGHT,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
   },
   statusBar: {
     height: STATUS_BAR_HEIGHT,
@@ -662,7 +655,7 @@ const styles = StyleSheet.create({
   },
   location: {
     fontFamily: 'ATypewriterForMe',
-    fontSize: 11,
+    fontSize: 10,
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,
