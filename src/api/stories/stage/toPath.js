@@ -212,7 +212,7 @@ class ToPath extends Component {
       route: null,
       stages: stages,
       radius: radius,
-      debug_mode: DEBUG_MODE,
+      debug_mode: Boolean(DEBUG_MODE),
       routes: routes,
       mbbox: mbbox,
       features: {},
@@ -735,8 +735,8 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
-    const {unset, distance, completed, selected, theme, story, index, radius} = this.state;
-    if(distance <= radius) this.switchToAR();
+    const {unset, distance, completed, selected, theme, story, index, radius, debug_mode} = this.state;
+    if(debug_mode === false && distance <= radius) this.switchToAR();
     if(unset) return null;
     return (
       <Page {...this.props}>

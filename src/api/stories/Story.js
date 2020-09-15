@@ -5,7 +5,7 @@ import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIcon
 import NavigationView from "./stage/NavigationView";
 import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
-import { MAPBOX_KEY  } from '@env';
+import { MAPBOX_KEY , DEBUG_MODE } from '@env';
 import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -64,7 +64,7 @@ export default class Story extends Component {
       server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
       appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
       appDir: (this.props.state) ? this.props.state.appDir : this.props.screenProps.AppDir,
-      debug_mode: (this.props.state) ? this.props.state.debug_mode : this.props.screenProps.debug_mode,
+      debug_mode: Boolean(DEBUG_MODE),
       downloadProgress: 0,
       story: (this.props.story) ? this.props.story : this.props.navigation.getParam('story'),
       theme: (this.props.story && this.props.story.theme) ? this.props.story.theme: this.props.navigation.getParam('story').theme,

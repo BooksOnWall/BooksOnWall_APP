@@ -105,7 +105,7 @@ export default class App extends Component {
       mapboxkey: MAPBOX_KEY,
       server: SERVER_URL,
       appName: PROJECT_NAME,
-      debug_mode: DEBUG_MODE,
+      debug_mode: Boolean(DEBUG_MODE),
       AppDir: '',
       FirstRun: false,
       stories: [],
