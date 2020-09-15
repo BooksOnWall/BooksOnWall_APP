@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		004155131E6144BCB018D146 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8E40C1C36F430892E86FC8 /* libRNGestureHandler-tvOS.a */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -114,6 +115,7 @@
 		9FBF3CB1E738484BB69110F1 /* point3.png in Resources */ = {isa = PBXBuildFile; fileRef = 79052939DF7D41D69CD842DA /* point3.png */; };
 		25AFCD59879B4A93954625EA /* RobotoCondensed-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C289F5A6D77A40A78386C7D6 /* RobotoCondensed-Regular.otf */; };
 		9861C4231D9445E8AAF391F0 /* BooksonWall.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5026B391FCDD4A9182B32B05 /* BooksonWall.ttf */; };
+		D8F15967CB484F959372E629 /* libRNCToolbarAndroid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0484FB31F9B84B0C851763B4 /* libRNCToolbarAndroid.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -705,6 +707,8 @@
 		79052939DF7D41D69CD842DA /* point3.png */ = {isa = PBXFileReference; name = "point3.png"; path = "../assets/nav/point3.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		C289F5A6D77A40A78386C7D6 /* RobotoCondensed-Regular.otf */ = {isa = PBXFileReference; name = "RobotoCondensed-Regular.otf"; path = "../assets/fonts/RobotoCondensed-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		5026B391FCDD4A9182B32B05 /* BooksonWall.ttf */ = {isa = PBXFileReference; name = "BooksonWall.ttf"; path = "../assets/nav/BooksonWall.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AA6CE70D1F2B446F9616F1D3 /* RNCToolbarAndroid.xcodeproj */ = {isa = PBXFileReference; name = "RNCToolbarAndroid.xcodeproj"; path = "../node_modules/@react-native-community/toolbar-android/ios/RNCToolbarAndroid.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		0484FB31F9B84B0C851763B4 /* libRNCToolbarAndroid.a */ = {isa = PBXFileReference; name = "libRNCToolbarAndroid.a"; path = "libRNCToolbarAndroid.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -756,6 +760,7 @@
 				ADD65CAB9F1F479CA9BD5BD6 /* libRNDeviceInfo.a in Frameworks */,
 				94119AF118F04FD79E053A2F /* libRCTOrientation.a in Frameworks */,
 				73D1CD3549424BCB8805AA43 /* libRNSound.a in Frameworks */,
+				D8F15967CB484F959372E629 /* libRNCToolbarAndroid.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -975,6 +980,7 @@
 				03612432E70D4B07907C9845 /* RNDeviceInfo.xcodeproj */,
 				95C29DAC3C7B496CB29822D1 /* RCTOrientation.xcodeproj */,
 				825205D6DF1D496CA43405E3 /* RNSound.xcodeproj */,
+				AA6CE70D1F2B446F9616F1D3 /* RNCToolbarAndroid.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -2169,12 +2175,14 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = BooksOnWallTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2239,12 +2247,14 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = BooksOnWallTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2310,6 +2320,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = BooksOnWall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2350,6 +2361,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = BooksOnWall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2397,11 +2409,13 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2475,11 +2489,13 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2552,11 +2568,13 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2629,11 +2647,13 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

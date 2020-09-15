@@ -312,8 +312,6 @@ class StoryMap extends Component {
         { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        console.log('position', position);
-        console.log('stage geometry', story.stages[0].geometry);
         this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
@@ -328,7 +326,7 @@ class StoryMap extends Component {
             "properties": {},
               "geometry": {
                 "type": "Point",
-                "coordinates": [story.stages[index].geometry.coordinates[0],story.stages[index].geometry.coordinates[1] ]
+                "coordinates": story.stages[index].geometry.coordinates
               }
             };
           let units = I18n.t("kilometers","kilometers");
@@ -344,6 +342,7 @@ class StoryMap extends Component {
       console.log(e);
     }
   }
+  watchID: ?number = null;
   renderRoute() {
     if (!this.state.route) {
       return null;
@@ -598,9 +597,6 @@ class StoryMap extends Component {
     const launchAR = () => (toAR) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
     const storyNext = () => (selected !== routes.length) ? <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} /> : null;
     const MenuButtons = [ { element: storyPrev }, { element: launchAR }, { element: storyMapLine }, { element: storyNext} ];
-
-    console.log(selectedMenu);
-
     return (
       <Page {...this.props}>
         <Header
