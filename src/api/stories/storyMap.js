@@ -201,6 +201,7 @@ class StoryMap extends Component {
       mapTheme: null,
       prevLatLng: null,
       track: null,
+      timeout: 5000,
       distance: null,
       initialPosition: null,
       fromLat: null,
@@ -289,8 +290,11 @@ class StoryMap extends Component {
       console.log(e);
     }
   }
+  cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount() {
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+    this.cancelTimeout();
+    Geolocation.clearWatch(this.watchId);
     this.watchID = null;
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
@@ -298,7 +302,7 @@ class StoryMap extends Component {
     }
   }
   getCurrentLocation = async () => {
-    const {story, index} = this.state;
+    const {story, index, timeout} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
@@ -310,7 +314,7 @@ class StoryMap extends Component {
             fromLong: position.coords.longitude});
         },
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
+        { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
         this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
@@ -337,7 +341,7 @@ class StoryMap extends Component {
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
       );
     } catch(e) {
       console.log(e);

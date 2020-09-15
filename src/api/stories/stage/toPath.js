@@ -219,6 +219,7 @@ class ToPath extends Component {
         completeIcon: completeIcon,
         unknownIcon: unknownIcon
       },
+      timeout: 5000,
       distance: null,
       initialPosition: null,
       fromLat: null,
@@ -297,7 +298,7 @@ class ToPath extends Component {
     }
   }
   getCurrentLocation = async () => {
-    const {story, index} = this.state;
+    const {story, index, timeout} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
@@ -309,7 +310,7 @@ class ToPath extends Component {
             fromLong: position.coords.longitude});
         },
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
+        { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
         this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
@@ -336,17 +337,20 @@ class ToPath extends Component {
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
       );
     } catch(e) {
       console.log(e);
     }
   }
   watchID: ?number = null;
+  cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount() {
     const {routeSimulator} = this.state;
+    this.cancelTimeout();
     (this.whoosh) ? this.whoosh.release() : '';
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+    Geolocation.clearWatch(this.watchId);
     this.watchID = null;
     if (routeSimulator) {
       routeSimulator.stop();

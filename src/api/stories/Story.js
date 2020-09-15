@@ -72,6 +72,7 @@ export default class Story extends Component {
       selected: 0,
       completed: 0,
       dlIndex: null,
+      timeout: 5000,
       dlLoading: false,
       profile: 'mapbox/walking',
       themeSheet: null,
@@ -109,8 +110,11 @@ export default class Story extends Component {
       this.setState({story: this.props.story});
     }
   }
+  cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
+    await this.cancelTimeout();
+    Geolocation.clearWatch(this.watchId);
     this.watchID = null;
   }
   networkCheck = () => {
@@ -156,7 +160,7 @@ export default class Story extends Component {
   }
   updateTransportIndex = (transportIndex) => this.setState({transportIndex})
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
-  watchID: ?number = null;
+  watchID: ?number = null
   downloadStory = (sid) => {
     // add loading in download story button
     this.setState({dlLoading: true});
@@ -285,6 +289,7 @@ export default class Story extends Component {
     }
   }
   getCurrentLocation = async () => {
+    let {timeout} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
@@ -296,7 +301,7 @@ export default class Story extends Component {
             fromLong: position.coords.longitude});
         },
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
+        { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
 
@@ -324,7 +329,7 @@ export default class Story extends Component {
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
       );
     } catch(e) {
       console.log(e);

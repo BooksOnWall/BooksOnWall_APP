@@ -135,7 +135,7 @@ export default class App extends Component {
   handleFirstRun = async () => {
     try {
       // check if application is already installed and has it's list of stories offline
-      console.log(this.state.AppDir);
+      // console.log(this.state.AppDir);
       let StoryFile = this.state.AppDir+'/Stories.json';
       await RNFS.exists(StoryFile)
       .then( (exists) => {
@@ -268,7 +268,7 @@ export default class App extends Component {
           ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
         }),
       );
-      await RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000})
+      await RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 500})
         .then(data => {
           // The user has accepted to enable the location services
           // data can be :
