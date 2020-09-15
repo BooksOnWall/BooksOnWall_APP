@@ -92,6 +92,7 @@ export default class Story extends Component {
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
+      await this.networkCheck();
       await this.storyCheck();
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
@@ -110,7 +111,7 @@ export default class Story extends Component {
   }
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
-    await this.networkCheck();
+    this.watchID = null;
   }
   networkCheck = () => {
     NetInfo.fetch().then(state => {
