@@ -155,6 +155,24 @@ const circleStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
+const Header = ({distance, theme, completed, story, index}) => (
+  <View style={styles.header}>
+    <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
+      <Badge  value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+      <Text style={{
+        fontSize: 26,
+        letterSpacing: 1,
+        color: "#fff",
+        textShadowColor: 'rgba(0, 0, 0, 0.85)',
+        textShadowOffset: {width: 1, height: 1},
+        textShadowRadius: 2,
+        fontFamily: story.theme.font1}} >{story.title}</Text>
+      <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+      <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
+    </ImageBackground>
+  </View>
+);
+
 class ToPath extends Component {
   static navigationOptions = {
     title: 'To Stage',
@@ -175,9 +193,9 @@ class ToPath extends Component {
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     const index = this.props.navigation.getParam('index');
-    console.log('index',index);
+
     const origin = (index > 0) ? routes[index].coordinates: location;
-    console.log('origin',origin);
+
     this.state = {
       prevLatLng: null,
       track: null,
@@ -201,6 +219,13 @@ class ToPath extends Component {
         completeIcon: completeIcon,
         unknownIcon: unknownIcon
       },
+      distance: null,
+      initialPosition: null,
+      fromLat: null,
+      fromLong: null,
+      toLong: null,
+      toLat: null,
+      lastPosition: null,
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -224,7 +249,6 @@ class ToPath extends Component {
       location: [],
       position: {},
     };
-    console.log('index', index);
     this.onStart = this.onStart.bind(this);
   }
 
@@ -266,47 +290,74 @@ class ToPath extends Component {
         }),
       );
       //await findCoordinates();
+      await this.getCurrentLocation();
 
-      await navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.setState({position: position});
-          console.log('position',JSON.stringify(position));
-        },
-        (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        {enableHighAccuracy: true, timeout: 30000, maximumAge: 1000, distanceFilter: 1}
-      );
-
-      this.watchID = await navigator.geolocation.watchPosition((lastPosition) => {
-        var { distanceTotal, record } = this.state;
-        (this.state.index > 0) ? this.setState({lastPosition}) : this.setState({origin: lastPosition, lastPosition: lastPosition}) ;
-        if(record) {
-          var newLatLng = {latitude:lastPosition.coords.latitude, longitude: lastPosition.coords.longitude};
-          this.setState({ track: this.state.track.concat([newLatLng]) });
-          this.setState({ distanceTotal: (distanceTotal + this.calcDistance(newLatLng)) });
-          this.setState({ prevLatLng: newLatLng });
-        }
-      },
-      (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {enableHighAccuracy: true, timeout: 30000, maximumAge: 1, distanceFilter: 1});
     } catch(e) {
       console.log(e);
     }
   }
+  getCurrentLocation = async () => {
+    const {story, index} = this.state;
+    try {
+      // Instead of navigator.geolocation, just use Geolocation.
+      await Geolocation.getCurrentPosition(
+        position => {
+          const initialPosition = position;
+          this.setState({
+            initialPosition,
+            fromLat: position.coords.latitude,
+            fromLong: position.coords.longitude});
+        },
+        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+        { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
+      );
+      this.watchID = await Geolocation.watchPosition(position => {
+        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        let from = {
+          "type": "Feature",
+          "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [this.state.fromLong,this.state.fromLat ]
+            }
+          };
+          let to = {
+            "type": "Feature",
+            "properties": {},
+              "geometry": {
+                "type": "Point",
+                "coordinates": story.stages[index].geometry.coordinates
+              }
+            };
+          let units = I18n.t("kilometers","kilometers");
+          let dis = distance(from, to, "kilometers");
+          if (dis) {
+            this.setState({distance: dis.toFixed(3)});
+          };
+      },
+      error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+      {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      );
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  watchID: ?number = null;
   componentWillUnmount() {
+    const {routeSimulator} = this.state;
     (this.whoosh) ? this.whoosh.release() : '';
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
-    if (this.state.routeSimulator) {
-      this.state.routeSimulator.stop();
+    this.watchID = null;
+    if (routeSimulator) {
+      routeSimulator.stop();
     }
     this.setState({unset: true});
   }
   getSelected = async() => {
     try {
       const {AppDir, story,selected, index} = this.state;
-      console.log(AppDir);
       // get history from file
       const storyHF = AppDir + '/stories/' + story.id + '/complete.txt';
-      console.log(storyHF);
       // // check if file exist
       await RNFS.exists(storyHF)
       .then( (exists) => {
@@ -475,7 +526,6 @@ class ToPath extends Component {
     try {
       const name = 'story'+this.state.story.id;
       const offlinePack = await MapboxGL.offlineManager.getPack(name);
-      console.log(offlinePack);
       // .region.styleURL
       this.setState({offlinePack: offlinePack});
       return offlinePack;
@@ -509,15 +559,11 @@ class ToPath extends Component {
   switchToAR = () => {
     const {index, story, unset} = this.state;
     if(this.whoosh) this.whoosh.release();
-    console.log(unset);
     this.setState({unset: true});
-    console.log('index', index);
     this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index});
   }
   renderActions() {
     const {routeSimulator, index, audioButton, audioPaused, unset} = this.state;
-    console.log('index',index);
-    console.log('unset',unset);
     if (this.state.routeSimulator) {
       return null;
     }
@@ -526,8 +572,6 @@ class ToPath extends Component {
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
     const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
-      console.log('audioButton', audioButton);
-      console.log('audioPaused', audioPaused);
         if(audioButton && audioPaused) {
           return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
         } else if (audioButton && !audioPaused) {
@@ -685,29 +729,18 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
-    const {unset, distanceTotal, completed, selected, theme, story, index} = this.state;
-    const Header = () => (
-      <View style={styles.header}>
-        <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-          <Badge  value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
-          <Text style={{
-            fontSize: 26,
-            letterSpacing: 1,
-            color: "#fff",
-            textShadowColor: 'rgba(0, 0, 0, 0.85)',
-            textShadowOffset: {width: 1, height: 1},
-            textShadowRadius: 2,
-            fontFamily: story.theme.font1}} >{story.title}</Text>
-          <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} {distanceTotal}m</Text>
-        </ImageBackground>
+    const {unset, distance, completed, selected, theme, story, index} = this.state;
 
-      </View>
-    );
     if(unset) return null;
     return (
       <Page {...this.props}>
-        <Header />
+        <Header
+          distance={distance}
+          theme={theme}
+          completed={completed}
+          story={story}
+          index={index}
+          />
         <MapboxGL.MapView
           logoEnabled={false}
           compassEnabled={true}

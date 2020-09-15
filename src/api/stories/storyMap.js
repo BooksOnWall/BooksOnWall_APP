@@ -291,6 +291,7 @@ class StoryMap extends Component {
   }
   componentWillUnmount() {
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+    this.watchID = null;
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
 
