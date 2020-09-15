@@ -10,7 +10,7 @@ import {directionsClient} from './MapboxClient';
 import sheet from './mapbox-gl/styles/sheet';
 import I18n from "../../../utils/i18n";
 import Page from './mapbox-gl/common/Page';
-import { MAPBOX_KEY  } from '@env';
+import { MAPBOX_KEY , DEBUG_MODE } from '@env';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './mapbox-gl/showDirection/PulseCircleLayer';
@@ -195,7 +195,7 @@ class ToPath extends Component {
     const index = this.props.navigation.getParam('index');
 
     const origin = (index > 0) ? routes[index].coordinates: location;
-
+    const radius = stages[index].radius;
     this.state = {
       prevLatLng: null,
       track: null,
@@ -211,6 +211,8 @@ class ToPath extends Component {
       followUserLocation: true,
       route: null,
       stages: stages,
+      radius: radius,
+      debug_mode: DEBUG_MODE,
       routes: routes,
       mbbox: mbbox,
       features: {},
@@ -567,11 +569,11 @@ class ToPath extends Component {
     this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index});
   }
   renderActions() {
-    const {routeSimulator, index, audioButton, audioPaused, unset} = this.state;
+    const {routeSimulator, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
     if (this.state.routeSimulator) {
       return null;
     }
-    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
+    const launchAR = () => (debug_mode && debug_mode === true && (distance <= radius)) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} /> : null;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
     const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
@@ -733,8 +735,8 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
-    const {unset, distance, completed, selected, theme, story, index} = this.state;
-
+    const {unset, distance, completed, selected, theme, story, index, radius} = this.state;
+    if(distance <= radius) this.switchToAR();
     if(unset) return null;
     return (
       <Page {...this.props}>
