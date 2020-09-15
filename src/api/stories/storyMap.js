@@ -119,7 +119,39 @@ const layerStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
+const Header = ({distance, theme, completed, story,  index}) => (
+  <View style={styles.header}>
+    <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
+    <Badge size="large" status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+      <Text style={{
+        fontSize: 26,
+        letterSpacing: 1,
+        color: "#FFF",
+        textShadowColor: 'rgba(0, 0, 0, 0.85)',
+        textShadowOffset: {width: 1, height: 1},
+        textShadowRadius: 2,
+        fontFamily: theme.font1}} >{story.title}</Text>
+      <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+      <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} next in {distance}m</Text>
+    </ImageBackground>
 
+  </View>
+);
+
+
+const Footer = ({selectedMenu, updateMenu, MenuButtons}) => (
+  <View style={styles.footer}>
+  <ButtonGroup style={styles.menu}
+    buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
+    onPress={(e) => updateMenu}
+    selectedIndex={selectedMenu}
+    selectedButtonStyle= {{backgroundColor: '#750000'}}
+    buttons={MenuButtons}
+    containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
+    innerBorderStyle= {{ color: '#570402' }}
+  />
+  </View>
+);
 class StoryMap extends Component {
   static navigationOptions = {
     title: 'Story Map',
@@ -175,7 +207,7 @@ class StoryMap extends Component {
       radius: 20,
       selected:1,
       completed: null,
-      selectedMenu: null,
+      selectedMenu: 0,
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -529,51 +561,25 @@ class StoryMap extends Component {
   }
   render() {
 
-    const {index, routes , toPath, toAR, distanceTotal, styleURL, selected, completed, theme, story, mapTheme} = this.state;
+    const {index, routes , toPath, toAR, distanceTotal, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
-
-    const Header = () => (
-      <View style={styles.header}>
-        <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-        <Badge size="large" status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
-          <Text style={{
-            fontSize: 26,
-            letterSpacing: 1,
-            color: "#FFF",
-            textShadowColor: 'rgba(0, 0, 0, 0.85)',
-            textShadowOffset: {width: 1, height: 1},
-            textShadowRadius: 2,
-            fontFamily: theme.font1}} >{story.title}</Text>
-          <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-          <Text style={styles.complete}>Complete: {(this.state.index+1)}/{story.stages.length} next in {distanceTotal}m</Text>
-        </ImageBackground>
-
-      </View>
-    );
-
     const storyPrev = () => (selected > 0) ? <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} /> :  null;
     const storyMapLine = () => (toPath) ? <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
     const launchAR = () => (toAR) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
     const storyNext = () => (selected !== routes.length) ? <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} /> : null;
     const MenuButtons = [ { element: storyPrev }, { element: launchAR }, { element: storyMapLine }, { element: storyNext} ];
 
-    const Footer = () => (
-      <View style={styles.footer}>
-      <ButtonGroup style={styles.menu}
-        buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
-        onPress={(e) => this.updateMenu}
-        selectedIndex={this.state.selectedMenu}
-        selectedButtonStyle= {{backgroundColor: '#750000'}}
-        buttons={MenuButtons}
-        containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
-        innerBorderStyle= {{ color: '#570402' }}
-      />
-      </View>
-    );
+    console.log(selectedMenu);
 
     return (
       <Page {...this.props}>
-        <Header />
+        <Header
+          distance={distanceTotal}
+          theme={theme}
+          completed={completed}
+          story={story}
+          index={index}
+        />
         <MapboxGL.MapView
           logoEnabled={false}
           compassEnabled={false}
@@ -596,7 +602,11 @@ class StoryMap extends Component {
             />
             {this.renderStages()}
         </MapboxGL.MapView>
-        <Footer />
+        <Footer
+          MenuButtons={MenuButtons}
+          selectedMenu={selectedMenu}
+          updateMenu={this.updateMenu}
+          />
       </Page>
     );
   }
