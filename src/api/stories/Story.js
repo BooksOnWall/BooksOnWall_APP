@@ -407,9 +407,14 @@ export default class Story extends Component {
         backgroundColor: story.theme.color2,
         fontFamily: 'Roboto-Regular',
         color: story.theme.color3,
+        padding: 45,
       },
       sinopsys: {
         backgroundColor: '#D8D8D8',
+        padding: 45,
+        paddingTop: 60,
+        paddingLeft: 50,
+        paddingBottom: 55,
       },
       subtitle: {
         fontWeight: 'bold',
@@ -543,16 +548,17 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 6}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
+            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 8}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
 
               <View style={themeSheet.sinopsys} >
                 <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
               </View>
 
               <View style={themeSheet.credits} >
-              <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-              <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
-            </View>
+                <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+                <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+              </View>
+
       </View>
       </>
     )
@@ -584,7 +590,7 @@ export default class Story extends Component {
         <View style={styles.titleStyle}>
           <Text style={{
             fontSize: 26,
-            letterSpacing: 1,
+            letterSpacing: 1.1,
             color: "#fff",
             textShadowColor: 'rgba(0, 0, 0, 0.85)',
             textShadowOffset: {width: 1, height: 1},
@@ -629,7 +635,7 @@ const styles = StyleSheet.create({
   },
   navContainer: {
     height: HEADER_HEIGHT,
-    marginHorizontal: 20,
+    marginHorizontal: 40,
   },
   statusBar: {
     height: STATUS_BAR_HEIGHT,
@@ -676,6 +682,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0
+    padding: 0 -1,
   }
 });
