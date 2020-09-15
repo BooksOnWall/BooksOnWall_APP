@@ -111,6 +111,7 @@ export default class Story extends Component {
   }
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
+    Geolocation.clearWatch(this.watchId);
     this.watchID = null;
   }
   networkCheck = () => {

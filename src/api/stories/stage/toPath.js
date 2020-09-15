@@ -347,6 +347,7 @@ class ToPath extends Component {
     const {routeSimulator} = this.state;
     (this.whoosh) ? this.whoosh.release() : '';
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+    Geolocation.clearWatch(this.watchId);
     this.watchID = null;
     if (routeSimulator) {
       routeSimulator.stop();
