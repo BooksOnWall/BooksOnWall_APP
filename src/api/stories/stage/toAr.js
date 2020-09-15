@@ -31,6 +31,8 @@ import VIP from '../../scenes/VipScene';
 import VAAMP from '../../scenes/VaampScene';
 import VAAP from '../../scenes/VaapScene';
 import PORTAL from '../../scenes/PortalScene';
+import PIV from '../../scenes/PIVScene';
+import PSIV from '../../scenes/PSIVScene';
 /*
  TODO: Insert your API key below unneeded since v.2.17
  */
@@ -208,10 +210,13 @@ export default class ToAR extends Component {
       'vip':  { scene: VIP },
       'vaap':  { scene: VAAP },
       'vaamp':  { scene: VAAMP },
-      'portal':  { scene: PORTAL}
+      'portal':  { scene: PORTAL},
+      'piv': { scene: PIV},
+      'psiv': { scene: PSIV}
     };
-    let types = ['null','vip', 'vaap', 'vaamp', 'portal'];
+    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv'];
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
+    console.log(type);
     console.log(arScene[type]);
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
