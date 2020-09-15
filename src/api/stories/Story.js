@@ -20,6 +20,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {lineString as makeLineString, bbox} from '@turf/turf';
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
+import NetInfo from "@react-native-community/netinfo";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -109,6 +110,14 @@ export default class Story extends Component {
   }
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
+    await this.networkCheck();
+  }
+  networkCheck = () => {
+    NetInfo.fetch().then(state => {
+      // console.warn("Connection type", state.type);
+      // console.warn("Is connected?", state.isConnected);
+      !state.isConnected ? Toast.showWithGravity(I18n.t("ERROR_NO_INTERNET","Error: No internet connection!"), Toast.LONG, Toast.TOP) : '';
+    });
   }
   getSelected = async() => {
     const {appDir, selected, index} = this.state;

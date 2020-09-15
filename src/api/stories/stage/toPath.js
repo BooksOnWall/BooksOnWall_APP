@@ -292,6 +292,7 @@ class ToPath extends Component {
   }
   componentWillUnmount() {
     (this.whoosh) ? this.whoosh.release() : '';
+    MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
     }
@@ -472,6 +473,8 @@ class ToPath extends Component {
     try {
       const name = 'story'+this.state.story.id;
       const offlinePack = await MapboxGL.offlineManager.getPack(name);
+      console.log(offlinePack);
+      // .region.styleURL
       this.setState({offlinePack: offlinePack});
       return offlinePack;
     } catch(e) {
