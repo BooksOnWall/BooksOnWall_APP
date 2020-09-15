@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 if(__DEV__) {
-  import('./src/utils/ReactotronConfig').then(() => console.log('Reactotron Configured'));
+
 } else {
   console.log = () => {};
   console.table = () => {};
@@ -20,7 +20,7 @@ import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import NetInfo from "@react-native-community/netinfo";
 import { Overlay } from 'react-native-elements';
-import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME  } from 'react-native-dotenv';
+import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME , DEBUG_MODE } from '@env';
 import KeepAwake from 'react-native-keep-awake';
 import Toast from 'react-native-simple-toast';
 import I18n from "./src/utils/i18n";
@@ -105,6 +105,7 @@ export default class App extends Component {
       mapboxkey: MAPBOX_KEY,
       server: SERVER_URL,
       appName: PROJECT_NAME,
+      debug_mode: DEBUG_MODE,
       AppDir: '',
       FirstRun: false,
       stories: [],

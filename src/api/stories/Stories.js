@@ -5,10 +5,10 @@ import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elem
 import Orientation from 'react-native-orientation';
 
 import Geolocation from '@react-native-community/geolocation';
-import { MAPBOX_KEY  } from 'react-native-dotenv';
+import { MAPBOX_KEY  } from '@env';
 import  distance from '@turf/distance';
 import * as RNFS from 'react-native-fs';
-import Reactotron from 'reactotron-react-native';
+
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import Icon from "../../utils/Icon";

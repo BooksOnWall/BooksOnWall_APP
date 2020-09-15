@@ -10,7 +10,7 @@ import {directionsClient} from './stage/MapboxClient';
 import sheet from './stage/mapbox-gl/styles/sheet';
 import I18n from "../../utils/i18n";
 import Page from './stage/mapbox-gl/common/Page';
-import { MAPBOX_KEY  } from 'react-native-dotenv';
+import { MAPBOX_KEY  } from '@env';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';

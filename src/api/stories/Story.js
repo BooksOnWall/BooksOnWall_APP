@@ -5,12 +5,12 @@ import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIcon
 import NavigationView from "./stage/NavigationView";
 import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
-import { MAPBOX_KEY  } from 'react-native-dotenv';
+import { MAPBOX_KEY  } from '@env';
 import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
-import Reactotron from 'reactotron-react-native';
+
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import IconSet from "../../utils/Icon";
@@ -64,6 +64,7 @@ export default class Story extends Component {
       server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
       appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
       appDir: (this.props.state) ? this.props.state.appDir : this.props.screenProps.AppDir,
+      debug_mode: (this.props.state) ? this.props.state.debug_mode : this.props.screenProps.debug_mode,
       downloadProgress: 0,
       story: (this.props.story) ? this.props.story : this.props.navigation.getParam('story'),
       theme: (this.props.story && this.props.story.theme) ? this.props.story.theme: this.props.navigation.getParam('story').theme,
@@ -192,7 +193,6 @@ export default class Story extends Component {
       //const p = resp.path(); android manager can't get the downloaded path
       this.setState({downloadProgress:0});
       let path_name = appDir+'/'+'stories/Story_'+ sid + '.zip'
-      console.log(path_name);
       //TOAST message download complete
       Toast.showWithGravity(I18n.t("Download_complete","Download complete."), Toast.SHORT, Toast.TOP);
       this.setState({dlLoading: false});
@@ -355,7 +355,7 @@ export default class Story extends Component {
   }
 
   launchNavigation = () => {
-    const {story,fromLat, fromLong, toLat, toLong} = this.state;
+    const {story,fromLat, fromLong, toLat, toLong, debug_mode} = this.state;
     NativeModules.MapboxNavigation.navigate(
       fromLat,
       fromLong,
@@ -399,8 +399,9 @@ export default class Story extends Component {
 
   }
   renderContent = () => {
-    const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong , debug_mode} = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
+    console.log('debug',debug_mode);
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
@@ -541,7 +542,7 @@ export default class Story extends Component {
           </TouchableOpacity>
           )}
 
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => (debug_mode) ? this.storyMap() : this.toPath()} >
             <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
@@ -584,6 +585,11 @@ export default class Story extends Component {
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
+  }
+  toPath = () => {
+    const {index, story, completed, debug_mode} = this.state;
+      console.log('completed', comppleted);
+      (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: 0}) ;
   }
   launchAR = () => {
     const {index, story, completed} = this.state;

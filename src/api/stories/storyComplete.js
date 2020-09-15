@@ -5,12 +5,12 @@ import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIcon
 import NavigationView from "./stage/NavigationView";
 import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
-import { MAPBOX_KEY  } from 'react-native-dotenv';
+import { MAPBOX_KEY  } from '@env';
 import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
-import Reactotron from 'reactotron-react-native';
+
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import IconSet from "../../utils/Icon";
