@@ -18,7 +18,8 @@ import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
 import openIcon from '../../../assets/nav/point1.png';
 import completeIcon from '../../../assets/nav/point2.png';
 import unknownIcon from '../../../assets/nav/point3.png';
-
+import  distance from '@turf/distance';
+import Geolocation from '@react-native-community/geolocation';
 import {featureCollection, feature} from '@turf/helpers';
 import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
@@ -132,7 +133,7 @@ const Header = ({distance, theme, completed, story,  index}) => (
         textShadowRadius: 2,
         fontFamily: theme.font1}} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-      <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} next in {distance}m</Text>
+      <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} next in {distance} km</Text>
     </ImageBackground>
 
   </View>
@@ -200,10 +201,13 @@ class StoryMap extends Component {
       mapTheme: null,
       prevLatLng: null,
       track: null,
-      distanceTotal:null,
-      record: null,
-      track: null,
-      prevLatLng: null,
+      distance: null,
+      initialPosition: null,
+      fromLat: null,
+      fromLong: null,
+      toLong: null,
+      toLat: null,
+      lastPosition: null,
       radius: 20,
       selected:1,
       completed: null,
@@ -280,28 +284,7 @@ class StoryMap extends Component {
         }),
       );
       //await findCoordinates();
-
-      await navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.setState({position: position});
-          console.log('position',JSON.stringify(position));
-        },
-        (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        {enableHighAccuracy: true, timeout: 30000, maximumAge: 1000, distanceFilter: 1}
-      );
-
-      this.watchID = await navigator.geolocation.watchPosition((lastPosition) => {
-        var { distanceTotal, record } = this.state;
-        this.setState({lastPosition});
-        if(record) {
-          var newLatLng = {latitude:lastPosition.coords.latitude, longitude: lastPosition.coords.longitude};
-          this.setState({ track: this.state.track.concat([newLatLng]) });
-          this.setState({ distanceTotal: (distanceTotal + this.calcDistance(newLatLng)) });
-          this.setState({ prevLatLng: newLatLng });
-        }
-      },
-      (error) => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {enableHighAccuracy: true, timeout: 30000, maximumAge: 1, distanceFilter: 1});
+      await this.getCurrentLocation();
     } catch(e) {
       console.log(e);
     }
@@ -313,7 +296,54 @@ class StoryMap extends Component {
 
     }
   }
-
+  getCurrentLocation = async () => {
+    const {story, index} = this.state;
+    try {
+      // Instead of navigator.geolocation, just use Geolocation.
+      await Geolocation.getCurrentPosition(
+        position => {
+          const initialPosition = position;
+          this.setState({
+            initialPosition,
+            fromLat: position.coords.latitude,
+            fromLong: position.coords.longitude});
+        },
+        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+        { timeout: 10000, maximumAge: 1000, enableHighAccuracy: true},
+      );
+      this.watchID = await Geolocation.watchPosition(position => {
+        console.log('position', position);
+        console.log('stage geometry', story.stages[0].geometry);
+        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        let from = {
+          "type": "Feature",
+          "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [this.state.fromLong,this.state.fromLat ]
+            }
+          };
+          let to = {
+            "type": "Feature",
+            "properties": {},
+              "geometry": {
+                "type": "Point",
+                "coordinates": [story.stages[index].geometry.coordinates[0],story.stages[index].geometry.coordinates[1] ]
+              }
+            };
+          let units = I18n.t("kilometers","kilometers");
+          let dis = distance(from, to, "kilometers");
+          if (dis) {
+            this.setState({distance: dis.toFixed(2)});
+          };
+      },
+      error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+      {timeout: 5000, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      );
+    } catch(e) {
+      console.log(e);
+    }
+  }
   renderRoute() {
     if (!this.state.route) {
       return null;
@@ -561,7 +591,7 @@ class StoryMap extends Component {
   }
   render() {
 
-    const {index, routes , toPath, toAR, distanceTotal, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
+    const {index, routes , toPath, toAR, distance, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
     const storyPrev = () => (selected > 0) ? <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} /> :  null;
     const storyMapLine = () => (toPath) ? <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
@@ -574,7 +604,7 @@ class StoryMap extends Component {
     return (
       <Page {...this.props}>
         <Header
-          distance={distanceTotal}
+          distance={distance}
           theme={theme}
           completed={completed}
           story={story}
