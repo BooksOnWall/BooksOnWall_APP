@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: "whitesmoke"
   },
   logo: {
-    minHeight: 20,
+    minHeight: 40,
     color: '#9E1C00',
     fontSize: 36,
     textShadowColor: 'rgba(0, 0, 0, 0.35)',
