@@ -49,6 +49,16 @@ let AR_NAVIGATOR_TYPE = "AR";
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
 let defaultNavigatorType = "AR";
 const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal', 'PIV', 'PSIV', '3D'];
+
+const DebugArea = ({distance, debug}) => {
+  console.log(distance);
+  return (
+    <View style={{margin: '5%', minWidth: '20%', minHeight: '10%', opacity: .5}}>
+      <Text style={{color: '#FFF', fontSize: 24, fontWeight: 'bold'}}>{(distance*1000)+' Metros'}</Text>
+      <Text style={{color: '#FFF', fontSize: 24, fontWeight: 'bold'}}>DEBUG: {debug}</Text>
+  </View>
+  );
+};
 export default class ToAR extends Component {
   constructor(props) {
     super(props);
@@ -63,12 +73,11 @@ export default class ToAR extends Component {
       selected: 1,
       buttonaudioPaused: true,
       audioPaused: false,
-      debug_mode: Boolean(DEBUG_MODE),
+      debug_mode: (DEBUG_MODE === 'true') ? true : false,
       audioMuted: false,
       completed: null,
       timeout: 10000,
       distance: this.props.navigation.getParam('distance'),
-      distance: null,
       initialPosition: null,
       fromLat: null,
       fromLong: null,
@@ -242,7 +251,7 @@ export default class ToAR extends Component {
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    const { distance, debug_mode, buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    const { distance, debug_mode,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -293,6 +302,8 @@ export default class ToAR extends Component {
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
       <SafeAreaView style={styles.mainContainer}>
+        {debug_mode && <DebugArea style={{position: 'absolute', zIndex: 1001}} distance={distance} debug={debug_mode} />}
+
         <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={arScene[type]} style={styles.viroContainer}/>
         <ButtonGroup style={styles.menu}
           buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}

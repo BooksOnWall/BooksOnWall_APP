@@ -10,7 +10,7 @@ import {directionsClient} from './stage/MapboxClient';
 import sheet from './stage/mapbox-gl/styles/sheet';
 import I18n from "../../utils/i18n";
 import Page from './stage/mapbox-gl/common/Page';
-import { MAPBOX_KEY  } from '@env';
+import { MAPBOX_KEY , DEBUG_MODE } from '@env';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
@@ -198,6 +198,7 @@ class StoryMap extends Component {
       },
       toPath: true,
       toAR: true,
+      debug_mode: (DEBUG_MODE === 'true') ? true : false,
       mapTheme: null,
       prevLatLng: null,
       track: null,

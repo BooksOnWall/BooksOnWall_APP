@@ -64,7 +64,7 @@ export default class Story extends Component {
       server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
       appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
       appDir: (this.props.state) ? this.props.state.appDir : this.props.screenProps.AppDir,
-      debug_mode: Boolean(DEBUG_MODE),
+      debug_mode: (DEBUG_MODE === 'true') ? true : false,
       downloadProgress: 0,
       story: (this.props.story) ? this.props.story : this.props.navigation.getParam('story'),
       theme: (this.props.story && this.props.story.theme) ? this.props.story.theme: this.props.navigation.getParam('story').theme,
@@ -588,11 +588,11 @@ export default class Story extends Component {
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
   }
   toPath = () => {
-    const {index, story, completed, selected, debug_mode} = this.state;
+    const {index, story, completed, selected, debug_mode, distance} = this.state;
       console.log('completed', completed);
       console.log('toPath', debug_mode);
       //this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
-      (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index:  (selected > 0) ? (selected - 1): 0}) ;
+      (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index:  (selected > 0) ? (selected - 1): 0}) ;
   }
   launchAR = () => {
     const {index, story, completed} = this.state;

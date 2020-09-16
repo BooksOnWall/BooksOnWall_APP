@@ -212,7 +212,7 @@ class ToPath extends Component {
       route: null,
       stages: stages,
       radius: radius,
-      debug_mode: Boolean(DEBUG_MODE),
+      debug_mode: (DEBUG_MODE === 'true') ? true : false,
       routes: routes,
       mbbox: mbbox,
       features: {},
@@ -222,7 +222,7 @@ class ToPath extends Component {
         unknownIcon: unknownIcon
       },
       timeout: 5000,
-      distance: null,
+      distance: this.props.navigation.getParam('distance'),
       initialPosition: null,
       fromLat: null,
       fromLong: null,
@@ -563,10 +563,11 @@ class ToPath extends Component {
     }
   }
   switchToAR = () => {
-    const {index, story, unset} = this.state;
+    Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
+    const {index, story, unset, debug_mode, distance} = this.state;
     if(this.whoosh) this.whoosh.release();
-    this.setState({unset: true});
-    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index});
+    this.setState({unset: true, timeout: 0});
+    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index, debug: debug_mode, distance: distance});
   }
   renderActions() {
     const {routeSimulator, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
@@ -736,7 +737,7 @@ class ToPath extends Component {
   }
   render() {
     const {unset, distance, completed, selected, theme, story, index, radius, debug_mode} = this.state;
-    if(debug_mode === false && distance <= radius) this.switchToAR();
+    if(distance && radius && debug_mode === false && distance <= radius) return this.switchToAR();
     if(unset) return null;
     return (
       <Page {...this.props}>

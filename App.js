@@ -105,7 +105,7 @@ export default class App extends Component {
       mapboxkey: MAPBOX_KEY,
       server: SERVER_URL,
       appName: PROJECT_NAME,
-      debug_mode: Boolean(DEBUG_MODE),
+      debug_mode: (DEBUG_MODE === 'true') ? true : false,
       AppDir: '',
       FirstRun: false,
       stories: [],
@@ -117,6 +117,8 @@ export default class App extends Component {
       storeStories: this.storeStories,
       isLoading: false,
     };
+    console.log('debug_mode', this.state.debug_mode);
+    console.log('DEBUG_MODE', DEBUG_MODE);
   }
   componentDidMount = async () => {
     try {
