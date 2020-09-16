@@ -73,7 +73,7 @@ export default class Story extends Component {
       selected: 0,
       completed: 0,
       dlIndex: null,
-      timeout: 5000,
+      timeout: 10000,
       dlLoading: false,
       profile: 'mapbox/walking',
       themeSheet: null,

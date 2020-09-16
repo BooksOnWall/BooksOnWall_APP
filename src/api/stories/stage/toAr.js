@@ -9,16 +9,19 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { ViroARSceneNavigator} from 'react-viro';
-
+import { DEBUG_MODE } from '@env';
 import KeepAwake from 'react-native-keep-awake';
 import SafeAreaView from 'react-native-safe-area-view';
 import { ButtonGroup } from 'react-native-elements';
 import Icon from "../../../utils/Icon";
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
-
+import  distance from '@turf/distance';
+import Geolocation from '@react-native-community/geolocation';
+import Toast from 'react-native-simple-toast';
+import I18n from "../../../utils/i18n";
 /*
-AR Scene type:
+AR Scene type: INT(1-7)
 #1 VIP aka Video inside Picture to detect
 #2 VAAP aka Video aside anchored picture
 #3 VAAMP aka Video anchored with multiple pictures
@@ -60,8 +63,18 @@ export default class ToAR extends Component {
       selected: 1,
       buttonaudioPaused: true,
       audioPaused: false,
+      debug_mode: Boolean(DEBUG_MODE),
       audioMuted: false,
       completed: null,
+      timeout: 10000,
+      distance: this.props.navigation.getParam('distance'),
+      distance: null,
+      initialPosition: null,
+      fromLat: null,
+      fromLong: null,
+      toLong: null,
+      toLat: null,
+      lastPosition: null,
       scene_type: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_type,
       scene_options: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_options,
       index: this.props.navigation.getParam('index'),
@@ -78,17 +91,73 @@ export default class ToAR extends Component {
     headerShown: false
   };
   componentDidMount = async () => {
-    await KeepAwake.activate();
-    await this.getSelected();
+    try {
+      await KeepAwake.activate();
+      await this.getSelected();
+      await this.getCurrentLocation();
+    } catch(e) {
+      console.log(e);
+    }
   }
   componentWillUnmount = async () => {
     try {
+      this.setState({timeout:0});
+      await Geolocation.clearWatch(this.watchId);
+      this.watchID = null;
       await this.setState({ navigatorType : UNSET });
       await KeepAwake.deactivate();
     } catch(e) {
       console.log(e);
     }
   }
+  getCurrentLocation = async () => {
+    let {story, index, timeout} = this.state;
+    try {
+      // Instead of navigator.geolocation, just use Geolocation.
+      await Geolocation.getCurrentPosition(
+        position => {
+          const initialPosition = position;
+          this.setState({
+            initialPosition,
+            fromLat: position.coords.latitude,
+            fromLong: position.coords.longitude});
+        },
+        error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+        { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
+      );
+      this.watchID = await Geolocation.watchPosition(position => {
+        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        let from = {
+          "type": "Feature",
+          "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [this.state.fromLong,this.state.fromLat ]
+            }
+          };
+          let to = {
+            "type": "Feature",
+            "properties": {},
+              "geometry": {
+                "type": "Point",
+                "coordinates": story.stages[index].geometry.coordinates
+              }
+            };
+          let units = I18n.t("kilometers","kilometers");
+          let dis = distance(from, to, "kilometers");
+          if (dis) {
+            this.setState({distance: dis.toFixed(3)});
+          };
+      },
+      error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
+      {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      );
+    } catch(e) {
+      console.log(e);
+    }
+  }
+  watchID: ?number = null;
+  cancelTimeout = () => this.setState({timeout: 0})
   reload = () => {
     this.togglePlaySound();
     this.setState({ navigatorType : UNSET });
@@ -173,7 +242,7 @@ export default class ToAR extends Component {
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    const { buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    const { distance, debug_mode, buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -184,6 +253,8 @@ export default class ToAR extends Component {
       index: index,
       audioPaused: audioPaused,
       audioMuted: audioMuted,
+      debug_mode: debug_mode,
+      distance: distance,
       buttonaudioPaused: buttonaudioPaused,
       pictures: stage.pictures,
       onZoneEnter: stage.onZoneEnter,
