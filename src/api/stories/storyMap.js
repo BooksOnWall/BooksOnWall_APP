@@ -198,7 +198,6 @@ class StoryMap extends Component {
       },
       toPath: true,
       toAR: true,
-      debug_mode: (DEBUG_MODE === 'true') ? true : false,
       mapTheme: null,
       prevLatLng: null,
       track: null,

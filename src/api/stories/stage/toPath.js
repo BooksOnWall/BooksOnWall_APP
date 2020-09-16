@@ -737,7 +737,8 @@ class ToPath extends Component {
   }
   render() {
     const {unset, distance, completed, selected, theme, story, index, radius, debug_mode} = this.state;
-    if(distance && radius && debug_mode === false && distance <= radius) return this.switchToAR();
+    console.log('distance',distance);
+    if(distance && radius > 0 && debug_mode === false && distance <= radius) return this.switchToAR();
     if(unset) return null;
     return (
       <Page {...this.props}>

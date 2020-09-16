@@ -19,6 +19,7 @@ export default {
   ERROR_NO_INTERNET: "Errore: senza connessione a Internet!",
   ERROR_ACCESS_FILESYSTEM: "Errore: nessun accesso al tuo filesystem per installare l'applicazione!",
   NO_DATA: "Nessun dato ricevuto dal server",
+  Entering_ar: "Entering in Augmented Reality ...",
   Receiving_data: " Ricezione dei dati,",
   Creating_banners: "Creazione di annunci ...",
   Update_complete: "Aggiornamento completato",
