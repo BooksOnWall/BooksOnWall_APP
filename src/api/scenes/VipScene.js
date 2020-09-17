@@ -7,13 +7,14 @@ import {
   ViroARScene,
   ViroARImageMarker,
   ViroVideo,
+  ViroImage,
   ViroMaterials,
   ViroSound,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-
+import Patricie from '../../../assets/materials/patricie.jpg';
 export default class VipScene extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +42,7 @@ export default class VipScene extends Component {
       MatchAudioMuted: false,
       MatchAudioLoop: false,
       anchorFound: false,
+      finishAll: false,
       audios: [],
       video: {},
       audioLoop: false,
@@ -167,9 +169,10 @@ export default class VipScene extends Component {
     // @zone string onZoneEnter or onPictureMatch
     const {audios, storyDir} = this.state;
       // set path & loop to audios : one by zone
-      (zone === 'onPictureMatch') ? this.setState({MatchAudioPaused: false}) : this.setState({audioPaused: true});
+      (zone === 'onPictureMatch' && audios && audios[zone] && audios[zone].length > 0) ? this.setState({MatchAudioPaused: false}) : this.setState({audioPaused: true, finishAll: true});
   }
   toggleButtonAudio = async () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
+  onFinishAll = () => this.setState({finishAll: true})
   onFinishSound = () => {
     this.toggleButtonAudio();
     console.log("Sound terminated");
@@ -194,7 +197,7 @@ export default class VipScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, finishAll, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     // <ViroARImageMarker onAnchorFound={() => this.stopAudio()} ...
     return (
@@ -235,9 +238,19 @@ export default class VipScene extends Component {
              source={{uri: MatchAudioPath }}
              loop={MatchAudioLoop}
              volume={1.0}
-             onFinish={this.onFinishSound}
+             onFinish={this.onFinishAll}
              onError={this.onErrorSound}
           /> : null}
+          <ViroImage
+            height={1}
+            width={1}
+            position={[0,0,-2]}
+            visible={finishAll}
+            resizeMode="ScaleToFit"
+            opacity={1}
+            placeholderSource={Patricie}
+            source={Patricie}
+         />
       </ViroARScene>
       </SafeAreaView>
     );
