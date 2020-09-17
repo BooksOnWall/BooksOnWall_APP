@@ -295,6 +295,7 @@ export default class Story extends Component {
       await Geolocation.getCurrentPosition(
         position => {
           const initialPosition = position;
+          console.log('position', position);
           this.setState({
             initialPosition: initialPosition,
             fromLat: position.coords.latitude,
@@ -322,6 +323,7 @@ export default class Story extends Component {
                 "coordinates": [this.state.toLong,this.state.toLat ]
               }
             };
+          console.log('position from', from);
           let units = I18n.t("kilometers","kilometers");
           let dis = distance(from, to, "kilometers");
           if (dis) {
@@ -401,7 +403,6 @@ export default class Story extends Component {
   renderContent = () => {
     const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong , debug_mode} = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    console.log('debug',debug_mode);
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
@@ -589,8 +590,6 @@ export default class Story extends Component {
   }
   toPath = () => {
     const {index, story, completed, selected, debug_mode, distance} = this.state;
-      console.log('completed', completed);
-      console.log('toPath', debug_mode);
       //this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
       (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index:  (selected > 0) ? (selected - 1): 0}) ;
   }

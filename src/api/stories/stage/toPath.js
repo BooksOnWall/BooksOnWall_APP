@@ -196,6 +196,7 @@ class ToPath extends Component {
 
     const origin = (index > 0) ? routes[index].coordinates: location;
     const radius = stages[index].radius;
+    console.log('radius', radius);
     this.state = {
       prevLatLng: null,
       track: null,
@@ -300,9 +301,10 @@ class ToPath extends Component {
     }
   }
   getCurrentLocation = async () => {
-    const {story, index, timeout} = this.state;
+    const {story, index, timeout, radius, debug_mode} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
+      Toast.showWithGravity(I18n.t("Getting_GPS","Please wait , Trying to get your position ..."), Toast.SHORT, Toast.TOP);
       await Geolocation.getCurrentPosition(
         position => {
           const initialPosition = position;
@@ -337,6 +339,7 @@ class ToPath extends Component {
           if (dis) {
             this.setState({distance: dis.toFixed(3)});
           };
+          if (dis && radius > 0 && debug_mode === false && dis <= radius) this.switchToAR();
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
@@ -563,8 +566,8 @@ class ToPath extends Component {
     }
   }
   switchToAR = () => {
-    Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     const {index, story, unset, debug_mode, distance} = this.state;
+    Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
     this.setState({unset: true, timeout: 0});
     this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index, debug: debug_mode, distance: distance});
@@ -736,10 +739,10 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
-    const {unset, distance, completed, selected, theme, story, index, radius, debug_mode} = this.state;
-    console.log('distance',distance);
-    if(distance && radius > 0 && debug_mode === false && distance <= radius) return this.switchToAR();
+    const {unset, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
+
     if(unset) return null;
+    //if (distance && radius > 0 && debug_mode === false && distance <= radius) this.switchToAR();
     return (
       <Page {...this.props}>
         <Header

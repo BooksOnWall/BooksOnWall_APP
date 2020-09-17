@@ -78,6 +78,7 @@ export default class ToAR extends Component {
       completed: null,
       timeout: 10000,
       distance: this.props.navigation.getParam('distance'),
+      radius: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].radius,
       initialPosition: null,
       fromLat: null,
       fromLong: null,
