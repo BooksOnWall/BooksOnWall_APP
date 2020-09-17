@@ -157,6 +157,7 @@ export default class ToAR extends Component {
           let dis = distance(from, to, "kilometers");
           if (dis) {
             this.setState({distance: dis.toFixed(3)});
+            Toast.showWithGravity(I18n.t("GetOutZone","To continue your story , please go outside the AR search zone"), Toast.LONG, Toast.TOP);
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
@@ -264,7 +265,8 @@ export default class ToAR extends Component {
       audioPaused: audioPaused,
       audioMuted: audioMuted,
       debug_mode: debug_mode,
-      distance: distance,
+      distance: distance, // en kilometers
+      radius: stage.radius, // en meters
       buttonaudioPaused: buttonaudioPaused,
       pictures: stage.pictures,
       onZoneEnter: stage.onZoneEnter,
@@ -284,7 +286,7 @@ export default class ToAR extends Component {
         return null;
       }
     };
-    const storyMap = () => <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} />;
+    const storyMap = () => (debug_mode) ? <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} /> : '';
     const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [ { element: storyReload }, { element: storyMap }, { element: sound}, { element: storyNext} ];
     const arScene = {

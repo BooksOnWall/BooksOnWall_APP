@@ -212,7 +212,6 @@ class ToPath extends Component {
       followUserLocation: true,
       route: null,
       stages: stages,
-      radius: radius,
       debug_mode: (DEBUG_MODE === 'true') ? true : false,
       routes: routes,
       mbbox: mbbox,
@@ -223,7 +222,8 @@ class ToPath extends Component {
         unknownIcon: unknownIcon
       },
       timeout: 5000,
-      distance: this.props.navigation.getParam('distance'),
+      distance: this.props.navigation.getParam('distance'), // in kilometers
+      radius: radius, // in meters
       initialPosition: null,
       fromLat: null,
       fromLong: null,
@@ -578,10 +578,11 @@ class ToPath extends Component {
     if (this.state.routeSimulator) {
       return null;
     }
-    const launchAR = () => (debug_mode && debug_mode === true && (distance <= radius)) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} /> : null;
+    const launchAR = () =>  <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
-    const storyOrigin = () => (index > 0) ? <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} /> :<Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
+    const storyOrigin = () =>  <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
+    const launchNavigation = () => <Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
         if(audioButton && audioPaused) {
           return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
@@ -593,7 +594,15 @@ class ToPath extends Component {
     };
 
     const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
-    const MenuButtons = [  { element: storyLocation }, { element: storyOrigin}, { element: storyDestination },{ element: launchAR }, { element: storyMapDl}, {element: sound} ];
+    let MenuButtons = [];
+    MenuButtons.push({ element: storyLocation});
+    if (index === 0) MenuButtons.push({ element: launchNavigation});
+    if (index > 0) MenuButtons.push({ element: storyOrigin});
+    MenuButtons.push({ element: storyDestination });
+    if(debug_mode && ((distance*1000) <= radius)) MenuButtons.push({ element: launchAR });
+    MenuButtons.push({ element: storyMapDl});
+    MenuButtons.push({element: sound});
+
 
     return (
       <View style={styles.footer}>
@@ -743,7 +752,7 @@ class ToPath extends Component {
     const {unset, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
 
     if(unset) return null;
-    //if (distance && radius > 0 && debug_mode === false && distance <= radius) this.switchToAR();
+
     return (
       <Page {...this.props}>
         <Header

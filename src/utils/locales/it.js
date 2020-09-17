@@ -21,6 +21,7 @@ export default {
   NO_DATA: "Nessun dato ricevuto dal server",
   Getting_GPS: "Please wait , Trying to get your position ...",
   Entering_ar: "Entering in Augmented Reality ...",
+  GetOutZone: "To continue your story , please go outside the AR search zone",
   Receiving_data: " Ricezione dei dati,",
   Creating_banners: "Creazione di annunci ...",
   Update_complete: "Aggiornamento completato",

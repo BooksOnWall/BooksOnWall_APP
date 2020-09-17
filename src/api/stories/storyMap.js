@@ -78,6 +78,9 @@ const styles = StyleSheet.create({
     alignContent: 'stretch',
     justifyContent:'center'
   },
+  headerTitle: {
+
+  },
   footer: {
     flex: 0,
     flexDirection:'column',
@@ -120,24 +123,28 @@ const layerStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({distance, theme, completed, story,  index}) => (
-  <View style={styles.header}>
-    <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-    <Badge size="large" status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
-      <Text style={{
-        fontSize: 26,
-        letterSpacing: 1,
-        color: "#FFF",
-        textShadowColor: 'rgba(0, 0, 0, 0.85)',
-        textShadowOffset: {width: 1, height: 1},
-        textShadowRadius: 2,
-        fontFamily: theme.font1}} >{story.title}</Text>
-      <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-      <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} next in {distance} km</Text>
-    </ImageBackground>
-
-  </View>
-);
+const Header = ({distance, theme, completed, story,  index}) => {
+  console.log('distance', distance);
+  console.log('theme', theme);
+  return (
+    <View style={styles.header}>
+      <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
+      <Badge size="large" status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+        <Text style={{
+          fontSize: 26,
+          letterSpacing: 1,
+          color: "#FFF",
+          textShadowColor: 'rgba(0, 0, 0, 0.85)',
+          textShadowOffset: {width: 1, height: 1},
+          textShadowRadius: 2,
+          fontFamily: theme.font1}} >{story.title}</Text>
+        <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+        <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}}</Text>
+        <Text style={styles.complete}>Next in {(distance !== null) ? distance : '' } km </Text>
+      </ImageBackground>
+    </View>
+  );
+}
 
 
 const Footer = ({selectedMenu, updateMenu, MenuButtons}) => (
@@ -164,7 +171,6 @@ class StoryMap extends Component {
     super(props);
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
-    console.log(stages);
     const routes = stages.map((stage, i) => {
       return {coordinates: stage.geometry.coordinates};
     });
@@ -202,13 +208,14 @@ class StoryMap extends Component {
       prevLatLng: null,
       track: null,
       timeout: 5000,
-      distance: null,
       initialPosition: null,
       fromLat: null,
       fromLong: null,
       toLong: null,
       toLat: null,
       lastPosition: null,
+      debug_mode:  (DEBUG_MODE === "true") ? true: false,
+      distance: (this.props.navigation.getParam('distance')) ? this.props.navigation.getParam('distance') : null,
       radius: 20,
       selected:1,
       completed: null,
@@ -593,15 +600,22 @@ class StoryMap extends Component {
     const coords = this.state.routes[id].coordinates;
     this.goTo(coords, false);
   }
+  launchMap = () => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, distance: distance, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
+  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, distance: distance, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
   render() {
 
-    const {index, routes , toPath, toAR, distance, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
+    const {index, routes , toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
-    const storyPrev = () => (selected > 0) ? <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} /> :  null;
-    const storyMapLine = () => (toPath) ? <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
-    const launchAR = () => (toAR) ? <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})} /> : null;
-    const storyNext = () => (selected !== routes.length) ? <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} /> : null;
-    const MenuButtons = [ { element: storyPrev }, { element: launchAR }, { element: storyMapLine }, { element: storyNext} ];
+    if(distance && distance !== null && (distance*1000 <= story.stages[index].radius)) this.launchAR();
+    const storyPrev = () =>  <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} />;
+    const storyMapLine = () => <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.launchMap()} />
+    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.launchAR()} />
+    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} />;
+    let MenuButtons = [];
+     if (selected > 0) MenuButtons.push({ element: storyPrev });
+     if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
+     if (toPath) MenuButtons.push({ element: storyMapLine });
+     if (selected !== routes.length) MenuButtons.push({ element: storyNext});
     return (
       <Page {...this.props}>
         <Header

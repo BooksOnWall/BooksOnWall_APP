@@ -543,8 +543,8 @@ export default class Story extends Component {
           </TouchableOpacity>
           )}
 
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => (debug_mode && debug_mode === true) ? this.storyMap() : this.toPath()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => (debug_mode && debug_mode === true) ? this.storyMap() : this.toPath()}  />
+          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
         );
@@ -582,11 +582,11 @@ export default class Story extends Component {
     </View>
   )
   storyMap = () => {
-    const {index, story, completed, debug_mode} = this.state;
+    const {index, story, completed, debug_mode, distance} = this.state;
     console.log('storyMap', debug_mode);
     (story.isComplete)
-    ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0})
-    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0}) ;
+    ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
+    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance}) ;
   }
   toPath = () => {
     const {index, story, completed, selected, debug_mode, distance} = this.state;
