@@ -302,6 +302,7 @@ class ToPath extends Component {
   }
   getCurrentLocation = async () => {
     const {story, index, timeout, radius, debug_mode} = this.state;
+
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       Toast.showWithGravity(I18n.t("Getting_GPS","Please wait , Trying to get your position ..."), Toast.SHORT, Toast.TOP);
@@ -339,7 +340,7 @@ class ToPath extends Component {
           if (dis) {
             this.setState({distance: dis.toFixed(3)});
           };
-          if (dis && radius > 0 && debug_mode === false && dis <= radius) this.switchToAR();
+          if (dis && radius > 0 && debug_mode === false && dis <= radius && timeout > 0) this.switchToAR();
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
@@ -570,7 +571,7 @@ class ToPath extends Component {
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
     this.setState({unset: true, timeout: 0});
-    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: index, debug: debug_mode, distance: distance});
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: index, debug: debug_mode, distance: distance});
   }
   renderActions() {
     const {routeSimulator, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;

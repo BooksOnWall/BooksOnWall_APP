@@ -114,7 +114,7 @@ export default class Story extends Component {
   cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
-    await this.cancelTimeout();
+    this.cancelTimeout();
     Geolocation.clearWatch(this.watchId);
     this.watchID = null;
   }
