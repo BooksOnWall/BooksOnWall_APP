@@ -573,15 +573,17 @@ class ToPath extends Component {
     this.setState({unset: true, timeout: 0});
     this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: index, debug: debug_mode, distance: distance});
   }
+  showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
-    const {routeSimulator, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
+    const {routeSimulator, completed, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
     if (this.state.routeSimulator) {
       return null;
     }
-    const launchAR = () =>  <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
-    const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
+
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
+    const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyOrigin = () =>  <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
+    const launchAR = () =>  <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
     const launchNavigation = () => <Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
         if(audioButton && audioPaused) {
@@ -596,13 +598,13 @@ class ToPath extends Component {
     const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
     let MenuButtons = [];
     MenuButtons.push({ element: storyLocation});
-    if (index === 0) MenuButtons.push({ element: launchNavigation});
-    if (index > 0) MenuButtons.push({ element: storyOrigin});
+    MenuButtons.push({ element: launchNavigation});
+    if (completed > 0) MenuButtons.push({ element: storyOrigin});
     MenuButtons.push({ element: storyDestination });
     if(debug_mode && ((distance*1000) <= radius)) MenuButtons.push({ element: launchAR });
     MenuButtons.push({ element: storyMapDl});
-    MenuButtons.push({element: sound});
-
+    if(sound !== null) MenuButtons.push({element: sound});
+    console.log('menu buttons', MenuButtons)
 
     return (
       <View style={styles.footer}>

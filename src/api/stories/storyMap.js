@@ -123,9 +123,9 @@ const layerStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({distance, theme, completed, story,  index}) => {
-  console.log('distance', distance);
-  console.log('theme', theme);
+const Header = ({distance, theme, completed, story,  index, showDistance}) => {
+  let dis = showDistance();
+  console.log(dis);
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -140,7 +140,7 @@ const Header = ({distance, theme, completed, story,  index}) => {
           fontFamily: theme.font1}} >{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
         <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}}</Text>
-        <Text style={styles.complete}>Next in {(distance !== null) ? distance : '' } km </Text>
+        <Text style={styles.complete}>Next in {dis} km </Text>
       </ImageBackground>
     </View>
   );
@@ -238,6 +238,7 @@ class StoryMap extends Component {
     console.log('styleURL', this.state.styleURL);
     this.onStart = this.onStart.bind(this);
   }
+  showDistance = () => (this.state.distance) ? this.state.distance : ''
   getMapTheme = async () => {
     const id = this.state.story.id;
     const mapThemePath =  this.props.screenProps.AppDir+ '/stories/'+ id +'/map.json';
@@ -623,6 +624,7 @@ class StoryMap extends Component {
           theme={theme}
           completed={completed}
           story={story}
+          showDistance={this.showDistance}
           index={index}
         />
         <MapboxGL.MapView
