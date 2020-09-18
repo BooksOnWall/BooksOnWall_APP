@@ -302,6 +302,7 @@ export default class Stories extends Component {
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
+        <ImageBackground  style={{width: 'auto', height: '100%', backgroundColor: '#C8C1B8'}} >
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', paddingBottom: 23 }}
             centerComponent={<Icon name='bow-logo' size={22} containerStyle={styles.logoContainer} style={styles.logo}/>}
@@ -317,8 +318,9 @@ export default class Stories extends Component {
               </View>
           </ScrollView>
           </Card>
-
+          </ImageBackground >
         </SafeAreaView>
+
       </ThemeProvider>
     );
   }

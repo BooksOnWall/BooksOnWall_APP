@@ -22,6 +22,7 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
 import NetInfo from "@react-native-community/netinfo";
 
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
@@ -419,9 +420,9 @@ export default class Story extends Component {
       },
       sinopsys: {
         backgroundColor: '#D8D8D8',
-        padding: 45,
+        padding: 40,
         paddingTop: 60,
-        paddingLeft: 50,
+        paddingLeft: 45,
         paddingBottom: 55,
       },
       subtitle: {
@@ -448,12 +449,12 @@ export default class Story extends Component {
         height: 50
       },
       distance: {
-        color: '#FFF',
+        color: story.theme.color2,
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 14,
         textAlign: 'center',
-        paddingTop: 5,
-        fontFamily: 'Roboto-Regular'
+        paddingTop: 8,
+        fontFamily: 'RobotoCondensed-Bold'
       },
       message: {
         fontSize: 12,
@@ -493,24 +494,73 @@ export default class Story extends Component {
           letterSpacing: 0,
           fontFamily: 'Roboto-Regular',
           color: story.theme.color3,
+          marginTop: 5,
+          marginBottom: 5,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 0,
+          paddingVertical: 0,
+        },
+        br: { padding: 0, margin: 0,
         },
         b: {
-          fontFamily: 'Roboto-bold'},
-          container: {
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          backgroundColor: '#D8D8D8',
-          padding: 0,
+          fontFamily: 'Roboto-bold'
+        },
+        container: {
+          marginTop: 5,
+          marginBottom: 5,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 0,
+          paddingVertical: 0,
+        },
+        span: {
+          marginTop: 5,
+          marginBottom: 5,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 0,
+          paddingVertical: 0,
         },
         strong: {
           fontFamily: 'Roboto-bold',
-        }
+        },
+        h1: {
+          fontSize: 22,
+          fontWeight: '200',
+          color: story.theme.color1,
+          marginTop: 20,
+          marginBottom: 20,
+        },
+        h2: {
+          fontSize: 15,
+          fontWeight: 'bold',
+          color: story.theme.color3,
+          marginTop: 10,
+          marginBottom: 20,
+        },
+        h3: {
+          fontSize: 13,
+          marginTop: 5,
+          marginBottom: 5,
+          fontFamily: 'Roboto-bold',
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          color: story.theme.color1,
+        },
+        h4: {
+          fontSize: 13,
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          color: story.theme.color1,
+          marginTop: 5,
+          marginBottom: 5,
+        },
       });
     const sinopsysThemeSheet = StyleSheet.create({
       p: {
-          fontSize: 18,
-          lineHeight: 23,
+          fontSize: 17,
+          lineHeight: 26,
           letterSpacing: 0,
           fontFamily: '',
           color: '#1B1A1B',
@@ -542,7 +592,6 @@ export default class Story extends Component {
             <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
-
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
             <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
@@ -552,9 +601,8 @@ export default class Story extends Component {
     return (
       <>
       <View style={themeSheet.card} >
-
             {distance && (
-              <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
+              <Text > {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
             {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 8}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
 
