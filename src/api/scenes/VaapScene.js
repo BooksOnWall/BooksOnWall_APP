@@ -8,6 +8,10 @@ import {
   ViroARImageMarker,
   ViroVideo,
   ViroMaterials,
+  ViroImage,
+  ViroText,
+  ViroFlexView,
+  ViroAnimations,
   ViroSound,
   ViroARTrackingTargets,
   ViroAmbientLight

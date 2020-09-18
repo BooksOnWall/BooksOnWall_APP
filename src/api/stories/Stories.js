@@ -100,8 +100,10 @@ export default class Stories extends Component {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
+      debug_mode: this.props.screenProps.debug_mode,
       stories: stories,
-      storiesURL: this.props.screenProps.server + '/storiesPublished',
+      storiesURL: this.props.screenProps.storiesURL,
+      storiesAllURL: this.props.screenProps.storiesAllURL,
       bannerPath: this.props.screenProps.AppDir + '/banner/',
       granted: Platform.OS === 'ios',
       isTablet: this.props.screenProps.isTablet,
@@ -187,10 +189,11 @@ export default class Stories extends Component {
     });
   }
   loadStories = async () => {
+    const {debug_mode,storiesURL, storiesAllURL } = this.state;
     try {
       await this.networkCheck();
       Toast.showWithGravity(I18n.t("Loading","Loading"), Toast.SHORT, Toast.TOP);
-      await fetch(this.state.storiesURL, {
+      await fetch((debug_mode && debug_mode === false) ? storiesURL: storiesAllURL , {
         method: 'get',
         headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
       })

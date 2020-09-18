@@ -113,6 +113,7 @@ export default class App extends Component {
       isTablet: isTablet(),
       isLandscape: isLandscape(),
       storiesURL: SERVER_URL + '/storiesPublished',
+      storiesAllURL: SERVER_URL + '/stories',
       loadStories: this.loadStories,
       storeStories: this.storeStories,
       isLoading: false,
@@ -295,11 +296,12 @@ export default class App extends Component {
   }
   handleLocales = async () => this.locales = RNLocalize.getLocales()
   loadStories = async () => {
+    const {debug_mode, storiesURL} = this.state;
     try {
       this.setState({isLoading: true});
       Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
       await this.networkCheck();
-      await fetch(this.state.storiesURL, {
+      await fetch((debug_mode && debug_mode ==="false") ? storiesURL : storiesAllURL , {
         method: 'get',
         headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
       })

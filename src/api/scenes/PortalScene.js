@@ -8,6 +8,10 @@ import {
   ViroARImageMarker,
   ViroVideo,
   ViroMaterials,
+  ViroImage,
+  ViroText,
+  ViroFlexView,
+  ViroAnimations,
   ViroSound,
   Viro360Video,
   Viro360Image,
@@ -19,6 +23,8 @@ import {
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
+import Patricie from '../../../assets/materials/patricie.jpg';
+import I18n from "../../utils/i18n";
 
 export default class PortalScene extends Component {
   constructor(props) {
