@@ -501,7 +501,7 @@ export default class Story extends Component {
           paddingHorizontal: 0,
           paddingVertical: 0,
         },
-        br: { padding: 0, margin: 0,
+        br: { padding: 0, margin: 0, lineHeight: 0,
         },
         b: {
           fontFamily: 'Roboto-bold'
@@ -598,6 +598,8 @@ export default class Story extends Component {
           </View>
         );
       };
+      console.log('credits', story.credits);
+      
     return (
       <>
       <View style={themeSheet.card} >
@@ -607,12 +609,12 @@ export default class Story extends Component {
             {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 8}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
 
               <View style={themeSheet.sinopsys} >
-                <HTMLView value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
+                <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
               </View>
 
               <View style={themeSheet.credits} >
                 <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-                <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+                <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.credits} stylesheet={creditsThemeSheet} />
               </View>
 
       </View>
@@ -694,6 +696,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
+    padding: 0,
+    margin: 0,
   },
   navContainer: {
     height: HEADER_HEIGHT,
