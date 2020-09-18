@@ -209,6 +209,7 @@ export default class ToAR extends Component {
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
     const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
     if (newIndex) {
+      console.log('new index, newIndex');
       // get history from file
       try  {
         // // check if complete need to be updated
@@ -273,6 +274,9 @@ export default class ToAR extends Component {
       onZoneLeave: stage.onZoneLeave,
       onPictureMatch: stage.onPictureMatch,
       appDir: appDir,
+      goToMap: this.map,
+      goToNext: this.next,
+      theme: story.theme,
       togglePlaySound: this.togglePlaySound,
       toggleButtonAudio: this.toggleButtonAudio,
     };

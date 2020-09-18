@@ -19,6 +19,7 @@ export default {
   ERROR_NO_INTERNET: "Erro: Sem conexão à internet!",
   ERROR_ACCESS_FILESYSTEM: "Erro: Sem acesso ao sistema de arquivo para instalar a aplicação !",
   NO_DATA: "Nenhum dado recebido do servidor",
+  NextPath: "Go to the next point",
   Getting_GPS: "Please wait , Trying to get your position ...",
   Entering_ar: "Entering in Augmented Reality ...",
   GetOutZone: "To continue your story , please go outside the AR search zone",

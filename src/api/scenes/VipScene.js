@@ -8,21 +8,39 @@ import {
   ViroARImageMarker,
   ViroVideo,
   ViroImage,
+  ViroText,
+  ViroFlexView,
   ViroMaterials,
+  ViroAnimations,
   ViroSound,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 import Patricie from '../../../assets/materials/patricie.jpg';
+import I18n from "../../utils/i18n";
+
+ViroAnimations.registerAnimations({
+  rotate:{properties:{rotateZ:"+=45"}, easing:"Bounce",duration: 3000},
+});
+ViroAnimations.registerAnimations({
+    moveRight:{properties:{positionX:"+=0.3"}, easing:"Bounce", duration: 500},
+    moveLeft:{properties:{positionX:"-=0.3"}, easing:"Bounce", duration: 500},
+    movePicture:[
+        ["moveRight", "moveLeft"]
+    ]
+});
 export default class VipScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
     // Set initial state here
+    console.log('theme',params.theme);
     this.toogleButtonAudio = params.toggleButtonAudio;
+    this.goToMap = params.goToMap;
+    this.goToNext = params.goToNext;
     this.state = {
-      text : "You Found me ...",
+      text : I18n.t("NextPath", "Go to the next point"),
       server: params.server,
       appName: params.appName,
       appDir: params.appDir,
@@ -42,7 +60,11 @@ export default class VipScene extends Component {
       MatchAudioMuted: false,
       MatchAudioLoop: false,
       anchorFound: false,
+      imageTracking: true,
       finishAll: false,
+      theme: params.theme,
+      fontFamily: params.theme.font1,
+      color: params.theme.color2,
       audios: [],
       video: {},
       audioLoop: false,
@@ -77,9 +99,7 @@ export default class VipScene extends Component {
   }
   onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        text : "Search for me ..."
-      });
+
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
@@ -178,6 +198,7 @@ export default class VipScene extends Component {
     console.log("Sound terminated");
   }
   onFinishVideo = () => {
+    this.setState({imageTracking:  false});
     this.loadAndPlayAudio('onPictureMatch');
     console.log("Video terminated");
   }
@@ -196,9 +217,12 @@ export default class VipScene extends Component {
   onButtonTap() {
       this.setState({ buttonStateTag: "onTap" });
   }
+
   render = () => {
-    const {index, finishAll, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, text,fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
+    const font = String(fontFamily);
+    const textColor = String(color);;
     // <ViroARImageMarker onAnchorFound={() => this.stopAudio()} ...
     return (
       <SafeAreaView>
@@ -212,7 +236,7 @@ export default class VipScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARImageMarker target={"targetVIP"}   >
+      <ViroARImageMarker visible={imageTracking} target={"targetVIP"}   >
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"
@@ -221,7 +245,7 @@ export default class VipScene extends Component {
               height={parseFloat(scene_options.videos[0].height)}
               muted={false}
               paused={false}
-              visible={true}
+              visible={imageTracking}
               loop={videoLoop}
               position={[0,0,0]}
               rotation={[-90,0,0]}
@@ -241,16 +265,44 @@ export default class VipScene extends Component {
              onFinish={this.onFinishAll}
              onError={this.onErrorSound}
           /> : null}
-          <ViroImage
-            height={1}
+          <ViroFlexView
+            style={{flexDirection: 'row', padding: 0}}
+            animation={{name: "movePicture", run: finishAll, loop: false}}
             width={1}
+            height={1}
             position={[0,0,-2]}
             visible={finishAll}
-            resizeMode="ScaleToFit"
             opacity={1}
-            placeholderSource={Patricie}
-            source={Patricie}
-         />
+            onClick={() => this.goToMap() }
+            rotation={[0, 0, 0]} >
+            <ViroImage
+              width={1}
+              height={1}
+              visible={finishAll}
+              resizeMode="ScaleToFit"
+              source={Patricie}
+              position={[0,0,-.2]}
+            />
+          </ViroFlexView>
+            <ViroText
+              text={text}
+              textAlign="top"
+              textAlignVertical="top"
+              textLineBreakMode="Justify"
+              textClipMode="ClipToBounds"
+              width={1}
+              height={1}
+              visible={finishAll}
+              style={{
+                fontFamily: font,
+                fontWeight: 'bold',
+                fontSize: 12,
+                zIndex: 1500,
+                color: textColor
+              }}
+              position={[0,0,0]}
+              />
+
       </ViroARScene>
       </SafeAreaView>
     );
