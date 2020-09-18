@@ -5,7 +5,7 @@ import { Button, Header, Card, ListItem, ThemeProvider } from 'react-native-elem
 import Orientation from 'react-native-orientation';
 
 import Geolocation from '@react-native-community/geolocation';
-import { MAPBOX_KEY  } from '@env';
+import { MAPBOX_KEY , DEBUG_MODE } from '@env';
 import  distance from '@turf/distance';
 import * as RNFS from 'react-native-fs';
 
@@ -100,7 +100,7 @@ export default class Stories extends Component {
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
       appDir: this.props.screenProps.AppDir,
-      debug_mode: this.props.screenProps.debug_mode,
+      debug_mode: (DEBUG_MODE && DEBUG_MODE === "true") ? true: false,
       stories: stories,
       storiesURL: this.props.screenProps.storiesURL,
       storiesAllURL: this.props.screenProps.storiesAllURL,

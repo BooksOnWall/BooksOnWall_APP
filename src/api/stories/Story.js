@@ -170,7 +170,7 @@ export default class Story extends Component {
     // Toast message starting download
     Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
     const appDir = this.state.appDir;
-    const donwloadUrl = (debug_mode && debug_mode === false) ? this.state.server + '/zip/' + sid : this.state.server + '/download/'+sid; 
+    const downloadUrl = (debug_mode && debug_mode === false) ? this.state.server + '/zip/' + sid : this.state.server + '/download/'+sid; 
     RNFetchBlob
     .config({
         addAndroidDownloads : {
