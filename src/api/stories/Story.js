@@ -164,11 +164,13 @@ export default class Story extends Component {
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
   watchID: ?number = null
   downloadStory = (sid) => {
+    const {debug_mode} = this.state;
     // add loading in download story button
     this.setState({dlLoading: true});
     // Toast message starting download
     Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
     const appDir = this.state.appDir;
+    const donwloadUrl = (debug_mode && debug_mode === false) ? this.state.server + '/zip/' + sid : this.state.server + '/download/'+sid; 
     RNFetchBlob
     .config({
         addAndroidDownloads : {
@@ -184,7 +186,7 @@ export default class Story extends Component {
             path : appDir + '/stories/Story_'+ sid + '.zip'
         }
     })
-    .fetch('POST', this.state.server + '/zip/' + sid)
+    .fetch('POST', downloadUrl)
     // .progress({ interval: 250 },(received,total)=>{
     //   console.log('progress:',received/total);
     //   this.setState({downloadProgress:(received/total)*100});
@@ -599,7 +601,7 @@ export default class Story extends Component {
         );
       };
       console.log('credits', story.credits);
-      
+
     return (
       <>
       <View style={themeSheet.card} >
