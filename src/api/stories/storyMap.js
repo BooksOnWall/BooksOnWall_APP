@@ -616,8 +616,7 @@ class StoryMap extends Component {
          padding: 40,
        },
        badgeStyle:{
-         backgroundColor: theme.color1,
-         textTransform: 'uppercase',
+         backgroundColor: theme.color1
        },
        badgeTextStyle: {
          fontSize: 9,
