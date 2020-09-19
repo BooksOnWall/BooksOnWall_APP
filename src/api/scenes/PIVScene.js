@@ -212,8 +212,8 @@ export default class PivScene extends Component {
               source={{uri: videoPath}}
               dragType="FixedToWorld"
               onDrag={()=>{}}
-              width={parseFloat(scene_options.videos[0].width)}
-              height={parseFloat(scene_options.videos[0].height)}
+              width={(scene_options.videos && scene_options.videos[0]) ? parseFloat(scene_options.videos[0].width): parseFloat(2)}
+              height={(scene_options.videos && scene_options.videos[0]) ? parseFloat(scene_options.videos[0].height): parseFloat(2)}
               muted={false}
               paused={false}
               visible={true}

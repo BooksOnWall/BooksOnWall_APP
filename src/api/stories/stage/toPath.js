@@ -29,54 +29,7 @@ const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
-const styles = StyleSheet.create({
-  buttonCnt: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    bottom: 16,
-    left: 0,
-    right: 0,
-  },
-  button: {
-    borderRadius: 3,
-    backgroundColor: 'blue',
-  },
-  header: {
-    flex: 0,
-    flexDirection:'column',
-    alignItems:'stretch',
-    minHeight: STATUS_BAR_HEIGHT,
-    backgroundColor: '#750000',
-    alignContent: 'stretch',
-    justifyContent:'center'
-  },
-  footer: {
-    flex: 0,
-    flexDirection:'column',
-    alignItems:'stretch',
-    minHeight: NAV_BAR_HEIGHT,
-    margin: 0,
-    padding: 0,
-    borderWidth: 0,
-    backgroundColor: '#750000',
-    alignContent: 'stretch',
-    justifyContent:'center'
-  },
-  menu: {
-    backgroundColor: "#750000",
-  },
-  location: {
-    color: "#FFF",
-  },
-  complete: {
-    color: "#FFF",
-  },
-  headerBackground: {
-    flex: 0,
-  },
-});
+
 const iconstyles = {
   icon: {
     iconImage: ['get', 'icon'],
@@ -155,7 +108,7 @@ const circleStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({distance, theme, completed, story, index}) => (
+const Header = ({styles, distance, theme, completed, story, index}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
       <Badge  value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
@@ -575,11 +528,27 @@ class ToPath extends Component {
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
-    const {routeSimulator, completed, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
+    const {routeSimulator, theme, completed, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
     if (this.state.routeSimulator) {
       return null;
     }
-
+    const rstyles = StyleSheet.create({
+      footer: {
+        flex: 0,
+        flexDirection:'column',
+        alignItems:'stretch',
+        minHeight: NAV_BAR_HEIGHT,
+        margin: 0,
+        padding: 0,
+        borderWidth: 0,
+        backgroundColor: theme.color1,
+        alignContent: 'stretch',
+        justifyContent:'center'
+      },
+      menu: {
+        backgroundColor: theme.color1,
+      }
+    });
     const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
     const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyOrigin = () =>  <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
@@ -607,8 +576,8 @@ class ToPath extends Component {
     console.log('menu buttons', MenuButtons)
 
     return (
-      <View style={styles.footer}>
-        <ButtonGroup style={styles.menu}
+      <View style={rstyles.footer}>
+        <ButtonGroup style={rstyles.menu}
           buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
           onPress={this.updateMenu}
           selectedIndex={this.state.selectedMenu}
@@ -754,7 +723,40 @@ class ToPath extends Component {
     const {unset, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
 
     if(unset) return null;
+    const styles = StyleSheet.create({
+      buttonCnt: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        bottom: 16,
+        left: 0,
+        right: 0,
+      },
+      button: {
+        borderRadius: 3,
+        backgroundColor: 'blue',
+      },
+      header: {
+        flex: 0,
+        flexDirection:'column',
+        alignItems:'stretch',
+        minHeight: STATUS_BAR_HEIGHT,
+        backgroundColor: '#750000',
+        alignContent: 'stretch',
+        justifyContent:'center'
+      },
 
+      location: {
+        color: "#FFF",
+      },
+      complete: {
+        color: "#FFF",
+      },
+      headerBackground: {
+        flex: 0,
+      },
+    });
     return (
       <Page {...this.props}>
         <Header
@@ -762,6 +764,7 @@ class ToPath extends Component {
           theme={theme}
           completed={completed}
           story={story}
+          styles={styles}
           index={index}
           />
         <MapboxGL.MapView

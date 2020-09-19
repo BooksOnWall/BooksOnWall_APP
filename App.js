@@ -297,11 +297,14 @@ export default class App extends Component {
   handleLocales = async () => this.locales = RNLocalize.getLocales()
   loadStories = async () => {
     const {debug_mode, storiesURL, storiesAllURL} = this.state;
+    const loadURL = (!debug_mode) ? SERVER_URL + '/storiesPublished' : SERVER_URL + '/stories' ;
+    console.log('loadURL',loadURL);
+    console.log('debug_mode',debug_mode);
     try {
       this.setState({isLoading: true});
       Toast.showWithGravity('Loading', Toast.SHORT, Toast.TOP);
       await this.networkCheck();
-      await fetch((debug_mode && debug_mode === false) ? storiesURL : storiesAllURL , {
+      await fetch( loadURL , {
         method: 'get',
         headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'}
       })

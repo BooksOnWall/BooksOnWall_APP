@@ -55,62 +55,7 @@ const circleStyles = {
   }
 };
 
-const styles = StyleSheet.create({
-  buttonCnt: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    bottom: 16,
-    left: 0,
-    right: 0,
-  },
-  button: {
-    borderRadius: 3,
-    backgroundColor: 'blue',
-  },
-  header: {
-    flex: 0,
-    flexDirection:'column',
-    alignItems:'stretch',
-    minHeight: STATUS_BAR_HEIGHT,
-    backgroundColor: '#91201F',
-    alignContent: 'stretch',
-    justifyContent:'center',
-  },
-  footer: {
-    flex: 0,
-    flexDirection:'column',
-    alignItems:'stretch',
-    minHeight: NAV_BAR_HEIGHT,
-    margin: 0,
-    padding: 0,
-    borderWidth: 0,
-    backgroundColor: '#8F2913',
-    alignContent: 'stretch',
-    justifyContent:'center'
-  },
-  menu: {
-    backgroundColor: "#8F2913",
-  },
-  location: {
-    color: "#FFF",
-  },
-  complete: {
-    color: "#FFF",
-  },
-  headerBackground: {
-    flex: 0,
-    padding: 40,
-  },
-  badgeStyle:{
-    backgroundColor:'#8F2913',
-    textTransform: 'uppercase',
-  },
-  badgeTextStyle: {
-    fontSize: 9,
-  }
-});
+
 
 
 const layerStyles = {
@@ -128,7 +73,7 @@ const layerStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({distance, theme, completed, story,  index, showDistance}) => {
+const Header = ({styles,distance, theme, completed, story,  index, showDistance}) => {
   let dis = showDistance();
   console.log(dis);
   return (
@@ -152,7 +97,7 @@ const Header = ({distance, theme, completed, story,  index, showDistance}) => {
 }
 
 
-const Footer = ({selectedMenu, updateMenu, MenuButtons}) => (
+const Footer = ({styles, selectedMenu, updateMenu, MenuButtons}) => (
   <View style={styles.footer}>
   <ButtonGroup style={styles.menu}
     buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
@@ -622,6 +567,62 @@ class StoryMap extends Component {
      if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
      if (toPath) MenuButtons.push({ element: storyMapLine });
      if (selected !== routes.length) MenuButtons.push({ element: storyNext});
+     const styles = StyleSheet.create({
+       buttonCnt: {
+         flexDirection: 'row',
+         justifyContent: 'space-around',
+         backgroundColor: 'transparent',
+         position: 'absolute',
+         bottom: 16,
+         left: 0,
+         right: 0,
+       },
+       button: {
+         borderRadius: 3,
+         backgroundColor:  theme.color2,
+       },
+       header: {
+         flex: 0,
+         flexDirection:'column',
+         alignItems:'stretch',
+         minHeight: STATUS_BAR_HEIGHT,
+         backgroundColor: theme.color1,
+         alignContent: 'stretch',
+         justifyContent:'center',
+       },
+       footer: {
+         flex: 0,
+         flexDirection:'column',
+         alignItems:'stretch',
+         minHeight: NAV_BAR_HEIGHT,
+         margin: 0,
+         padding: 0,
+         borderWidth: 0,
+         backgroundColor: theme.color1,
+         alignContent: 'stretch',
+         justifyContent:'center'
+       },
+       menu: {
+         backgroundColor: theme.color1,
+       },
+       location: {
+         color: "#FFF",
+       },
+       complete: {
+         color: "#FFF",
+       },
+       headerBackground: {
+         flex: 0,
+         padding: 40,
+       },
+       badgeStyle:{
+         backgroundColor: theme.color1,
+         textTransform: 'uppercase',
+       },
+       badgeTextStyle: {
+         fontSize: 9,
+       }
+     });
     return (
       <Page {...this.props}>
         <Header
@@ -629,6 +630,7 @@ class StoryMap extends Component {
           theme={theme}
           completed={completed}
           story={story}
+          styles={styles}
           showDistance={this.showDistance}
           index={index}
         />
@@ -657,6 +659,7 @@ class StoryMap extends Component {
         <Footer
           MenuButtons={MenuButtons}
           selectedMenu={selectedMenu}
+          styles={styles}
           updateMenu={this.updateMenu}
           />
       </Page>
