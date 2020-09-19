@@ -573,7 +573,7 @@ class ToPath extends Component {
     if(debug_mode && ((distance*1000) <= radius)) MenuButtons.push({ element: launchAR });
     MenuButtons.push({ element: storyMapDl});
     if(sound !== null) MenuButtons.push({element: sound});
-    console.log('menu buttons', MenuButtons)
+
 
     return (
       <View style={rstyles.footer}>
