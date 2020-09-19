@@ -140,17 +140,20 @@ export default class App extends Component {
     try {
       // check if application is already installed and has it's list of stories offline
       // console.log(this.state.AppDir);
+
       let StoryFile = this.state.AppDir+'/Stories.json';
       await RNFS.exists(StoryFile)
       .then( (exists) => {
           if (!exists) {
             this.setState({FistRun: true})
             Toast.showWithGravity(I18n.t("WAIT_INSTALL","Please wait while we are installing your application !"), Toast.LONG, Toast.TOP);
+            this.statFirstRun();
             return this.loadStories();
           } else {
             // load stories from Stories.json file
             RNFS.readFile(this.state.AppDir+'/Stories.json','utf8')
             .then((stories) => {
+
                 return this.setState({stories: JSON.parse(stories), isLoading: false, FirstRun: false});
             })
             .catch((err) => {
@@ -295,6 +298,47 @@ export default class App extends Component {
 
   }
   handleLocales = async () => this.locales = RNLocalize.getLocales()
+  statFirstRun = async () => {
+    const {debug_mode,server} = this.state;
+    if(!debug_mode) {
+      const statURL = server + '/stat';
+      console.log("statURL",statURL);
+      const stat = {
+        name: "new install",
+        sid: null,
+        ssid: null,
+        values: null,
+        data : {
+          locale: RNLocalize.getLocales()[0],
+        },
+      };
+      console.log(stat);
+      try {
+        await fetch( statURL , {
+          method: 'POST',
+          headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'},
+          body: JSON.stringify(stat)
+        })
+        .then(response => {
+          if (response && !response.ok) { throw new Error(response.statusText);}
+          return response.json();
+        })
+        .then(data => {
+            if(data) {
+              Toast.showWithGravity(I18n.t("Receiving_data", "Receiving data"), Toast.SHORT, Toast.TOP);
+            } else {
+              Toast.showWithGravity(I18n.t("NO_DATA", "No Data received from the server"), Toast.LONG, Toast.TOP);
+            }
+        })
+        .catch((error) => {
+          // Your error is here!
+          console.error(error);
+        });
+      } catch(e) {
+        console.log(e.message);
+      }
+    }
+  }
   loadStories = async () => {
     const {debug_mode, storiesURL, storiesAllURL} = this.state;
     const loadURL = (!debug_mode) ? SERVER_URL + '/storiesPublished' : SERVER_URL + '/stories' ;
@@ -385,6 +429,7 @@ export default class App extends Component {
         console.log(err.message);
       });
       this.setState({stories: sts, isLoading: false, FirstRun: false});
+
       return sts;
     } catch(e) {
       console.log(e.message);
