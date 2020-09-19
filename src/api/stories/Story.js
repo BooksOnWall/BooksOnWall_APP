@@ -170,7 +170,7 @@ export default class Story extends Component {
     // Toast message starting download
     Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
     const appDir = this.state.appDir;
-    const downloadUrl = (debug_mode && debug_mode === false) ? this.state.server + '/zip/' + sid : this.state.server + '/download/'+sid; 
+    const downloadUrl = (debug_mode && debug_mode === false) ? this.state.server + '/zip/' + sid : this.state.server + '/download/'+sid;
     RNFetchBlob
     .config({
         addAndroidDownloads : {
@@ -431,6 +431,7 @@ export default class Story extends Component {
         fontWeight: 'bold',
         padding: 0,
         marginTop: 0,
+        marginBottom: 50,
         fontSize: 12,
         textTransform: 'uppercase',
         fontFamily: 'Roboto-bold',
@@ -492,21 +493,25 @@ export default class Story extends Component {
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 16,
-          lineHeight: 20,
+          lineHeight: 22,
           letterSpacing: 0,
           fontFamily: 'Roboto-Regular',
           color: story.theme.color3,
-          marginTop: 5,
-          marginBottom: 5,
+          marginTop: 0,
+          marginBottom: 0,
+          marginHorizontal: 0,
+        },
+        br: {
+          marginTop: 0,
+          marginBottom: 0,
           paddingTop: 0,
           paddingBottom: 0,
           paddingHorizontal: 0,
           paddingVertical: 0,
-        },
-        br: { padding: 0, margin: 0, lineHeight: 0,
+          lineHeight: 0,
         },
         b: {
-          fontFamily: 'Roboto-bold'
+          fontFamily: 'Roboto-bold',
         },
         container: {
           marginTop: 5,
@@ -517,8 +522,8 @@ export default class Story extends Component {
           paddingVertical: 0,
         },
         span: {
-          marginTop: 5,
-          marginBottom: 5,
+          marginTop: 0,
+          marginBottom: 0,
           paddingTop: 0,
           paddingBottom: 0,
           paddingHorizontal: 0,
@@ -528,24 +533,26 @@ export default class Story extends Component {
           fontFamily: 'Roboto-bold',
         },
         h1: {
-          fontSize: 22,
+          fontFamily: 'Roboto-Light',
+          fontSize: 23,
           fontWeight: '200',
           color: story.theme.color1,
-          marginTop: 20,
-          marginBottom: 20,
+          marginTop: 30,
+          marginBottom: 1,
+          lineHeight: 25,
         },
         h2: {
-          fontSize: 15,
-          fontWeight: 'bold',
+          fontSize: 17,
+          lineHeight: 22,
           color: story.theme.color3,
           marginTop: 10,
-          marginBottom: 20,
+          marginBottom: 50,
         },
         h3: {
           fontSize: 13,
-          marginTop: 5,
-          marginBottom: 5,
-          fontFamily: 'Roboto-bold',
+          marginTop: 20,
+          marginBottom: 1 ,
+          fontFamily: 'RobotoCondensed-Bold',
           textTransform: 'uppercase',
           fontWeight: 'bold',
           color: story.theme.color1,
@@ -556,7 +563,7 @@ export default class Story extends Component {
           fontWeight: 'bold',
           color: story.theme.color1,
           marginTop: 5,
-          marginBottom: 5,
+          marginBottom: 1,
         },
       });
     const sinopsysThemeSheet = StyleSheet.create({
@@ -606,7 +613,7 @@ export default class Story extends Component {
       <>
       <View style={themeSheet.card} >
             {distance && (
-              <Text > {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
+              <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
             {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 8}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
 
@@ -614,9 +621,9 @@ export default class Story extends Component {
                 <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
               </View>
 
-              <View style={themeSheet.credits} >
+              <View style={themeSheet.credits}>
                 <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-                <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.credits} stylesheet={creditsThemeSheet} />
+                <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
               </View>
 
       </View>

@@ -33,17 +33,17 @@ const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 const circleStyles = {
   innerCircle: {
     circleStrokeWidth: 3,
-    circleStrokeColor: '#750000',
+    circleStrokeColor: '#8F2913',
     circleRadius: 30,
-    circleColor: '#750000',
+    circleColor: '#8F2913',
     circleBlur: .8,
     circleOpacity: .9,
   },
   innerCirclePulse: {
     circleStrokeWidth: 3,
-    circleStrokeColor: '#750000',
+    circleStrokeColor: '#8F2913',
     circleRadius: 60,
-    circleColor: '#750000',
+    circleColor: '#8F2913',
     circleBlur: .8,
     circleOpacity: .9,
   },
@@ -74,12 +74,9 @@ const styles = StyleSheet.create({
     flexDirection:'column',
     alignItems:'stretch',
     minHeight: STATUS_BAR_HEIGHT,
-    backgroundColor: '#750000',
+    backgroundColor: '#91201F',
     alignContent: 'stretch',
-    justifyContent:'center'
-  },
-  headerTitle: {
-
+    justifyContent:'center',
   },
   footer: {
     flex: 0,
@@ -89,12 +86,12 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     borderWidth: 0,
-    backgroundColor: '#750000',
+    backgroundColor: '#8F2913',
     alignContent: 'stretch',
     justifyContent:'center'
   },
   menu: {
-    backgroundColor: "#750000",
+    backgroundColor: "#8F2913",
   },
   location: {
     color: "#FFF",
@@ -104,7 +101,15 @@ const styles = StyleSheet.create({
   },
   headerBackground: {
     flex: 0,
+    padding: 40,
   },
+  badgeStyle:{
+    backgroundColor:'#8F2913',
+    textTransform: 'uppercase',
+  },
+  badgeTextStyle: {
+    fontSize: 9,
+  }
 });
 
 
@@ -116,7 +121,7 @@ const layerStyles = {
     lineOpacity: 0.84,
   },
   progress: {
-    lineColor: '#314ccd',
+    lineColor: '#8F2913',
     lineWidth: 3,
   },
 };
@@ -129,7 +134,7 @@ const Header = ({distance, theme, completed, story,  index, showDistance}) => {
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-      <Badge size="large" status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
+      <Badge size="large" badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
         <Text style={{
           fontSize: 26,
           letterSpacing: 1,
@@ -139,7 +144,7 @@ const Header = ({distance, theme, completed, story,  index, showDistance}) => {
           textShadowRadius: 2,
           fontFamily: theme.font1}} >{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-        <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}}</Text>
+        <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}</Text>
         <Text style={styles.complete}>Next in {dis} km </Text>
       </ImageBackground>
     </View>
@@ -153,10 +158,10 @@ const Footer = ({selectedMenu, updateMenu, MenuButtons}) => (
     buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
     onPress={(e) => updateMenu}
     selectedIndex={selectedMenu}
-    selectedButtonStyle= {{backgroundColor: '#750000'}}
+    selectedButtonStyle= {{backgroundColor: '#842511'}}
     buttons={MenuButtons}
-    containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
-    innerBorderStyle= {{ color: '#570402' }}
+    containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#8F2913'}}
+    innerBorderStyle= {{ color: '#842511' }}
   />
   </View>
 );

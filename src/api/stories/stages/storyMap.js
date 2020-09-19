@@ -11,7 +11,7 @@ export default class storyMap extends Component {
 
   render() {
     return (
-      <Text>Toto</Text>
+      <Text>BooksonWall Map</Text>
     );
   }
 }
