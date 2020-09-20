@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { ImageBackground, TouchableOpacity,Image, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
+import { Dimensions, ImageBackground, TouchableOpacity,Image, StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
 import { Icon, registerCustomIconType } from 'react-native-elements';
 import I18n from "../../utils/i18n";
 import IconSet from '../../utils/Icon';
@@ -27,7 +27,10 @@ registerCustomIconType('booksonwall', IconSet);
 
 const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => {
   try {
-    let memory = await getUsedMemory()
+    let memory = await getUsedMemory();
+    let dimension = Dimensions.get('window');
+    dimension.width=Math.round(dimension.width);
+    dimension.height=Math.round(dimension.height);
     const stat = {
       name: name,
       sid: sid,
@@ -36,6 +39,8 @@ const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => 
       data : {
         position: (position) ? position : null,
         appDir: AppDir,
+        orientation: Orientation.getInitialOrientation(),
+        screenDimension: dimension,
         uniqueId: getUniqueId(),
         systemVersion: getSystemVersion(),
         usedMemory: humanFileSize(memory),
