@@ -24,6 +24,7 @@ import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME , DEBUG_MODE } from '
 import KeepAwake from 'react-native-keep-awake';
 import Toast from 'react-native-simple-toast';
 import I18n from "./src/utils/i18n";
+import Stats from "./src/api/stats/stats";
 import {
   isCameraPresent,
   getCarrier,
@@ -341,6 +342,7 @@ export default class App extends Component {
     if(!debug_mode) {
       const statURL = server + '/stat';
       console.log("statURL",statURL);
+      const stat2 = Stats.getStat();
       const stat = {
         name: "new install",
         sid: null,
