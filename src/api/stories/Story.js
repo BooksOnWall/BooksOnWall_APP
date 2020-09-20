@@ -21,7 +21,7 @@ import {lineString as makeLineString, bbox} from '@turf/turf';
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
 import NetInfo from "@react-native-community/netinfo";
-
+import {getStat, setStat} from "../stats/stats";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -78,9 +78,8 @@ export default class Story extends Component {
       dlLoading: false,
       profile: 'mapbox/walking',
       themeSheet: null,
-      initialPosition: null,
+      position: null,
       mbbox: mbbox,
-      lastPosition: null,
       styleURL: MapboxGL.StyleURL.Dark,
       fromLat: null,
       fromLong: null,
@@ -164,13 +163,13 @@ export default class Story extends Component {
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
   watchID: ?number = null
   downloadStory = (sid) => {
-    const {debug_mode} = this.state;
+    const {debug_mode, server, appDir, position} = this.state;
     // add loading in download story button
     this.setState({dlLoading: true});
     // Toast message starting download
     Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
-    const appDir = this.state.appDir;
-    const downloadUrl = (debug_mode && debug_mode === false) ? this.state.server + '/zip/' + sid : this.state.server + '/download/'+sid;
+
+    const downloadUrl = (debug_mode && debug_mode === false) ? server + '/zip/' + sid : server + '/download/'+sid;
     RNFetchBlob
     .config({
         addAndroidDownloads : {
@@ -194,6 +193,7 @@ export default class Story extends Component {
     .then((resp) => {
       // the path of downloaded file
       //const p = resp.path(); android manager can't get the downloaded path
+      const data = setStat("Install story", sid, null, debug_mode, server, appDir, position);
       this.setState({downloadProgress:0});
       let path_name = appDir+'/'+'stories/Story_'+ sid + '.zip'
       //TOAST message download complete
@@ -297,10 +297,8 @@ export default class Story extends Component {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
         position => {
-          const initialPosition = position;
-          console.log('position', position);
           this.setState({
-            initialPosition: initialPosition,
+            position: position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
         },
@@ -309,7 +307,7 @@ export default class Story extends Component {
       );
       this.watchID = await Geolocation.watchPosition(position => {
 
-        this.setState({LastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},
@@ -391,11 +389,13 @@ export default class Story extends Component {
     }
   }
   destroyStory = async () => {
+    const {debug_mode, story, server, appDir, position} = this.state;
     try {
-      let sid = this.state.story.id;
-      let storyPath = this.state.appDir+'/stories/'+sid;
+      let sid = story.id;
+      let storyPath = appDir+'/stories/'+sid;
       await RNFetchBlob.fs.unlink(storyPath).then(success => {
         Toast.showWithGravity(I18n.t("Story_deleted","Story deleted !"), Toast.LONG, Toast.TOP);
+        const data = setStat("Trash story", sid, null , debug_mode, server, appDir, position);
         return this.storyCheck();
       });
     } catch(e) {

@@ -24,46 +24,9 @@ import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME , DEBUG_MODE } from '
 import KeepAwake from 'react-native-keep-awake';
 import Toast from 'react-native-simple-toast';
 import I18n from "./src/utils/i18n";
-import Stats from "./src/api/stats/stats";
-import {
-  isCameraPresent,
-  getCarrier,
-  getDevice,
-  getDeviceType,
-  getSystemVersion,
-  getUsedMemory,
-  getHardware,
-  getApplicationName,
-  getFirstInstallTime,
-  getUserAgent,
-  getUniqueId,
-  supportedAbis,
-  isLocationEnabled,
-  android,
-  getAndroidId,
-  getManufacturer } from 'react-native-device-info';
-// uniqueId: getUniqueId(),
-// systemVersion: getSystemVersion(),
-// usedMemory: getUsedMemory().then(usedMemory => {
-//   return usedMemory;
-// }),
-// getFirstInstallTime: getFirstInstallTime().then(firstInstallTime => { return firstInstallTime }),
-// useragent: getUserAgent().then(userAgent => {return userAgent;}),
-// deviceType: getDeviceType(),
-// manufacturer: getManufacturer(),.then(manufacturer => { return manufacturer; }),
-// supportedProc: supportedAbis().then(abis => {
-//     return abis;
-// }),
-// isLocationEnbled: isLocationEnabled().then(enabled => {
-//     return enabled; // true or false
-// }),
-// android: getAndroidId().then(androidId => {
-//   return android;// androidId here
-// })
-// isCameraPresent: isCameraPresent()
-// .then(isCameraPresent => {
-//   return isCameraPresent()
-// })
+
+
+
 import ToAr from './src/api/stories/stage/toAr';
 import Intro from './src/api/intro/intro';
 import Stories from './src/api/stories/Stories';
@@ -75,7 +38,7 @@ import Stage from './src/api/stories/stage/Stage';
 import ToPath from './src/api/stories/stage/toPath';
 import StoryMap from './src/api/stories/storyMap';
 import SplashScreen from 'react-native-splash-screen';
-
+import {statFirstRun} from "./src/api/stats/stats";
 
 const transition = fromRight() // Or whichever you prefer
 const config = {
@@ -179,14 +142,14 @@ export default class App extends Component {
     try {
       // check if application is already installed and has it's list of stories offline
       // console.log(this.state.AppDir);
-
+      const {debug_mode,server, AppDir} = this.state;
       let StoryFile = this.state.AppDir+'/Stories.json';
       await RNFS.exists(StoryFile)
       .then( (exists) => {
           if (!exists) {
             this.setState({FistRun: true})
             Toast.showWithGravity(I18n.t("WAIT_INSTALL","Please wait while we are installing your application !"), Toast.LONG, Toast.TOP);
-            this.statFirstRun();
+            statFirstRun(debug_mode,server, AppDir, null);
             return this.loadStories();
           } else {
             // load stories from Stories.json file
@@ -337,62 +300,7 @@ export default class App extends Component {
 
   }
   handleLocales = async () => this.locales = RNLocalize.getLocales()
-  statFirstRun = async () => {
-    const {debug_mode,server, AppDir} = this.state;
-    if(!debug_mode) {
-      const statURL = server + '/stat';
-      console.log("statURL",statURL);
-      const stat2 = Stats.getStat();
-      const stat = {
-        name: "new install",
-        sid: null,
-        ssid: null,
-        values: null,
-        data : {
-          appDir: AppDir,
-          uniqueId: getUniqueId(),
-          systemVersion: getSystemVersion(),
-          usedMemory: getUsedMemory().then(usedMemory => usedMemory),
-          getFirstInstallTime: getFirstInstallTime().then(firstInstallTime => firstInstallTime),
-          useragent: getUserAgent().then(userAgent => userAgent),
-          deviceType: getDeviceType(),
-          manufacturer: getManufacturer().then(manufacturer => manufacturer),
-          supportedProc: supportedAbis().then(abis => abis),
-          isLOcationEnbled: isLocationEnabled().then(enabled => enabled), // true or false
-          android: getAndroidId().then(androidId => androidId), // androidId here
-          is_camera_prensent: isCameraPresent().then(isCameraPresent => isCameraPresent()).catch(cameraAccessException => {
-            // is thrown if a camera device could not be queried or opened by the CameraManager on Android
-          }),
-          locale: RNLocalize.getLocales()[0],
-        },
-      };
-      console.log(stat);
-      try {
-        await fetch( statURL , {
-          method: 'POST',
-          headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'},
-          body: JSON.stringify(stat)
-        })
-        .then(response => {
-          if (response && !response.ok) { throw new Error(response.statusText);}
-          return response.json();
-        })
-        .then(data => {
-            if(data) {
-              Toast.showWithGravity(I18n.t("Receiving_data", "Receiving data"), Toast.SHORT, Toast.TOP);
-            } else {
-              Toast.showWithGravity(I18n.t("NO_DATA", "No Data received from the server"), Toast.LONG, Toast.TOP);
-            }
-        })
-        .catch((error) => {
-          // Your error is here!
-          console.error(error);
-        });
-      } catch(e) {
-        console.log(e.message);
-      }
-    }
-  }
+
   loadStories = async () => {
     const {debug_mode, storiesURL, storiesAllURL} = this.state;
     const loadURL = (!debug_mode) ? SERVER_URL + '/storiesPublished' : SERVER_URL + '/stories' ;
