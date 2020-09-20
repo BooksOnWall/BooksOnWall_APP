@@ -24,7 +24,45 @@ import { VIROAPI_KEY, MAPBOX_KEY, SERVER_URL, PROJECT_NAME , DEBUG_MODE } from '
 import KeepAwake from 'react-native-keep-awake';
 import Toast from 'react-native-simple-toast';
 import I18n from "./src/utils/i18n";
-
+import {
+  isCameraPresent,
+  getCarrier,
+  getDevice,
+  getDeviceType,
+  getSystemVersion,
+  getUsedMemory,
+  getHardware,
+  getApplicationName,
+  getFirstInstallTime,
+  getUserAgent,
+  getUniqueId,
+  supportedAbis,
+  isLocationEnabled,
+  android,
+  getAndroidId,
+  getManufacturer } from 'react-native-device-info';
+// uniqueId: getUniqueId(),
+// systemVersion: getSystemVersion(),
+// usedMemory: getUsedMemory().then(usedMemory => {
+//   return usedMemory;
+// }),
+// getFirstInstallTime: getFirstInstallTime().then(firstInstallTime => { return firstInstallTime }),
+// useragent: getUserAgent().then(userAgent => {return userAgent;}),
+// deviceType: getDeviceType(),
+// manufacturer: getManufacturer(),.then(manufacturer => { return manufacturer; }),
+// supportedProc: supportedAbis().then(abis => {
+//     return abis;
+// }),
+// isLocationEnbled: isLocationEnabled().then(enabled => {
+//     return enabled; // true or false
+// }),
+// android: getAndroidId().then(androidId => {
+//   return android;// androidId here
+// })
+// isCameraPresent: isCameraPresent()
+// .then(isCameraPresent => {
+//   return isCameraPresent()
+// })
 import ToAr from './src/api/stories/stage/toAr';
 import Intro from './src/api/intro/intro';
 import Stories from './src/api/stories/Stories';
@@ -299,7 +337,7 @@ export default class App extends Component {
   }
   handleLocales = async () => this.locales = RNLocalize.getLocales()
   statFirstRun = async () => {
-    const {debug_mode,server} = this.state;
+    const {debug_mode,server, AppDir} = this.state;
     if(!debug_mode) {
       const statURL = server + '/stat';
       console.log("statURL",statURL);
@@ -309,6 +347,20 @@ export default class App extends Component {
         ssid: null,
         values: null,
         data : {
+          appDir: AppDir,
+          uniqueId: getUniqueId(),
+          systemVersion: getSystemVersion(),
+          usedMemory: getUsedMemory().then(usedMemory => usedMemory),
+          getFirstInstallTime: getFirstInstallTime().then(firstInstallTime => firstInstallTime),
+          useragent: getUserAgent().then(userAgent => userAgent),
+          deviceType: getDeviceType(),
+          manufacturer: getManufacturer().then(manufacturer => manufacturer),
+          supportedProc: supportedAbis().then(abis => abis),
+          isLOcationEnbled: isLocationEnabled().then(enabled => enabled), // true or false
+          android: getAndroidId().then(androidId => androidId), // androidId here
+          is_camera_prensent: isCameraPresent().then(isCameraPresent => isCameraPresent()).catch(cameraAccessException => {
+            // is thrown if a camera device could not be queried or opened by the CameraManager on Android
+          }),
           locale: RNLocalize.getLocales()[0],
         },
       };
