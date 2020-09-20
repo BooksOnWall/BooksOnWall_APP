@@ -38,18 +38,22 @@ const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => 
       values: null,
       data : {
         position: (position) ? position : null,
+        applicationName: await getApplicationName(),
         appDir: AppDir,
         orientation: Orientation.getInitialOrientation(),
         screenDimension: dimension,
+        carrier: await getCarrier(),
+        harware: await getHardware(),
         uniqueId: getUniqueId(),
         systemVersion: getSystemVersion(),
         usedMemory: humanFileSize(memory),
-        getFirstInstallTime: await getFirstInstallTime(),
+        firstInstallTime: await getFirstInstallTime(),
         useragent: await getUserAgent(),
+        device: await getDevice(),
         deviceType: getDeviceType(),
         manufacturer: await getManufacturer(),
         supportedProc: await supportedAbis(),
-        isLOcationEnbled: await isLocationEnabled(), // true or false
+        isLocationEnabled: await isLocationEnabled(), // true or false
         android: await getAndroidId(), // androidId here
         is_camera_prensent: await isCameraPresent(),
         locale: RNLocalize.getLocales()[0],
