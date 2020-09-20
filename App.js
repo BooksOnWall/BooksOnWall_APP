@@ -149,7 +149,7 @@ export default class App extends Component {
           if (!exists) {
             this.setState({FistRun: true})
             Toast.showWithGravity(I18n.t("WAIT_INSTALL","Please wait while we are installing your application !"), Toast.LONG, Toast.TOP);
-            statFirstRun(debug_mode,server, AppDir, null);
+            if(!debug_mode) statFirstRun("App install", null, null, debug_mode,server, AppDir, null);
             return this.loadStories();
           } else {
             // load stories from Stories.json file

@@ -193,7 +193,7 @@ export default class Story extends Component {
     .then((resp) => {
       // the path of downloaded file
       //const p = resp.path(); android manager can't get the downloaded path
-      const data = setStat("Install story", sid, null, debug_mode, server, appDir, position);
+      if(!debug_mode) setStat("Install story", sid, null, debug_mode, server, appDir, position);
       this.setState({downloadProgress:0});
       let path_name = appDir+'/'+'stories/Story_'+ sid + '.zip'
       //TOAST message download complete
@@ -395,7 +395,7 @@ export default class Story extends Component {
       let storyPath = appDir+'/stories/'+sid;
       await RNFetchBlob.fs.unlink(storyPath).then(success => {
         Toast.showWithGravity(I18n.t("Story_deleted","Story deleted !"), Toast.LONG, Toast.TOP);
-        const data = setStat("Trash story", sid, null , debug_mode, server, appDir, position);
+        if(!debug_mode) setStat("Trash story", sid, null , debug_mode, server, appDir, position);
         return this.storyCheck();
       });
     } catch(e) {

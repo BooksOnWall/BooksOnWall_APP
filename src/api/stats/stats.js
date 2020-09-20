@@ -26,53 +26,61 @@ import {
 registerCustomIconType('booksonwall', IconSet);
 
 const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => {
-  let memory = await getUsedMemory()
-  const stat = {
-    name: name,
-    sid: sid,
-    ssid: ssid,
-    values: null,
-    data : {
-      position: (position) ? position : null,
-      appDir: AppDir,
-      uniqueId: getUniqueId(),
-      systemVersion: getSystemVersion(),
-      usedMemory: humanFileSize(memory),
-      getFirstInstallTime: await getFirstInstallTime(),
-      useragent: await getUserAgent(),
-      deviceType: getDeviceType(),
-      manufacturer: await getManufacturer(),
-      supportedProc: await supportedAbis(),
-      isLOcationEnbled: await isLocationEnabled(), // true or false
-      android: await getAndroidId(), // androidId here
-      is_camera_prensent: await isCameraPresent(),
-      locale: RNLocalize.getLocales()[0],
-    },
-  };
-  return stat;
+  try {
+    let memory = await getUsedMemory()
+    const stat = {
+      name: name,
+      sid: sid,
+      ssid: ssid,
+      values: null,
+      data : {
+        position: (position) ? position : null,
+        appDir: AppDir,
+        uniqueId: getUniqueId(),
+        systemVersion: getSystemVersion(),
+        usedMemory: humanFileSize(memory),
+        getFirstInstallTime: await getFirstInstallTime(),
+        useragent: await getUserAgent(),
+        deviceType: getDeviceType(),
+        manufacturer: await getManufacturer(),
+        supportedProc: await supportedAbis(),
+        isLOcationEnbled: await isLocationEnabled(), // true or false
+        android: await getAndroidId(), // androidId here
+        is_camera_prensent: await isCameraPresent(),
+        locale: RNLocalize.getLocales()[0],
+      },
+    };
+    return stat;
+  } catch(e) {
+    console.log(e);
+  }
 };
-const setStat = async (name, sid, ssid ,debug_mode,server, AppDir, position) => {
-  let data = await getStat(name, sid, ssid, debug_mode,server, AppDir, position);
-  const statURL = server + '/stat';
-  await fetch( statURL , {
-    method: 'POST',
-    headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'},
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (response && !response.ok) { throw new Error(response.statusText);}
-    return response.json();
-  })
-  .then(data => {
-      if(data) {
-        console.log(data);
-      }
-  })
-  .catch((error) => {
-    // Your error is here!
-    console.error(error);
-  });
-  return "toto";
+const setStat = async (name, sid, ssid , debug_mode,server, AppDir, position) => {
+  try {
+    let stat = await getStat(name, sid, ssid, debug_mode, server, AppDir, position);
+    const statURL = server + '/stat';
+    await fetch( statURL , {
+      method: 'POST',
+      headers: {'Access-Control-Allow-Origin': '*', credentials: 'same-origin', 'Content-Type':'application/json'},
+      body: JSON.stringify(stat)
+    })
+    .then(response => {
+      if (response && !response.ok) { throw new Error(response.statusText);}
+      return response.json();
+    })
+    .then(data => {
+        if(data) {
+          console.log(data);
+        }
+    })
+    .catch((error) => {
+      // Your error is here!
+      console.error(error);
+    });
+    return "toto";
+  } catch(e) {
+    console.log(e);
+  }
 };
 const humanFileSize= (bytes, si) => {
     var thresh = si ? 1000 : 1024;
@@ -92,8 +100,7 @@ const humanFileSize= (bytes, si) => {
 const statFirstRun = async (name, sid, ssid,debug_mode,server, AppDir, position) => {
     if(!debug_mode) {
       try {
-        const stat = await getStat("App install", null, null, debug_mode,server, AppDir, position);
-        return await setStat("App install", null, null, debug_mode,server, AppDir, position);
+        return await setStat(name, sid, ssid, debug_mode,server, AppDir, position);
       } catch(e) {
         console.log(e.message);
       }

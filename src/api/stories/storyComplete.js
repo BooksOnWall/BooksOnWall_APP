@@ -22,6 +22,7 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
 // import audio lib
 import Sound from 'react-native-sound';
+import {getStat, setStat} from "../stats/stats";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -79,9 +80,8 @@ export default class StoryComplete extends Component {
       audioButton: false,
       profile: 'mapbox/walking',
       themeSheet: null,
-      initialPosition: null,
+      position: null,
       mbbox: mbbox,
-      lastPosition: null,
       styleURL: MapboxGL.StyleURL.Dark,
       fromLat: null,
       fromLong: null,
@@ -97,6 +97,7 @@ export default class StoryComplete extends Component {
     try {
       await KeepAwake.activate();
       await this.audioPlay();
+
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -138,13 +139,15 @@ export default class StoryComplete extends Component {
     }
   }
   getCurrentLocation = async () => {
+    const {story, debug_mode, server, appDir, position} = this.state;
+    const sid = story.id;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
         position => {
-          const initialPosition = position;
+          if(!debug_mode) ("Story complete", sid, null, debug_mode, server, appDir, position);
           this.setState({
-            initialPosition: initialPosition,
+            position: position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
         },
@@ -153,7 +156,7 @@ export default class StoryComplete extends Component {
       );
       this.watchID = await Geolocation.watchPosition(position => {
 
-        this.setState({LastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},
