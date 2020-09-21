@@ -75,7 +75,7 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Header = ({styles,distance, theme, completed, story,  index, showDistance}) => {
   let dis = showDistance();
-  console.log(dis);
+  console.log('distance',dis);
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
