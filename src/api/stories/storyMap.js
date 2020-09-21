@@ -32,31 +32,30 @@ const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 const circleStyles = {
   innerCircle: {
-    circleStrokeWidth: 3,
-    circleStrokeColor: '#8F2913',
-    circleRadius: 30,
-    circleColor: '#8F2913',
-    circleBlur: .8,
-    circleOpacity: .9,
+    circleStrokeWidth: 1,
+    circleStrokeColor: '#FFF',
+    circleRadius: 10,
+    circleColor: '#000',
+    circleBlur: 0,
+    circleOpacity: .3,
   },
   innerCirclePulse: {
-    circleStrokeWidth: 3,
+    circleStrokeWidth: 1,
     circleStrokeColor: '#8F2913',
-    circleRadius: 60,
-    circleColor: '#8F2913',
-    circleBlur: .8,
-    circleOpacity: .9,
+    circleRadius: 20,
+    circleColor: '#fff',
+    circleBlur: 0,
+    circleOpacity: 0,
   },
   outerCircle: {
-    circleRadius: 2,
-    circleColor: '#FFF',
+    circleStrokeWidth: 1,
+    circleStrokeColor: '#8F2913',
+    circleRadius: 30,
+    circleColor: '#fff',
     circleBlur: 0,
-    circleOpacity: .6,
+    circleOpacity: 0,
   }
 };
-
-
-
 
 const layerStyles = {
   route: {
@@ -73,7 +72,7 @@ const layerStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({styles,distance, theme, completed, story,  index, showDistance}) => {
+const Header = ({styles, distance, theme, completed, story,  index, showDistance}) => {
   let dis = showDistance();
   console.log('distance',dis);
   return (
@@ -83,7 +82,7 @@ const Header = ({styles,distance, theme, completed, story,  index, showDistance}
         <Text style={{
           fontSize: 26,
           letterSpacing: 1,
-          color: "#FFF",
+          color: '#fff',
           textShadowColor: 'rgba(0, 0, 0, 0.85)',
           textShadowOffset: {width: 1, height: 1},
           textShadowRadius: 2,
@@ -97,16 +96,16 @@ const Header = ({styles,distance, theme, completed, story,  index, showDistance}
 }
 
 
-const Footer = ({styles, selectedMenu, updateMenu, MenuButtons}) => (
+const Footer = ({styles, theme, selectedMenu, updateMenu, MenuButtons}) => (
   <View style={styles.footer}>
   <ButtonGroup style={styles.menu}
-    buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
+    buttonStyle={styles.button}
     onPress={(e) => updateMenu}
     selectedIndex={selectedMenu}
-    selectedButtonStyle= {{backgroundColor: '#842511'}}
+    selectedButtonStyle= {styles.button}
     buttons={MenuButtons}
-    containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#8F2913'}}
-    innerBorderStyle= {{ color: '#842511' }}
+    containerStyle= {styles.containerMenu}
+    innerBorderStyle= {styles.innerLine}
   />
   </View>
 );
@@ -481,7 +480,7 @@ class StoryMap extends Component {
           iconOptional: true,
           textIgnorePlacement: true,
           textField: '{label}',
-          textSize: 40,
+          textSize: 30,
           textMaxWidth: 50,
           textColor: '#FFF',
           textAnchor: 'center',
@@ -498,12 +497,11 @@ class StoryMap extends Component {
       return (
         <>
 
-
        <PulseCircleLayer
          shape={features}
          id="pulse"
          onPress={this.enterStage}
-         radius={40}
+         radius={30}
          pulseRadius={20}
          duration={600}
          innerCircleStyle={circleStyles.innerCircle}
@@ -589,6 +587,12 @@ class StoryMap extends Component {
          backgroundColor: theme.color1,
          alignContent: 'stretch',
          justifyContent:'center',
+         shadowColor: '#000',
+         shadowOffset: { width: 0, height: -9 },
+         shadowOpacity: 0.9,
+         shadowRadius: 0,
+         padding: 1,
+         paddingHorizontal: 0
        },
        footer: {
          flex: 0,
@@ -598,9 +602,23 @@ class StoryMap extends Component {
          margin: 0,
          padding: 0,
          borderWidth: 0,
-         backgroundColor: theme.color1,
+         backgroundColor: theme.color2,
          alignContent: 'stretch',
-         justifyContent:'center'
+         justifyContent:'center',
+         shadowColor: '#000',
+         shadowOffset: { width: 0, height: 9 },
+         shadowOpacity: 0.9,
+         shadowRadius: 0,
+         elevation: 1,
+        },
+       containerMenu: {
+         flex: 1,
+         borderWidth: 0,
+         backgroundColor:  theme.color2,
+       },
+       innerLine: {
+         width: 3,
+         color:theme.color2,
        },
        menu: {
          backgroundColor: theme.color1,
@@ -614,6 +632,7 @@ class StoryMap extends Component {
        headerBackground: {
          flex: 0,
          padding: 40,
+
        },
        badgeStyle:{
          backgroundColor: theme.color1
