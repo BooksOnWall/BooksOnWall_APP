@@ -238,12 +238,12 @@ export default class ToAR extends Component {
     } else {
       newIndex = story.stages.length;
       await addNewIndex({sid, ssid, order, path , newIndex });
-      const name="Finish story";
-      const AppDir = appDir;
-      console.log('path', path);
-      const extra = await getScores(path);
-      console.log('extra', extra);
-      await setStat(name, sid, ssid , debug_mode, server, AppDir, position, extra);
+      if(!debug_mode) {
+        const name="Finish story";
+        const AppDir = appDir;
+        const extra = await getScores(path);
+        await setStat(name, sid, ssid , debug_mode, server, AppDir, position, extra);
+      }
       await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
 
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
