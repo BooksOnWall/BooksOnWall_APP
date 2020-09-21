@@ -231,7 +231,7 @@ export default class ToAR extends Component {
         // clean audio
         await this.setState({buttonaudioPaused: true, audioPaused: true});
         (this.woosh) ? this.woosh.release() : '';
-        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance} );
+        return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance} );
       } catch(e) {
         console.log(e);
       }
