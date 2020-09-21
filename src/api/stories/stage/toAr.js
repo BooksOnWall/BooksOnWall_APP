@@ -20,7 +20,8 @@ import  distance from '@turf/distance';
 import Geolocation from '@react-native-community/geolocation';
 import Toast from 'react-native-simple-toast';
 import I18n from "../../../utils/i18n";
-import {addNewIndex, getScore} from '../../stats/score';
+import {addNewIndex, getScore, getScores} from '../../stats/score';
+import {setStat} from '../../stats/stats';
 /*
 AR Scene type: INT(1-7)
 #1 VIP aka Video inside Picture to detect
@@ -212,7 +213,7 @@ export default class ToAR extends Component {
   toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
   togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   next = async () => {
-    let {appDir, story, selected, completed, distance} = this.state;
+    let {appDir, debug_mode, server, position, story, selected, completed, distance} = this.state;
     const index = parseInt(this.props.navigation.getParam('index'));
     console.log('index', index);
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
@@ -237,8 +238,12 @@ export default class ToAR extends Component {
     } else {
       newIndex = story.stages.length;
       await addNewIndex({sid, ssid, order, path , newIndex });
-      // clean audio
-      await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true});
+      const name="Finish story";
+      const AppDir = appDir;
+      console.log('path');
+      const extra = await getScores(path);
+      await setStat(name, sid, ssid , debug_mode, server, AppDir, position, extra);
+      await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
 
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }

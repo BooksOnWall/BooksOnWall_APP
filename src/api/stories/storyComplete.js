@@ -46,6 +46,9 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
+const galleryPath = (storyDir, pathName) => {
+  return 'file://' + storyDir + path.replace("assets/stories", "");
+}
 export default class StoryComplete extends Component {
   static navigationOptions = {
     title: 'Story Complete',
@@ -259,7 +262,6 @@ export default class StoryComplete extends Component {
       const maxIndex = (story.stages.length - 1);
       const stage = story.stages[maxIndex];
       if (stage) {
-
         const audios = (stage.onZoneLeave && stage.onZoneLeave.length > 0) ? stage.onZoneLeave.filter(item => (item.type === 'audio')) : [];
         const count =  audios.length;
         this.setState({audioButton: true});

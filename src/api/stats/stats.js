@@ -64,9 +64,10 @@ const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => 
     console.log(e);
   }
 };
-const setStat = async (name, sid, ssid , debug_mode, server, AppDir, position) => {
+const setStat = async (name, sid, ssid , debug_mode, server, AppDir, position, extra = NULL) => {
   try {
     let stat = await getStat(name, sid, ssid, debug_mode, server, AppDir, position);
+    if(extra) stat.extra = extra;
     const statURL = server + '/stat';
     await fetch( statURL , {
       method: 'POST',

@@ -112,4 +112,4 @@ const storeTimestamp = async ({sid, ssid, order, path, newIndex }) => {
       console.log(e);
     }
 }
-export { getScore, addNewIndex, storeTimestamp, humanTime };
+export { getScore,getScores, addNewIndex, storeTimestamp, humanTime };
