@@ -60,14 +60,14 @@ const humanTime = (ms) => {
   humanTime = (duration._data.seconds > 0 ) ? humanTime+':'+duration._data.seconds : humanTime + ':00';
   return humanTime;
 }
-const getScores = async ({path}) => {
+const getScores = async (path) => {
   try {
     const timeHF = path + 'time.json';
     return await RNFS.exists(timeHF)
     .then( (exists) => {
         if (exists) {
             // get id from file
-            RNFetchBlob.fs.readFile(timeHF, 'utf8')
+            return RNFetchBlob.fs.readFile(timeHF, 'utf8')
             .then((data) => {
               return JSON.parse(data);
             });

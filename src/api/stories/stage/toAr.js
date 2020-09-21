@@ -240,8 +240,9 @@ export default class ToAR extends Component {
       await addNewIndex({sid, ssid, order, path , newIndex });
       const name="Finish story";
       const AppDir = appDir;
-      console.log('path');
+      console.log('path', path);
       const extra = await getScores(path);
+      console.log('extra', extra);
       await setStat(name, sid, ssid , debug_mode, server, AppDir, position, extra);
       await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
 
