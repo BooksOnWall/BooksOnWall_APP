@@ -10,7 +10,7 @@ import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
-
+import { Rating, AirbnbRating } from 'react-native-ratings';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import IconSet from "../../utils/Icon";
@@ -48,6 +48,9 @@ function humanFileSize(bytes, si) {
 }
 const galleryPath = (storyDir, pathName) => {
   return 'file://' + storyDir + path.replace("assets/stories", "");
+}
+const ratingCompleted = (rating) => {
+  console.log("Rating is: " + rating)
 }
 export default class StoryComplete extends Component {
   static navigationOptions = {
@@ -571,6 +574,15 @@ export default class StoryComplete extends Component {
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
+          <Rating
+            type='heart'
+            ratingColor='#3498db'
+            ratingBackgroundColor='#c8c7c8'
+            ratingCount={10}
+            imageSize={30}
+            onFinishRating={this.ratingCompleted}
+            style={{ paddingVertical: 10 }}
+          />
         <ReactNativeParallaxHeader
           headerMinHeight={HEADER_HEIGHT}
           headerMaxHeight={250}
