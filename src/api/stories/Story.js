@@ -168,7 +168,9 @@ export default class Story extends Component {
     this.setState({dlLoading: true});
     // Toast message starting download
     Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
-
+    const data = getStat("Install story", sid, null, debug_mode, server, appDir, position);
+    const body = JSON.stringify({sid: sid, name: 'Download story', ssid: null, values: null, data: data });
+    console.log(body);
     const downloadUrl = (debug_mode && debug_mode === false) ? server + '/zip/' + sid : server + '/download/'+sid;
     RNFetchBlob
     .config({

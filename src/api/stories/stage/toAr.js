@@ -20,6 +20,7 @@ import  distance from '@turf/distance';
 import Geolocation from '@react-native-community/geolocation';
 import Toast from 'react-native-simple-toast';
 import I18n from "../../../utils/i18n";
+import {addNewIndex, validateStage} from '../../stats/score';
 /*
 AR Scene type: INT(1-7)
 #1 VIP aka Video inside Picture to detect
@@ -181,69 +182,48 @@ export default class ToAR extends Component {
   }
 
   getSelected = async() => {
-      const {appDir, story,selected, index} = this.state;
-      // get history from file
-      const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-      // // check if file exist
-      await RNFS.exists(storyHF)
-      .then( (exists) => {
-          if (exists) {
-              // get id from file
-              RNFetchBlob.fs.readFile(storyHF, 'utf8')
-              .then((data) => {
-                // handle the data ..
-                this.setState({completed: parseInt(data), selected: parseInt(data)});
-                return data;
-              })
-          } else {
-              RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
-                this.setState({completed: 0, selected: 1});
-              });
-          }
-      });
+      const {appDir, story, selected, index} = this.state;
+
+      try {
+        // get history from file
+        const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
+        const sid = story.sid;
+        const ssid = story.stages[index].id;
+        const order = story.stages[index].stageOrder;
+        const path = appDir + '/stories/' + story.id + '/';
+        let completed = await validateStage({sid, ssid, order, path});
+        mselected = (completed && completed > 0) ? completed : 1;
+        console.log('completed',completed);
+        this.setState({completed: parseInt(completed), selected: parseInt(mselected)});
+      } catch (e) {
+        console.log(e);
+      }
+
   }
   toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
   togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   next = async () => {
-    const {appDir, story, selected, completed, index} = this.state;
+    const {appDir, story, selected, completed, index, distance} = this.state;
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
-    const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
+    const sid = story.sid;
+    const ssid = story.stages[index].id;
+    const order = story.stages[index].stageOrder;
+    const path = appDir + '/stories/' + story.id + '/';
     if (newIndex) {
-      console.log('new index, newIndex');
+      console.log('new index', newIndex);
       // get history from file
       try  {
-        // // check if complete need to be updated
-          await RNFS.exists(storyHF)
-          .then( (exists) => {
-              if (exists) {
-                  // get write new value to file
-                  // rimraf file
-                  RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-                  });
-
-              } else {
-                  RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
-                  });
-              }
-          });
+        await addNewIndex({sid, ssid, order, path , newIndex });
         // clean audio
         await this.setState({buttonaudioPaused: true, audioPaused: true});
         (this.woosh) ? this.woosh.release() : '';
-        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex} );
+        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex, distance: distance} );
       } catch(e) {
         console.log(e);
       }
     } else {
-      await RNFS.exists(storyHF)
-      .then( (exists) => {
-          if (exists) {
-              // get write new value to file
-              // rimraf file
-              RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(story.stages.length), 'utf8').then(()=>{
-              });
-
-          }
-      });
+      newIndex = story.stages.length;
+      await addNewIndex({sid, ssid, order, path , newIndex });
       // clean audio
       await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true});
 

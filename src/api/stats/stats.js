@@ -36,6 +36,7 @@ const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => 
       sid: sid,
       ssid: ssid,
       values: null,
+      uniqueId: getUniqueId(),
       data : {
         position: (position) ? position : null,
         applicationName: await getApplicationName(),
@@ -44,7 +45,6 @@ const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => 
         screenDimension: dimension,
         carrier: await getCarrier(),
         harware: await getHardware(),
-        uniqueId: getUniqueId(),
         systemVersion: getSystemVersion(),
         usedMemory: humanFileSize(memory),
         firstInstallTime: await getFirstInstallTime(),
@@ -64,7 +64,7 @@ const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => 
     console.log(e);
   }
 };
-const setStat = async (name, sid, ssid , debug_mode,server, AppDir, position) => {
+const setStat = async (name, sid, ssid , debug_mode, server, AppDir, position) => {
   try {
     let stat = await getStat(name, sid, ssid, debug_mode, server, AppDir, position);
     const statURL = server + '/stat';

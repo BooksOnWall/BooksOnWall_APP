@@ -23,6 +23,8 @@ import openIcon from '../../../../assets/nav/point1.png';
 import completeIcon from '../../../../assets/nav/point2.png';
 import unknownIcon from '../../../../assets/nav/point3.png';
 
+import {storeTimestamp} from '../../stats/score';
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
@@ -177,12 +179,11 @@ class ToPath extends Component {
       timeout: 5000,
       distance: this.props.navigation.getParam('distance'), // in kilometers
       radius: radius, // in meters
-      initialPosition: null,
+      position: null,
       fromLat: null,
       fromLong: null,
       toLong: null,
       toLat: null,
-      lastPosition: null,
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -195,7 +196,7 @@ class ToPath extends Component {
       order: this.props.navigation.getParam('order'),
       index: index,
       selected: (index+1),
-      completed: null,
+      completed: 0,
       audioPaused: false,
       audioButton: false,
       fromLat: origin[1],
@@ -263,7 +264,7 @@ class ToPath extends Component {
         position => {
           const initialPosition = position;
           this.setState({
-            initialPosition,
+            position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
         },
@@ -271,7 +272,7 @@ class ToPath extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},
@@ -570,7 +571,7 @@ class ToPath extends Component {
     MenuButtons.push({ element: launchNavigation});
     if (completed > 0) MenuButtons.push({ element: storyOrigin});
     MenuButtons.push({ element: storyDestination });
-    if(debug_mode && ((distance*1000) <= radius)) MenuButtons.push({ element: launchAR });
+    if((!debug_mode && ((distance*1000) <= radius)) || debug_mode) MenuButtons.push({ element: launchAR });
     MenuButtons.push({ element: storyMapDl});
     if(sound !== null) MenuButtons.push({element: sound});
 
