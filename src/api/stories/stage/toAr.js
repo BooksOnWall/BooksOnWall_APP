@@ -20,7 +20,7 @@ import  distance from '@turf/distance';
 import Geolocation from '@react-native-community/geolocation';
 import Toast from 'react-native-simple-toast';
 import I18n from "../../../utils/i18n";
-import {addNewIndex, validateStage} from '../../stats/score';
+import {addNewIndex, getScore} from '../../stats/score';
 /*
 AR Scene type: INT(1-7)
 #1 VIP aka Video inside Picture to detect
@@ -63,6 +63,12 @@ const DebugArea = ({distance, debug}) => {
 export default class ToAR extends Component {
   constructor(props) {
     super(props);
+    const index = this.props.navigation.getParam('index');
+    const sid = this.props.navigation.getParam('story').id;
+    const ssid = this.props.navigation.getParam('story').stages[index].id;
+    const order = this.props.navigation.getParam('story').stages[index].stageOrder;
+    const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
+    console.log('index', index);
     this.state = {
       navigatorType : defaultNavigatorType,
       server: this.props.screenProps.server,
@@ -71,31 +77,32 @@ export default class ToAR extends Component {
       story: this.props.navigation.getParam('story'),
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
-      selected: 1,
+      selected: 0,
+      completed: null,
       buttonaudioPaused: true,
       audioPaused: false,
       debug_mode: (DEBUG_MODE === 'true') ? true : false,
       audioMuted: false,
-      completed: null,
       timeout: 10000,
       distance: this.props.navigation.getParam('distance'),
-      radius: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].radius,
+      radius: this.props.navigation.getParam('story').stages[index].radius,
       initialPosition: null,
       fromLat: null,
       fromLong: null,
       toLong: null,
       toLat: null,
       lastPosition: null,
-      scene_type: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_type,
-      scene_options: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].scene_options,
-      index: this.props.navigation.getParam('index'),
-      stage: this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')],
+      scene_type: this.props.navigation.getParam('story').stages[index].scene_type,
+      scene_options: this.props.navigation.getParam('story').stages[index].scene_options,
+      index: index,
+      stage: this.props.navigation.getParam('story').stages[index],
       sharedProps : sharedProps
     }
     console.log('index', this.props.navigation.getParam('index'));
     console.log('stage', this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')]);
     console.log('scene_options', this.state.scene_options);
     console.log('scene type',sceneTypes[this.state.scene_type]);
+    console.log('selected', this.state.selected);
   }
   static navigationOptions = {
     title: 'To Augmented Reality',
@@ -182,18 +189,20 @@ export default class ToAR extends Component {
   }
 
   getSelected = async() => {
-      const {appDir, story, selected, index} = this.state;
+      let {appDir, story, selected} = this.state;
 
       try {
         // get history from file
+        const index = this.props.navigation.getParam('index');
         const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-        const sid = story.sid;
-        const ssid = story.stages[index].id;
-        const order = story.stages[index].stageOrder;
+        const sid = story.id;
+        let ssid = story.stages[index].id;
+        let order = story.stages[index].stageOrder;
         const path = appDir + '/stories/' + story.id + '/';
-        let completed = await validateStage({sid, ssid, order, path});
+        let completed = await getScore({sid, ssid, order, path});
+        console.log('completed', completed);
+        console.log('index', index);
         mselected = (completed && completed > 0) ? completed : 1;
-        console.log('completed',completed);
         this.setState({completed: parseInt(completed), selected: parseInt(mselected)});
       } catch (e) {
         console.log(e);
@@ -203,12 +212,16 @@ export default class ToAR extends Component {
   toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
   togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   next = async () => {
-    const {appDir, story, selected, completed, index, distance} = this.state;
+    let {appDir, story, selected, completed, distance} = this.state;
+    const index = parseInt(this.props.navigation.getParam('index'));
+    console.log('index', index);
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
-    const sid = story.sid;
+    const sid = story.id;
     const ssid = story.stages[index].id;
     const order = story.stages[index].stageOrder;
     const path = appDir + '/stories/' + story.id + '/';
+    console.log('completed', completed);
+    console.log('index', index);
     if (newIndex) {
       console.log('new index', newIndex);
       // get history from file
@@ -217,7 +230,7 @@ export default class ToAR extends Component {
         // clean audio
         await this.setState({buttonaudioPaused: true, audioPaused: true});
         (this.woosh) ? this.woosh.release() : '';
-        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: newIndex, distance: distance} );
+        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance} );
       } catch(e) {
         console.log(e);
       }
@@ -234,13 +247,14 @@ export default class ToAR extends Component {
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    const { distance, debug_mode,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    const { distance, debug_mode, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
       sharedProps: sharedProps,
       server: server,
       story: story,
       stages: story.stages,
       stage: stage,
+      selected: selected,
       sceneType: stage.scene_type,
       index: index,
       audioPaused: audioPaused,
@@ -285,6 +299,8 @@ export default class ToAR extends Component {
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
     console.log(type);
     console.log(arScene[type]);
+    console.log('index', index);
+    console.log('selected', selected);
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?

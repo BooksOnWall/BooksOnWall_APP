@@ -23,7 +23,7 @@ import openIcon from '../../../../assets/nav/point1.png';
 import completeIcon from '../../../../assets/nav/point2.png';
 import unknownIcon from '../../../../assets/nav/point3.png';
 
-import {storeTimestamp} from '../../stats/score';
+import {getScore} from '../../stats/score';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -148,10 +148,14 @@ class ToPath extends Component {
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     const index = this.props.navigation.getParam('index');
-
+    const sid = this.props.navigation.getParam('story').id;
+    const ssid = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].id;
+    const order = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].stageOrder;
+    const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
     const origin = (index > 0) ? routes[index].coordinates: location;
     const radius = stages[index].radius;
     console.log('radius', radius);
+    console.log('index', index);
     this.state = {
       prevLatLng: null,
       track: null,
@@ -195,8 +199,8 @@ class ToPath extends Component {
       story: this.props.navigation.getParam('story'),
       order: this.props.navigation.getParam('order'),
       index: index,
-      selected: (index+1),
-      completed: 0,
+      selected: null,
+      completed: null,
       audioPaused: false,
       audioButton: false,
       fromLat: origin[1],
@@ -319,27 +323,23 @@ class ToPath extends Component {
   }
   getSelected = async() => {
     try {
-      const {AppDir, story,selected, index} = this.state;
+      const {AppDir, story} = this.state;
       // get history from file
-      const storyHF = AppDir + '/stories/' + story.id + '/complete.txt';
-      // // check if file exist
-      await RNFS.exists(storyHF)
-      .then( (exists) => {
-          if (exists) {
-              // get id from file
-              RNFetchBlob.fs.readFile(storyHF, 'utf8')
-              .then((data) => {
-                // handle the data ..
-                this.setState({completed: parseInt(data), selected: parseInt(data)});
-                return data;
-              })
-          } else {
-              RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
-                this.setState({completed: 0, selected: 1});
-                console.log('file created');
-              });
-          }
-      });
+      try {
+        // get history from file
+        const index = this.props.navigation.getParam('index');
+        console.log('index', index)
+        const sid = story.id;
+        const ssid = story.stages[index].id;
+        const order = story.stages[index].stageOrder;
+        const path = AppDir + '/stories/' + story.id + '/';
+        let completed = await getScore({sid, ssid, order, path, index});
+        completed = parseInt(completed);
+        mselected = (completed && completed > 0) ? completed : 1;
+        await this.setState({completed: parseInt(completed), selected: parseInt(mselected)});
+      } catch (e) {
+        console.log(e);
+      }
     } catch(e) {
       console.log(e);
     }
@@ -522,10 +522,13 @@ class ToPath extends Component {
   }
   switchToAR = () => {
     const {index, story, unset, debug_mode, distance} = this.state;
+    console.log('switch2ar', index);
+    let newIndex =(parseInt(index) <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
+    console.log('newIndex', newIndex);
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
-    this.setState({unset: true, timeout: 0});
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: index, debug: debug_mode, distance: distance});
+    this.setState({unset: true, timeout: 0, index: (index+1)});
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
@@ -702,7 +705,7 @@ class ToPath extends Component {
   launchNavigation = () => {
     const {story,fromLat, fromLong, toLat, toLong} = this.state;
     this.whoosh.release();
-    this.setState({unset: true});
+    this.setState({unset: true, timeout: 0});
     NativeModules.MapboxNavigation.navigate(
       fromLat,
       fromLong,
@@ -722,7 +725,6 @@ class ToPath extends Component {
   }
   render() {
     const {unset, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
-
     if(unset) return null;
     const styles = StyleSheet.create({
       buttonCnt: {

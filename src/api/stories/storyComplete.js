@@ -22,8 +22,8 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
 // import audio lib
 import Sound from 'react-native-sound';
-import {getStat, setStat} from "../stats/stats";
-
+import {setStat} from "../stats/stats";
+import {getScores} from '../stats/score';
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
@@ -65,6 +65,7 @@ export default class StoryComplete extends Component {
     var mbbox = bbox(line);
     console.log(this.props.screenProps.AppDir);
     const storyDir = (this.props.state) ? this.props.state.appDir+'/stories/' : this.props.screenProps.AppDir +'/stories/';
+    const path = storyDir + '/stories/' + this.props.navigation.getParam('story').id + '/';
     this.state = {
       server: (this.props.state) ? this.props.state.server : this.props.screenProps.server,
       appName: (this.props.state) ? this.props.state.appName : this.props.screenProps.appName,
@@ -77,6 +78,7 @@ export default class StoryComplete extends Component {
       transportIndex: 0,
       dlIndex: null,
       dlLoading: false,
+      path: path,
       audioButton: false,
       profile: 'mapbox/walking',
       themeSheet: null,
@@ -258,7 +260,7 @@ export default class StoryComplete extends Component {
       const stage = story.stages[maxIndex];
       if (stage) {
 
-        const audios = stage.onZoneLeave.filter(item => (item.type === 'audio'));
+        const audios = (stage.onZoneLeave && stage.onZoneLeave.length > 0) ? stage.onZoneLeave.filter(item => (item.type === 'audio')) : [];
         const count =  audios.length;
         this.setState({audioButton: true});
         console.log(count);
