@@ -3,7 +3,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
 import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
 import NavigationView from "./stage/NavigationView";
-import { NativeModules } from "react-native";
+import { NativeModules, TextInput } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY  } from '@env';
 import  distance from '@turf/distance';
@@ -24,6 +24,7 @@ import {unzip} from 'react-native-zip-archive';
 import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores} from '../stats/score';
+
 registerCustomIconType('booksonwall', IconSet);
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -541,7 +542,7 @@ export default class StoryComplete extends Component {
               <Rating
                 type='heart'
                 ratingColor='#3498db'
-                ratingBackgroundColor='#c8c7c8'
+                ratingBackgroundColor='transparent'
                 ratingCount={10}
                 imageSize={40}
                 onFinishRating={this.ratingCompleted}
@@ -549,8 +550,24 @@ export default class StoryComplete extends Component {
               />
               <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
               <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
-                <Button buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
+                <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
               </TouchableOpacity>
+                <TextInput
+                  multiline = {true}
+                  numberOfLines = {5}
+                  placeholder="Enter Your Comment"
+                  underlineColorAndroid='transparent'
+                  style={[styles.TextInputStyle, { backgroundColor: this.state.TextInputDisableStatus ? '#FFF' : '#C0C0C0' }]}
+                  editable={true}
+                  onChangeText={(text) => this.setState({text})}
+                  value={this.state.text}
+                />
+                <Button
+                  onPress={() => {}}
+                  title="Send"
+                  color="#841584"
+                  accessibilityLabel="Send"
+                />
               </View>
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>

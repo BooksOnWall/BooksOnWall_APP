@@ -214,6 +214,7 @@ export default class ToAR extends Component {
   }
   toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
   togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
+  activateAR = () => this.setState({imageTracking: true})
   next = async () => {
     let {appDir, debug_mode, server, position, story, selected, completed, distance} = this.state;
     const index = parseInt(this.props.navigation.getParam('index'));
