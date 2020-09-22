@@ -14,7 +14,7 @@ import {
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
-import {Patricie} from './Patricie';
+import { Patricie } from './Patricie';
 
 
 
@@ -26,6 +26,7 @@ export default class VipScene extends Component {
     console.log('theme',params.theme);
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
+    this.next = params.next;
     this.state = {
       server: params.server,
       appName: params.appName,
@@ -48,10 +49,9 @@ export default class VipScene extends Component {
       finishAll: params.finishAll,
       animate: {name: 'movePicture'},
       anchorFound: false,
-      imageTracking: true,
-      finishAll: false,
+      imageTracking: params.imageTracking,
       animate: {name: 'movePicture'},
-      text : I18n.t("NextPath", "Go to the next point"),
+      message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font1,
       color: params.theme.color2,
@@ -220,7 +220,7 @@ export default class VipScene extends Component {
   }
 
   render = () => {
-    const {index, text,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, message,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     const font = String(fontFamily);
     const textColor = String(color);
@@ -269,8 +269,8 @@ export default class VipScene extends Component {
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
-            goToMap={this.goToMap}
-            text={text}
+            next={this.next}
+            message={message}
             font={font}
             textColor={color}
             />

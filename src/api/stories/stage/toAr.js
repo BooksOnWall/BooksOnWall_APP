@@ -85,6 +85,7 @@ export default class ToAR extends Component {
       audioPaused: false,
       debug_mode: (DEBUG_MODE === 'true') ? true : false,
       audioMuted: false,
+      imageTracking: true,
       timeout: 10000,
       distance: this.props.navigation.getParam('distance'),
       radius: this.props.navigation.getParam('story').stages[index].radius,
@@ -181,12 +182,12 @@ export default class ToAR extends Component {
   cancelTimeout = () => this.setState({timeout: 0})
   reload = () => {
     this.togglePlaySound();
-    this.setState({ navigatorType : UNSET });
-    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
+    this.setState({ imageTracking: false, timeout: 0, finishAll: false, navigatorType : UNSET });
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
   map = () => {
     this.togglePlaySound();
-    this.setState({ navigatorType : UNSET });
+    this.setState({ imageTracking: false, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false, navigatorType : UNSET });
     this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
 
@@ -230,7 +231,7 @@ export default class ToAR extends Component {
       try  {
         await addNewIndex({sid, ssid, order, path , newIndex });
         // clean audio
-        await this.setState({buttonaudioPaused: true, audioPaused: true});
+        await this.setState({imageTracking: false, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false});
         (this.woosh) ? this.woosh.release() : '';
         return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance} );
       } catch(e) {
@@ -254,7 +255,7 @@ export default class ToAR extends Component {
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    const { distance, debug_mode, finishAll, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    const { distance, debug_mode, imageTracking, finishAll, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -276,6 +277,8 @@ export default class ToAR extends Component {
       onPictureMatch: stage.onPictureMatch,
       appDir: appDir,
       goToMap: this.map,
+      imageTracking: imageTracking,
+      next: this.next,
       goToNext: this.next,
       finishAll: finishAll,
       theme: story.theme,
