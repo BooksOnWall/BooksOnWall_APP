@@ -1,17 +1,13 @@
 'use strict';
 
 import React, { Component } from 'react';
-import {SafeAreaView,ActivityIndicator, Button, Text,StyleSheet, TouchableHighlight} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {
   ViroConstants,
   ViroARScene,
   ViroARImageMarker,
-  ViroVideo,
   ViroMaterials,
-  ViroImage,
-  ViroText,
-  ViroFlexView,
-  ViroAnimations,
+  ViroVideo,
   ViroSound,
   ViroARTrackingTargets,
   ViroAmbientLight

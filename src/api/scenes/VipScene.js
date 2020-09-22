@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import {SafeAreaView} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {
   ViroConstants,
   ViroARScene,
