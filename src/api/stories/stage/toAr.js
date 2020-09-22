@@ -79,6 +79,7 @@ export default class ToAR extends Component {
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
       selected: 0,
+      finishAll: false,
       completed: null,
       buttonaudioPaused: true,
       audioPaused: false,
@@ -244,7 +245,7 @@ export default class ToAR extends Component {
         const extra = await getScores(path);
         await setStat(name, sid, ssid , debug_mode, server, AppDir, position, extra);
       }
-      await this.setState({navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
+      await this.setState({finishAll: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
 
       return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
     }
@@ -253,7 +254,7 @@ export default class ToAR extends Component {
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
-    const { distance, debug_mode, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    const { distance, debug_mode, finishAll, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -276,6 +277,7 @@ export default class ToAR extends Component {
       appDir: appDir,
       goToMap: this.map,
       goToNext: this.next,
+      finishAll: finishAll,
       theme: story.theme,
       togglePlaySound: this.togglePlaySound,
       toggleButtonAudio: this.toggleButtonAudio,

@@ -112,10 +112,10 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
     />
     <ViroFlexView
       style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
-      animation={animate}
       width={1}
       height={1}
       position={[0,0,-2]}
+      animation={animate}
       visible={finishAll}
       opacity={1}
       onPress={() => goToMap()}
