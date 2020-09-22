@@ -23,12 +23,13 @@ import {unzip} from 'react-native-zip-archive';
 import NetInfo from "@react-native-community/netinfo";
 import {getStat, setStat} from "../stats/stats";
 
+registerCustomIconType('booksonwall', IconSet);
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
-const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 124;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
-registerCustomIconType('booksonwall', IconSet);
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -427,6 +428,8 @@ export default class Story extends Component {
         paddingTop: 60,
         paddingLeft: 45,
         paddingBottom: 55,
+        alignItems: 'center',
+        flex: 1,
       },
       subtitle: {
         fontWeight: 'bold',
@@ -439,7 +442,7 @@ export default class Story extends Component {
         color: story.theme.color3,
       },
       NavButton: {
-        backgroundColor: story.theme.color1,
+        backgroundColor: story.theme.color2,
         borderWidth: 0,
         margin: 0,
       },
@@ -454,11 +457,10 @@ export default class Story extends Component {
       },
       distance: {
         color: story.theme.color2,
-        fontWeight: 'bold',
         fontSize: 14,
         textAlign: 'center',
         paddingTop: 8,
-        fontFamily: 'RobotoCondensed-Bold'
+        fontFamily: 'RobotoCondensed-Regular'
       },
       message: {
         fontSize: 12,
@@ -482,19 +484,13 @@ export default class Story extends Component {
       },
       b: { fontFamily: 'Roboto-bold'
       },
-      menu: {
-        flex: 1,
-        margin: 0,
-        padding: 0,
-        backgroundColor: story.theme.color1,
-      },
-      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 4, paddingVertical: 6 },
-      button: { marginHorizontal: 1, backgroundColor: 'rgba(0, 0, 0, 0.10)'}
+      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 6, paddingVertical: 6 },
+      button: { marginHorizontal: 3, backgroundColor: story.theme.color2}
       });
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 16,
-          lineHeight: 22,
+          lineHeight: 19,
           letterSpacing: 0,
           fontFamily: 'Roboto-Regular',
           color: story.theme.color3,
@@ -581,8 +577,8 @@ export default class Story extends Component {
         },
         container: {
           flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
+          alignItems: 'center',
+          flex: 1,
           backgroundColor: '#D8D8D8',
           padding: 20,
         },
@@ -614,7 +610,7 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 8}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 20, color: 'white'}} title='Download' titleStyle={{color: 'white'}}/></TouchableOpacity> }
+            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 10}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 16, color: theme.color3}} title='Descargar esta historia' titleStyle={{color: theme.color1, fontSize: 12, textTransform: 'uppercase'}}/></TouchableOpacity> }
 
               <View style={themeSheet.sinopsys} >
                 <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
@@ -661,7 +657,7 @@ export default class Story extends Component {
       const Title = () => (
         <View style={styles.titleStyle}>
           <Text style={{
-            fontSize: 26,
+            fontSize: 30,
             letterSpacing: 1.1,
             color: "#fff",
             textShadowColor: 'rgba(0, 0, 0, 0.85)',
@@ -704,12 +700,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    padding: 0,
-    margin: 0,
   },
   navContainer: {
     height: HEADER_HEIGHT,
-    marginHorizontal: 40,
+    marginHorizontal: 20,
   },
   statusBar: {
     height: STATUS_BAR_HEIGHT,
@@ -735,7 +729,8 @@ const styles = StyleSheet.create({
     flexDirection:'column',
     alignItems:'stretch',
     alignContent: 'stretch',
-    justifyContent:'center'
+    justifyContent:'center',
+    fontSize: 30,
   },
   card: {
     padding: 0,
@@ -744,7 +739,7 @@ const styles = StyleSheet.create({
   },
   location: {
     fontFamily: 'ATypewriterForMe',
-    fontSize: 10,
+    fontSize: 12,
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,
@@ -756,6 +751,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0 -1,
+    padding: 0,
   }
 });
