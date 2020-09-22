@@ -526,7 +526,6 @@ export default class StoryComplete extends Component {
             <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
-
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
             <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
@@ -594,8 +593,9 @@ export default class StoryComplete extends Component {
 
       const Title = ({story}) => (
         <View style={styles.titleStyle}>
+          <Text h1 style={{fontSize: 45, color: "#fff", textShadowRadius: 2 , textShadowOffset: {width: 1, height: 1}, textShadowColor: 'rgba(0, 0, 0, 0.85)', letterSpacing: 1, fontFamily: story.theme.font1}}>{I18n.t("The_end", "The End")}</Text>
           <Text style={{
-            fontSize: 26,
+            fontSize: 20,
             letterSpacing: 1,
             color: "#fff",
             textShadowColor: 'rgba(0, 0, 0, 0.85)',
@@ -671,8 +671,8 @@ const styles = StyleSheet.create({
   titleStyle: {
     flex: 1,
     flexDirection:'column',
-    alignItems:'stretch',
-    alignContent: 'stretch',
+    alignItems:'center',
+    alignContent: 'center',
     justifyContent:'center'
   },
   card: {
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
   },
   location: {
     fontFamily: 'ATypewriterForMe',
-    fontSize: 11,
+    fontSize: 9,
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.85)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1,

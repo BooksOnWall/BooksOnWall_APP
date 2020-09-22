@@ -53,4 +53,5 @@ export default {
   Comment: "Leave a comment",
   Comment: "Coment",
   Leave_a_message: "Leave a message",
+  The_end: "The End",
 };

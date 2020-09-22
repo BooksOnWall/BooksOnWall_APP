@@ -51,4 +51,5 @@ export default {
   start_again: "Empieza otra vez!",
   Comment: "Comenta",
   Leave_a_message: "Dejanos un mensaje",
+  The_end: "Fin",
 };
