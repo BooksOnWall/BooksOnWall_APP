@@ -52,4 +52,5 @@ export default {
   Start_again: "Recommencer à nouveau",
   Comment: "Commentaire",
   Leave_a_message: "Deje un mensaje",
+  The_end: "La Fin",
 };
