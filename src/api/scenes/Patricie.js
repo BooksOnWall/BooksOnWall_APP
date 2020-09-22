@@ -8,7 +8,8 @@ import {
   ViroFlexView,
   ViroAnimations,
   ViroAmbientLight,
-  ViroParticleEmitter
+  ViroParticleEmitter,
+  ViroSpotLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 import Bubble from '../../../assets/materials/patricie.png';
@@ -46,6 +47,15 @@ ViroAnimations.registerAnimations({
 const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
   return (
     <>
+    <ViroSpotLight position={[0, -0.25, 0]}
+      color="#FF9900"
+      direction={[0, 0, -1]}
+      attenuationStartDistance={5}
+      attenuationEndDistance={10}
+      innerAngle={5}
+      outerAngle={20}
+      castsShadow={true}
+    />
     <ViroParticleEmitter
       position={[0, 4.5, 0]}
       duration={2000}
