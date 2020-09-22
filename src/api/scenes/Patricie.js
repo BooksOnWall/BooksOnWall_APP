@@ -20,6 +20,7 @@ ViroAnimations.registerAnimations({
   rotate:{
     properties:{
       scaleX: "+=-2",
+      scaleY: "+=-2",
       rotateX:"+=180",
       rotateY:"+=180",
       rotateZ: "+=180"},
@@ -119,6 +120,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
       visible={finishAll}
       opacity={1}
       onPress={() => goToMap()}
+      onClick={() => goToMap()}
       rotation={[0, 0, 0]} >
       <ViroImage
         width={1}
@@ -128,6 +130,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
         resizeMode="ScaleToFit"
         source={Bubble}
         onPress={() => goToMap()}
+        onClick={() => goToMap()}
         position={[0,-.5,-.2]}
       />
     </ViroFlexView >
