@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState, useCallback} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
 import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
@@ -54,6 +54,43 @@ const galleryPath = (storyDir, pathName) => {
 const ratingCompleted = (rating) => {
   console.log("Rating is: " + rating)
 }
+const Comments = ({theme, themeSheet,saveComment, comment }) => {
+  // const [selectedMediaUri, setSelectedMediaUri] = useState(null);
+  // const _onImageChange = useCallback(({nativeEvent}) => {
+  //   const {uri} = nativeEvent;
+  //   setSelectedMediaUri(uri);
+  // }, []);
+  return (
+    <>
+      <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
+      <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
+        <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
+      </TouchableOpacity>
+      <TextInput
+        multiline = {true}
+        numberOfLines = {5}
+        forceStrutHeight={true}
+        onImageChange={_onImageChange}
+        placeholder="Enter Your Comment"
+        underlineColorAndroid='transparent'
+        style={{ backgroundColor: '#C0C0C0'}}
+        editable={true}
+        onPress={() => {}}
+        onChangeText={(text) => saveComment({text})}
+        value={comment}
+        />
+      <Button
+        onPress={() => {}}
+        title="Send"
+        color="#841584"
+        accessibilityLabel="Send"
+        />
+
+    </>
+  );
+
+};
+
 export default class StoryComplete extends Component {
   static navigationOptions = {
     title: 'Story Complete',
@@ -95,6 +132,8 @@ export default class StoryComplete extends Component {
       styleURL: MapboxGL.StyleURL.Dark,
       fromLat: null,
       fromLong: null,
+      vote: null,
+      comment: null,
       toLat: coordinates[1],
       toLong: coordinates[0],
       distance: null,
@@ -148,6 +187,7 @@ export default class StoryComplete extends Component {
       console.log(e);
     }
   }
+  saveComment = ({text}) => this.setState({comment: text})
   getCurrentLocation = async () => {
     const {story, debug_mode, server, appDir, position} = this.state;
     const sid = story.id;
@@ -361,7 +401,7 @@ export default class StoryComplete extends Component {
 
   }
   renderContent = () => {
-    const {theme, story, distance, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {theme, story, distance, vote, comment, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const themeSheet = StyleSheet.create({
       title: {
@@ -547,26 +587,8 @@ export default class StoryComplete extends Component {
                 onFinishRating={this.ratingCompleted}
                 style={{ paddingVertical: 30 }}
               />
-              <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
-              <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
-                <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
-              </TouchableOpacity>
-                <TextInput
-                  multiline = {true}
-                  numberOfLines = {5}
-                  placeholder="Enter Your Comment"
-                  underlineColorAndroid='transparent'
-                  style={[styles.TextInputStyle, { backgroundColor: this.state.TextInputDisableStatus ? '#FFF' : '#C0C0C0' }]}
-                  editable={true}
-                  onChangeText={(text) => this.setState({text})}
-                  value={this.state.text}
-                />
-                <Button
-                  onPress={() => {}}
-                  title="Send"
-                  color="#841584"
-                  accessibilityLabel="Send"
-                />
+            <Comments theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} comment={comment}/>
+
               </View>
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
@@ -606,7 +628,7 @@ export default class StoryComplete extends Component {
     }
   }
   render() {
-      const {theme, themeSheet, story} = this.state;
+      const {theme, themeSheet, story, comment} = this.state;
 
       const Title = ({story}) => (
         <View style={styles.titleStyle}>
@@ -652,12 +674,24 @@ export default class StoryComplete extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#D8D8D8',
     padding: 0,
     margin: 0,
+  },
+  mediaContainer: {
+    flex: 1,
+  },
+  image: {
+    width: '100%',
+    aspectRatio: 1,
+  },
+  engine: {
+    position: 'absolute',
+    right: 0,
   },
   contentContainer: {
     flexGrow: 1,
