@@ -37,7 +37,7 @@ ViroAnimations.registerAnimations({
     duration: 500
   },
   movePicture:[
-    ["rotate","moveRight", "moveLeft"]
+    ["moveRight", "rotate","moveLeft"]
   ]
 });
 const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
@@ -52,7 +52,6 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
       visible={finishAll}
       opacity={1}
       onPress={() => goToMap()}
-      onClick={() => goToMap() }
       rotation={[0, 0, 0]} >
       <ViroImage
         width={1}
@@ -62,29 +61,40 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
         resizeMode="ScaleToFit"
         source={Bubble}
         onPress={() => goToMap()}
-        onClick={() => goToMap() }
         position={[0,-.5,-.2]}
       />
-    </ViroFlexView>
+    </ViroFlexView >
+    <ViroFlexView
+      style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
+      animation={{name: animate, run: finishAll, loop: false}}
+      width={1}
+      height={1}
+      position={[0,0,-21.9]}
+      visible={finishAll}
+      opacity={1}
+      onPress={() => goToMap()}
+      rotation={[0, 0, 0]} >
       <ViroText
         text={text}
-        textAlign="top"
+        textAlign="center"
         textAlignVertical="top"
         textLineBreakMode="Justify"
         textClipMode="ClipToBounds"
-        width={1}
-        height={1}
+        animation={{name: animate, run: finishAll, loop: false}}
+        width={.3}
+        height={.3}
         visible={finishAll}
+        onPress={() => goToMap()}
         style={{
           fontFamily: font,
           fontWeight: 'bold',
-          fontSize: 12,
+          fontSize: 9,
           zIndex: 1500,
           color: textColor
         }}
-        scale: [1,1,1],
-        position={[0,0,-1.9]}
+        position={[0,0,0]}
         />
+        </ViroFlexView >
         </>
   );
 }
