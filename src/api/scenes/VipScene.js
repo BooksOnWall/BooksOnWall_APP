@@ -46,7 +46,7 @@ export default class VipScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
-      animate: 'movePicture',
+      animate: {name: 'movePicture'},
       anchorFound: false,
       imageTracking: true,
       finishAll: false,
@@ -96,6 +96,13 @@ export default class VipScene extends Component {
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
+  }
+  configureAnimations = async (finishAll, loop=false) => {
+
+    const name ='movePicture';
+    const run = finishAll;
+    //this.setState({animate:{name, run, loop}});
+    return ({name , run, loop});
   }
   buildTrackingTargets = async () => {
     const {pIndex, stage, pictures, storyDir, scene_options} = this.state;
@@ -259,7 +266,7 @@ export default class VipScene extends Component {
              onError={this.onErrorSound}
           /> : null}
           <Patricie
-            animate={animate}
+            animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
             goToMap={this.goToMap}
             text={text}

@@ -16,6 +16,7 @@ import I18n from "../../utils/i18n";
 ViroAnimations.registerAnimations({
   rotate:{
     properties:{
+      scaleX: "+=-2",
       rotateX:"+=180",
       rotateY:"+=180",
       rotateZ: "+=180"},
@@ -37,7 +38,7 @@ ViroAnimations.registerAnimations({
     duration: 500
   },
   movePicture:[
-    ["moveRight", "rotate","moveLeft"]
+    ["moveRight", "rotate", "moveLeft"]
   ]
 });
 const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
@@ -45,7 +46,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
     <>
     <ViroFlexView
       style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
-      animation={{name: animate, run: finishAll, loop: false}}
+      animation={animate}
       width={1}
       height={1}
       position={[0,0,-2]}
@@ -57,7 +58,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
         width={1}
         height={1}
         visible={finishAll}
-        animation={{name: animate, run: finishAll, loop: false}}
+        animation={animate}
         resizeMode="ScaleToFit"
         source={Bubble}
         onPress={() => goToMap()}
@@ -66,7 +67,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
     </ViroFlexView >
     <ViroFlexView
       style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
-      animation={{name: animate, run: finishAll, loop: false}}
+      animation={animate}
       width={1}
       height={1}
       position={[0,0,-21.9]}
@@ -80,7 +81,6 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
         textAlignVertical="top"
         textLineBreakMode="Justify"
         textClipMode="ClipToBounds"
-        animation={{name: animate, run: finishAll, loop: false}}
         width={.3}
         height={.3}
         visible={finishAll}
@@ -88,8 +88,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
         style={{
           fontFamily: font,
           fontWeight: 'bold',
-          fontSize: 9,
-          zIndex: 1500,
+          fontSize: 6,
           color: textColor
         }}
         position={[0,0,0]}
