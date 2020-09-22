@@ -8,28 +8,16 @@ import {
   ViroARImageMarker,
   ViroMaterials,
   ViroVideo,
-  ViroImage,
-  ViroText,
-  ViroFlexView,
-  ViroAnimations,
   ViroSound,
   ViroARTrackingTargets,
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-import Patricie from '../../../assets/materials/patricie.png';
 import I18n from "../../utils/i18n";
+import {Patricie} from './Patricie';
 
-ViroAnimations.registerAnimations({
-  rotate:{properties:{rotateX:"+=90", rotateY:"+=90"}, easing:"Bounce",duration: 3000},
-});
-ViroAnimations.registerAnimations({
-    moveRight:{properties:{positionX:"+=0.4"}, easing:"Bounce", duration: 1000},
-    moveLeft:{properties:{positionX:"-=0.3"}, easing:"Bounce", duration: 1000},
-    movePicture:[
-        ["moveRight", "moveLeft"]
-    ]
-});
+
+
 export default class VipScene extends Component {
   constructor(props) {
     super(props);
@@ -99,7 +87,7 @@ export default class VipScene extends Component {
   }
   goToNext = () => {
     this.setState({animate: 'rotate'});
-    setTimeout(() => {  return this.props.sceneNavigator.viroAppProps.goToNext(); }, 3000);
+    setTimeout(() => {  return this.props.sceneNavigator.viroAppProps.goToNext(); }, 5000);
 
   }
   onInitialized(state, reason) {
@@ -270,44 +258,15 @@ export default class VipScene extends Component {
              onFinish={this.onFinishAll}
              onError={this.onErrorSound}
           /> : null}
-          <ViroFlexView
-            style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
-            animation={{name: animate, run: finishAll, loop: false}}
-            width={1}
-            height={1}
-            position={[0,0,-2]}
-            visible={finishAll}
-            opacity={1}
-            onClick={() => this.goToMap() }
-            rotation={[0, 0, 0]} >
-            <ViroImage
-              width={1}
-              height={1}
-              visible={finishAll}
-              resizeMode="ScaleToFit"
-              style={{backgroundColor: 'transparent'}}
-              source={Patricie}
-              position={[0,-.5,-.2]}
+          <Patricie
+            animate={animate}
+            finishAll={finishAll}
+            goToMap={this.goToMap}
+            text={text}
+            font={font}
+            textColor={textColor}
             />
-          </ViroFlexView>
-            <ViroText
-              text={text}
-              textAlign="top"
-              textAlignVertical="top"
-              textLineBreakMode="Justify"
-              textClipMode="ClipToBounds"
-              width={1}
-              height={1}
-              visible={finishAll}
-              style={{
-                fontFamily: font,
-                fontWeight: 'bold',
-                fontSize: 12,
-                zIndex: 1500,
-                color: textColor
-              }}
-              position={[0,0,0]}
-              />
+
 
       </ViroARScene>
       </SafeAreaView>

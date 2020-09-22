@@ -23,7 +23,8 @@ import {
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-import Patricie from '../../../assets/materials/patricie.jpg';
+import {Patricie} from './Patricie';
+
 import I18n from "../../utils/i18n";
 
 export default class PortalScene extends Component {
@@ -172,7 +173,14 @@ export default class PortalScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-
+        <Patricie
+          animate={animate}
+          finishAll={finishAll}
+          goToMap={this.goToMap}
+          text={text}
+          font={font}
+          textColor={textColor}
+          />
       </ViroARScene>
       </SafeAreaView>
     );

@@ -17,7 +17,7 @@ import {
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-import Patricie from '../../../assets/materials/patricie.jpg';
+import Patricie from '../../../assets/materials/patricie.png';
 import I18n from "../../utils/i18n";
 
 export default class PivScene extends Component {
