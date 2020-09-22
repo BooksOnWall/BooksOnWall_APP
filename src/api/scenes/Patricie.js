@@ -73,7 +73,7 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
       particleAppearance={{
         opacity:{
           initialRange:[0, 0],
-          factor:"time",
+          factor:"Time",
           interpolation:[
             {endValue:0.5, interval:[0,500]},
             {endValue:1.0, interval:[4000,5000]}
@@ -81,14 +81,14 @@ const Patricie = ({animate, finishAll, goToMap, text, textColor, font }) => {
         },
         rotation:{
           initialRange:[0, 360],
-          factor:"time",
+          factor:"Time",
           interpolation:[
             {endValue:1080, interval:[0,5000]},
           ]
         },
         scale:{
           initialRange:[[5,5,5], [10,10,10]],
-          factor:"time",
+          factor:"Time",
           interpolation:[
             {endValue:[3,3,3], interval:[0,4000]},
             {endValue:[0,0,0], interval:[4000,5000]}

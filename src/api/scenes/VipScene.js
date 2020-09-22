@@ -27,7 +27,6 @@ export default class VipScene extends Component {
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     this.state = {
-      text : I18n.t("NextPath", "Go to the next point"),
       server: params.server,
       appName: params.appName,
       appDir: params.appDir,
@@ -46,10 +45,13 @@ export default class VipScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
+      finishAll: false,
       animate: {name: 'movePicture'},
       anchorFound: false,
       imageTracking: true,
       finishAll: false,
+      animate: {name: 'movePicture'},
+      text : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font1,
       color: params.theme.color2,
@@ -221,7 +223,7 @@ export default class VipScene extends Component {
     const {index, text,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     const font = String(fontFamily);
-    const textColor = String(color);;
+    const textColor = String(color);
     // <ViroARImageMarker onAnchorFound={() => this.stopAudio()} ...
     return (
       <SafeAreaView>
@@ -270,7 +272,7 @@ export default class VipScene extends Component {
             goToMap={this.goToMap}
             text={text}
             font={font}
-            textColor={textColor}
+            textColor={color}
             />
 
 

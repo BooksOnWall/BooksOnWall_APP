@@ -23,7 +23,6 @@ export default class VaapScene extends Component {
     let params = this.props.sceneNavigator.viroAppProps;
     // Set initial state here
     this.state = {
-      text : "You Found me ...",
       server: params.server,
       appName: params.appName,
       appDir: params.appDir,
@@ -42,6 +41,12 @@ export default class VaapScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
+      finishAll: false,
+      animate: {name: 'movePicture'},
+      text : I18n.t("NextPath", "Go to the next point"),
+      theme: params.theme,
+      fontFamily: params.theme.font1,
+      color: params.theme.color2,
       audios: [],
       video: {},
       audioLoop: false,
@@ -77,9 +82,9 @@ export default class VaapScene extends Component {
   }
   onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        text : "Search for me ..."
-      });
+      // this.setState({
+      //   text : "Search for me ..."
+      // });
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
@@ -187,9 +192,11 @@ export default class VaapScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, pIndex, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, pIndex, finishAll, animate, fontFamily, text, color, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
+    const font = String(fontFamily);
+    const textColor = String(color);
     return (
       <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >

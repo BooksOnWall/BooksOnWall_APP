@@ -48,6 +48,12 @@ export default class PortalScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
+      finishAll: false,
+      animate: {name: 'movePicture'},
+      text : I18n.t("NextPath", "Go to the next point"),
+      theme: params.theme,
+      fontFamily: params.theme.font1,
+      color: params.theme.color2,
       audios: [],
       video: {},
       audioLoop: false,
@@ -155,8 +161,11 @@ export default class PortalScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
+    const {finishAll, animate, fontFamily, color} =this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
+    const font = String(fontFamily);
+    const textColor = String(color);
     return (
       <SafeAreaView>
       <ViroARScene onTrackingUpdated={this.onInitialized}  >
