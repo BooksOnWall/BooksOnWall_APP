@@ -537,6 +537,15 @@ export default class StoryComplete extends Component {
       <>
       <View style={themeSheet.card} >
               <View style={themeSheet.credits} >
+                <Rating
+                  type='heart'
+                  ratingColor='#3498db'
+                  ratingBackgroundColor='#c8c7c8'
+                  ratingCount={10}
+                  imageSize={30}
+                  onFinishRating={this.ratingCompleted}
+                  style={{ paddingVertical: 10 }}
+                />
               <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
             </View>
@@ -612,15 +621,7 @@ export default class StoryComplete extends Component {
           contentContainerStyle={styles.contentContainer}
           innerContainerStyle={styles.container}
       />
-      <Rating
-        type='heart'
-        ratingColor='#3498db'
-        ratingBackgroundColor='#c8c7c8'
-        ratingCount={10}
-        imageSize={30}
-        onFinishRating={this.ratingCompleted}
-        style={{ paddingVertical: 10 }}
-      />
+
         <Reset  />
         </SafeAreaView>
       </ThemeProvider>
