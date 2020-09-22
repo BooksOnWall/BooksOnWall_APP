@@ -617,7 +617,7 @@ export default class Story extends Component {
               </View>
 
               <View style={themeSheet.credits}>
-                <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+                <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
                 <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
               </View>
 

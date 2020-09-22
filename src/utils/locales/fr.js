@@ -47,5 +47,9 @@ export default {
   Pedestrian: "Pieton",
   Bicycle: "Bicyclette",
   Transportation: "Choisissez votre mode de transport et appuyez sur Commencer.",
-  credits: "Crédits"
+  Credits: "Crédits",
+  Rate_this: "Evaluez cette expérience",
+  Start_again: "Recommencer à nouveau",
+  Comment: "Commentaire",
+  Leave_a_message: "Deje un mensaje",
 };

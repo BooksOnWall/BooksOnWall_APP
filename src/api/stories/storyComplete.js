@@ -536,17 +536,24 @@ export default class StoryComplete extends Component {
     return (
       <>
       <View style={themeSheet.card} >
+              <View style={themeSheet.rate} >
+              <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
+              <Rating
+                type='heart'
+                ratingColor='#3498db'
+                ratingBackgroundColor='#c8c7c8'
+                ratingCount={10}
+                imageSize={40}
+                onFinishRating={this.ratingCompleted}
+                style={{ paddingVertical: 30 }}
+              />
+              <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
+              <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
+                <Button buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
+              </TouchableOpacity>
+              </View>
               <View style={themeSheet.credits} >
-                <Rating
-                  type='heart'
-                  ratingColor='#3498db'
-                  ratingBackgroundColor='#c8c7c8'
-                  ratingCount={10}
-                  imageSize={30}
-                  onFinishRating={this.ratingCompleted}
-                  style={{ paddingVertical: 10 }}
-                />
-              <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
+              <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
             </View>
       </View>
@@ -600,7 +607,7 @@ export default class StoryComplete extends Component {
       );
       const Reset = () => (
         <TouchableOpacity style={styles.iconLeft} onPress={() => this.resetStory()}>
-          <Button onPress={() => this.resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} />
+          <Button onPress={() => this.resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")} />
         </TouchableOpacity>
       );
       return (

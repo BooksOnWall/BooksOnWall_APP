@@ -47,5 +47,9 @@ export default {
   Pedestrian: "Pedonale",
   Bicycle: "Bicicletta",
   Transportation: " Scegliere il mezzo di trasporto e premere start.",
-  credits: "Accreditamenti"
+  Credits: "Accreditamenti",
+  Rate_this: "Valuta questa esperienza",
+  Start_again: "Ricominciare di nuovo",
+  Comment: "Commentaire",
+  Leave_a_message: "Lascia un messaggio",
 };

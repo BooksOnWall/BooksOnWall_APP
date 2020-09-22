@@ -46,5 +46,9 @@ export default {
   Pedestrian: "Caminando",
   Bicycle: "En bicicleta",
   Transportation: "Por favor, elige el medio de transporte y elige comenzar con la navegación",
-  credits: "Creditos",
+  Credits: "Creditos",
+  Rate_this: "¡Valora esta experiencia, Gracias!",
+  start_again: "Empieza otra vez!",
+  Comment: "Comenta",
+  Leave_a_message: "Dejanos un mensaje",
 };

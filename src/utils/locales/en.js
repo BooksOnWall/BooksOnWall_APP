@@ -47,5 +47,10 @@ export default {
   Pedestrian: "Pedestrian",
   Bicycle: "Bicycle",
   Transportation: "Please choose your mode of transportation and press Start Navigation.",
-  credits: "Credits"
+  Credits: "Credits",
+  Rate_this: "Rate this Experience",
+  Start_again: "Start again",
+  Comment: "Leave a comment",
+  Comment: "Coment",
+  Leave_a_message: "Leave a message",
 };
