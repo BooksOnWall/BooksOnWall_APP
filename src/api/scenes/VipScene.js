@@ -17,15 +17,15 @@ import {
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-import Patricie from '../../../assets/materials/patricie.jpg';
+import Patricie from '../../../assets/materials/patricie.png';
 import I18n from "../../utils/i18n";
 
 ViroAnimations.registerAnimations({
-  rotate:{properties:{rotateZ:"+=45"}, easing:"Bounce",duration: 3000},
+  rotate:{properties:{rotateX:"+=90", rotateY:"+=90"}, easing:"Bounce",duration: 3000},
 });
 ViroAnimations.registerAnimations({
-    moveRight:{properties:{positionX:"+=0.3"}, easing:"Bounce", duration: 500},
-    moveLeft:{properties:{positionX:"-=0.3"}, easing:"Bounce", duration: 500},
+    moveRight:{properties:{positionX:"+=0.4"}, easing:"Bounce", duration: 1000},
+    moveLeft:{properties:{positionX:"-=0.3"}, easing:"Bounce", duration: 1000},
     movePicture:[
         ["moveRight", "moveLeft"]
     ]
@@ -38,7 +38,6 @@ export default class VipScene extends Component {
     console.log('theme',params.theme);
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
-    this.goToNext = params.goToNext;
     this.state = {
       text : I18n.t("NextPath", "Go to the next point"),
       server: params.server,
@@ -59,6 +58,7 @@ export default class VipScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
+      animate: 'movePicture',
       anchorFound: false,
       imageTracking: true,
       finishAll: false,
@@ -95,6 +95,11 @@ export default class VipScene extends Component {
     } catch(e) {
       console.log(e.message);
     }
+
+  }
+  goToNext = () => {
+    this.setState({animate: 'rotate'});
+    setTimeout(() => {  return this.props.sceneNavigator.viroAppProps.goToNext(); }, 3000);
 
   }
   onInitialized(state, reason) {
@@ -219,7 +224,7 @@ export default class VipScene extends Component {
   }
 
   render = () => {
-    const {index, text,fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, text,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     const font = String(fontFamily);
     const textColor = String(color);;
@@ -266,8 +271,8 @@ export default class VipScene extends Component {
              onError={this.onErrorSound}
           /> : null}
           <ViroFlexView
-            style={{flexDirection: 'row', padding: 0}}
-            animation={{name: "movePicture", run: finishAll, loop: false}}
+            style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
+            animation={{name: animate, run: finishAll, loop: false}}
             width={1}
             height={1}
             position={[0,0,-2]}
@@ -280,8 +285,9 @@ export default class VipScene extends Component {
               height={1}
               visible={finishAll}
               resizeMode="ScaleToFit"
+              style={{backgroundColor: 'transparent'}}
               source={Patricie}
-              position={[0,0,-.2]}
+              position={[0,-.5,-.2]}
             />
           </ViroFlexView>
             <ViroText
