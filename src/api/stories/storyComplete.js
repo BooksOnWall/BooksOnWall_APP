@@ -24,12 +24,13 @@ import {unzip} from 'react-native-zip-archive';
 import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores} from '../stats/score';
+registerCustomIconType('booksonwall', IconSet);
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
-const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 124;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
-registerCustomIconType('booksonwall', IconSet);
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -372,29 +373,28 @@ export default class StoryComplete extends Component {
       credits: {
         backgroundColor: story.theme.color2,
         fontFamily: 'Roboto-Regular',
-        paddingTop: 60,
-        paddingBottom: 60,
-        paddingHorizontal: 26,
         color: story.theme.color3,
+        padding: 45,
       },
       sinopsys: {
-        paddingTop: 40,
-        paddingBottom: 50,
-        paddingHorizontal: 32,
         backgroundColor: '#D8D8D8',
+        padding: 40,
+        paddingTop: 60,
+        paddingLeft: 45,
+        paddingBottom: 55,
       },
       subtitle: {
         fontWeight: 'bold',
         padding: 0,
         marginTop: 0,
-        marginBottom: 30,
+        marginBottom: 50,
         fontSize: 12,
         textTransform: 'uppercase',
         fontFamily: 'Roboto-bold',
         color: story.theme.color3,
       },
       NavButton: {
-        backgroundColor: story.theme.color1,
+        backgroundColor: story.theme.color2,
         borderWidth: 0,
         margin: 0,
       },
@@ -408,12 +408,11 @@ export default class StoryComplete extends Component {
         height: 50
       },
       distance: {
-        color: '#FFF',
-        fontWeight: 'bold',
-        fontSize: 16,
+        color: story.theme.color2,
+        fontSize: 14,
         textAlign: 'center',
-        paddingTop: 5,
-        fontFamily: 'Roboto-Regular'
+        paddingTop: 8,
+        fontFamily: 'RobotoCondensed-Regular'
       },
       message: {
         fontSize: 12,
@@ -437,61 +436,85 @@ export default class StoryComplete extends Component {
       },
       b: { fontFamily: 'Roboto-bold'
       },
-      menu: {
-        flex: 1,
-        margin: 0,
-        padding: 0,
-        backgroundColor: story.theme.color1,
-      },
-      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 4, paddingVertical: 6 },
-      button: { marginHorizontal: 1, backgroundColor: 'rgba(0, 0, 0, 0.10)'}
+      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 6, paddingVertical: 6 },
+      button: { marginHorizontal: 3, backgroundColor: story.theme.color2}
       });
     const creditsThemeSheet = StyleSheet.create({
       p: {
           fontSize: 16,
-          lineHeight: 20,
+          lineHeight: 19,
           letterSpacing: 0,
           fontFamily: 'Roboto-Regular',
           color: story.theme.color3,
+          marginTop: 0,
+          marginBottom: 0,
+          marginHorizontal: 0,
+        },
+        br: {
+          marginTop: 0,
+          marginBottom: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 0,
+          paddingVertical: 0,
+          lineHeight: 0,
         },
         b: {
-          fontFamily: 'Roboto-bold'},
-          container: {
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          backgroundColor: '#D8D8D8',
-          padding: 0,
+          fontFamily: 'Roboto-bold',
+        },
+        container: {
+          marginTop: 5,
+          marginBottom: 5,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 0,
+          paddingVertical: 0,
+        },
+        span: {
+          marginTop: 0,
+          marginBottom: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingHorizontal: 0,
+          paddingVertical: 0,
         },
         strong: {
           fontFamily: 'Roboto-bold',
-        }
+        },
+        h1: {
+          fontFamily: 'Roboto-Light',
+          fontSize: 23,
+          fontWeight: '200',
+          color: story.theme.color1,
+          marginTop: 30,
+          marginBottom: 1,
+          lineHeight: 25,
+        },
+        h2: {
+          fontSize: 17,
+          lineHeight: 22,
+          color: story.theme.color3,
+          marginTop: 10,
+          marginBottom: 50,
+        },
+        h3: {
+          fontSize: 13,
+          marginTop: 20,
+          marginBottom: 1 ,
+          fontFamily: 'RobotoCondensed-Bold',
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          color: story.theme.color1,
+        },
+        h4: {
+          fontSize: 13,
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          color: story.theme.color1,
+          marginTop: 5,
+          marginBottom: 1,
+        },
       });
-    const sinopsysThemeSheet = StyleSheet.create({
-      p: {
-          fontSize: 18,
-          lineHeight: 26,
-          letterSpacing: 0,
-          fontFamily: '',
-          color: '#111',
-          fontFamily: 'RobotoCondensed-Light',
-        },
-        b: {
-          fontFamily: 'Roboto-bold'
-        },
-        container: {
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          backgroundColor: '#D8D8D8',
-          padding: 0,
-        },
-        i:{
-          fontSize: 24,
-          fontFamily: story.theme.font2
-        }
-      });
-
       const ButtonGroup = () => {
         return (
           <View style={themeSheet.nav}>
@@ -515,7 +538,7 @@ export default class StoryComplete extends Component {
       <View style={themeSheet.card} >
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("credits", "Credits")}</Text>
-              <HTMLView value={story.credits} stylesheet={creditsThemeSheet} />
+              <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
             </View>
       </View>
       </>
@@ -574,15 +597,6 @@ export default class StoryComplete extends Component {
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
-          <Rating
-            type='heart'
-            ratingColor='#3498db'
-            ratingBackgroundColor='#c8c7c8'
-            ratingCount={10}
-            imageSize={30}
-            onFinishRating={this.ratingCompleted}
-            style={{ paddingVertical: 10 }}
-          />
         <ReactNativeParallaxHeader
           headerMinHeight={HEADER_HEIGHT}
           headerMaxHeight={250}
@@ -597,6 +611,15 @@ export default class StoryComplete extends Component {
           containerStyle={styles.container}
           contentContainerStyle={styles.contentContainer}
           innerContainerStyle={styles.container}
+      />
+      <Rating
+        type='heart'
+        ratingColor='#3498db'
+        ratingBackgroundColor='#c8c7c8'
+        ratingCount={10}
+        imageSize={30}
+        onFinishRating={this.ratingCompleted}
+        style={{ paddingVertical: 10 }}
       />
         <Reset  />
         </SafeAreaView>
@@ -616,7 +639,7 @@ const styles = StyleSheet.create({
   },
   navContainer: {
     height: HEADER_HEIGHT,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
   },
   statusBar: {
     height: STATUS_BAR_HEIGHT,
