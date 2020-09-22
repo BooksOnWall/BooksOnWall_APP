@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import {SafeAreaView,ActivityIndicator, Button, Text,StyleSheet, TouchableHighlight} from 'react-native';
+import {SafeAreaView} from 'react-native';
 import {
   ViroConstants,
   ViroARScene,
@@ -98,7 +98,6 @@ export default class VipScene extends Component {
     }
   }
   configureAnimations = async (finishAll, loop=false) => {
-
     const name ='movePicture';
     const run = finishAll;
     //this.setState({animate:{name, run, loop}});

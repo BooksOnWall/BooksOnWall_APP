@@ -232,7 +232,7 @@ export default class VaampScene extends Component {
                onError={this.onErrorSound}
             /> : null}
             <Patricie
-              animate={animate}
+              animate={{name: 'movePicture', run: finishAll, loop: false}}
               finishAll={finishAll}
               goToMap={this.goToMap}
               text={text}

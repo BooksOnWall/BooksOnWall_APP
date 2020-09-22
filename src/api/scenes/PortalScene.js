@@ -174,7 +174,7 @@ export default class PortalScene extends Component {
            onError={this.onErrorSound}
         />
         <Patricie
-          animate={animate}
+          animate={{name: 'movePicture', run: finishAll, loop: false}}
           finishAll={finishAll}
           goToMap={this.goToMap}
           text={text}
