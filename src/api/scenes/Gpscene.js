@@ -13,7 +13,7 @@ iimport {
   ViroAmbientLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
-import {Patricie} from './Patricie';
+import { Patricie } from './Patricie';
 
 import I18n from "../../utils/i18n";
 
