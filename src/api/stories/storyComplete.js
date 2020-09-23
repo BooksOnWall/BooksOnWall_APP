@@ -51,25 +51,34 @@ function humanFileSize(bytes, si) {
 const galleryPath = (storyDir, path) => {
   return 'file://' + storyDir + path.replace("assets/stories", "");
 }
-const Anim = () => {
-  return (<Spring
-      from={{ x: 100 }}
-      to={{ x: 0 }}>
-      {props => children }
-    </Spring>);
-  } ;
-const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => {
+//const Bubbles = ({theme, themeSheet, comment}) => return (comment);
+const blobImage = async (uri) => {
+  try {
+    const response = await fetch(uri);
+    return  await response.blob();
+  } catch(e) {
+    console.log(e.message);
+  }
+}
+const Bubbles = ({comment, theme, themeSheet}) => {
+  return comment.map((line,i) => {
+    return (line.type === 'image') ? <Image key={line.key} source={line.content} /> : <Text key={line.key}>{line.content}</Text>
+  })
+}
+const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const [open, setOpen] = useState(false);
   const _onImageChange = useCallback(({nativeEvent}) => {
     const {uri, linkUri, mime, data} = nativeEvent;
-    console.log('uri',uri);
-    console.log('linkUri',linkUri);
     setSelectedMediaUri(uri);
+    let blob = blobImage(uri).then(blob => blob);
+    console.log('blob',blob);
+    addToComment(blob, 'image');
+    //setSelectedMediaUri(null);
   }, []);
   const _save = () => {
-    setOpen(true);
     saveComment();
+    setOpen(false);
   };;
   return (
     <>
@@ -78,12 +87,19 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
         <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
       </TouchableOpacity>
       <View style={styles.searchContainer}>
+
             {selectedMediaUri && (
                 <Image source={{uri: selectedMediaUri}} style={styles.image} />
             )}
+            <Bubbles
+              theme={theme}
+              themeSheet={themeSheet}
+              comment={comment}
+              />
+
             <TextInput
-              multiline = {true}
-              numberOfLines = {5}
+              multiline = {false}
+              numberOfLines = {1}
               forceStrutHeight={true}
               onImageChange={_onImageChange}
               placeholder="Enter Your Comment"
@@ -94,8 +110,9 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
               keyboardAppearance={"dark"}
               selectTextOnFocus={true}
               onImageInput={(image) => {console.log('image', image)}}
-              onEndEditing={(text) => handleComment({text})}
-              onChangeText={(text) => {}}
+              onEndEditing={text => addToComment(commentLine, 'text')}
+              onChangeText={(text) => handleCommentLine(text)}
+              defaultValue={commentLine}
               />
               <Button
                 onPress={() => _save() }
@@ -105,10 +122,6 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
                 accessibilityLabel="Send"
                 />
         </View>
-
-
-
-
     </>
   );
 
@@ -157,7 +170,8 @@ export default class StoryComplete extends Component {
       fromLat: null,
       fromLong: null,
       vote: 5,
-      comment: null,
+      comment: [],
+      commentLine: "",
       toLat: coordinates[1],
       toLong: coordinates[0],
       distance: null,
@@ -215,9 +229,18 @@ export default class StoryComplete extends Component {
       console.log(e);
     }
   }
-  handleComment = ({text}) => {
-    console.log(text);
-    this.setState({comment: text});
+  handleCommentLine = (text) => {
+    this.setState({commentLine: text});
+  }
+  addToComment = (content, type) => {
+    const { comment } = this.state;
+    const line = {
+      type: type,
+      content: content,
+      key: (comment && comment.length > 0) ? comment.length : 0,
+    };
+    comment.push(line);
+    this.setState({comment, commentLine: ''});
   }
   saveComment = async () => {
     const {story, appDir, debug_mode, server, position, comment, vote} = this.state;
@@ -418,9 +441,8 @@ export default class StoryComplete extends Component {
 
   }
   renderContent = () => {
-    const {theme, story, distance, vote, comment, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {theme, story, distance, vote, comment, commentLine, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    console.log('comment', comment);
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
@@ -611,7 +633,7 @@ export default class StoryComplete extends Component {
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
               </View>
-              <Comments theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleComment={this.handleComment} comment={comment}/>
+              <Comments addToComment={this.addToComment} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine}/>
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
@@ -712,7 +734,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: '100%',
+    width: '50%',
     aspectRatio: 1,
   },
   engine: {
