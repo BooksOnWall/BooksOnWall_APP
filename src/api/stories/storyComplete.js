@@ -635,9 +635,9 @@ export default class StoryComplete extends Component {
       <Reset />
       <View style={themeSheet.card} >
               <View style={themeSheet.rate} >
-<<<<<<< Updated upstream
                 <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
                 <Rating
+                  showRating
                   fractions={1}
                   startingValue={vote}
                   type='custom'
@@ -651,22 +651,10 @@ export default class StoryComplete extends Component {
                   onFinishRating={this.ratingCompleted}
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
-=======
-              <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
-              <Rating
-                type='heart'
-                ratingColor='#3498db'
-                ratingBackgroundColor='#c8c7c8'
-                ratingCount={10}
-                imageSize={40}
-                onFinishRating={this.ratingCompleted}
-                style={{ paddingVertical: 30 }}
-              />
               <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
               <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
                 <Button buttonStyle={themeSheet.button} title={I18n.t("Leave_a_message", "Leave a message")} />
               </TouchableOpacity>
->>>>>>> Stashed changes
               </View>
               <Comments addToComment={this.addToComment} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine}/>
               <View style={themeSheet.credits} >
