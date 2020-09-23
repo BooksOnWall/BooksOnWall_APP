@@ -62,13 +62,14 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const [open, setOpen] = useState(false);
   const _onImageChange = useCallback(({nativeEvent}) => {
-    const {uri} = nativeEvent;
+    const {uri, linkUri, mime, data} = nativeEvent;
+    console.log('uri',uri);
+    console.log('linkUri',linkUri);
     setSelectedMediaUri(uri);
   }, []);
   const _save = () => {
     setOpen(true);
     saveComment();
-    setOpen(false);
   };;
   return (
     <>
@@ -76,29 +77,36 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
       <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
         <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
       </TouchableOpacity>
-        <TextInput
-          multiline = {true}
-          numberOfLines = {5}
-          forceStrutHeight={true}
-          onImageChange={_onImageChange}
-          placeholder="Enter Your Comment"
-          underlineColorAndroid='transparent'
-          style={{ color: theme.color2, backgroundColor: 'transparent'}}
-          editable={true}
-          onPress={() => {}}
-          keyboardAppearance={"dark"}
-          selectTextOnFocus={true}
-          onImageInput={(image) => {console.log('image', image)}}
-          onEndEditing={(text) => handleComment({text})}
-          onChangeText={(text) => {}}
-          />
-      <Button
-        onPress={() => _save() }
-        title="Send"
-        loading={open}
-        color={theme.color3}
-        accessibilityLabel="Send"
-        />
+      <View style={styles.searchContainer}>
+            {selectedMediaUri && (
+                <Image source={{uri: selectedMediaUri}} style={styles.image} />
+            )}
+            <TextInput
+              multiline = {true}
+              numberOfLines = {5}
+              forceStrutHeight={true}
+              onImageChange={_onImageChange}
+              placeholder="Enter Your Comment"
+              underlineColorAndroid='transparent'
+              style={{ color: theme.color2, backgroundColor: 'transparent'}}
+              editable={true}
+              onPress={() => {}}
+              keyboardAppearance={"dark"}
+              selectTextOnFocus={true}
+              onImageInput={(image) => {console.log('image', image)}}
+              onEndEditing={(text) => handleComment({text})}
+              onChangeText={(text) => {}}
+              />
+              <Button
+                onPress={() => _save() }
+                title="Send"
+                loading={open}
+                color={theme.color3}
+                accessibilityLabel="Send"
+                />
+        </View>
+
+
 
 
     </>
@@ -207,7 +215,10 @@ export default class StoryComplete extends Component {
       console.log(e);
     }
   }
-  handleComment = ({text}) => this.setState({comment: text})
+  handleComment = ({text}) => {
+    console.log(text);
+    this.setState({comment: text});
+  }
   saveComment = async () => {
     const {story, appDir, debug_mode, server, position, comment, vote} = this.state;
     try {
@@ -409,6 +420,7 @@ export default class StoryComplete extends Component {
   renderContent = () => {
     const {theme, story, distance, vote, comment, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
+    console.log('comment', comment);
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
@@ -639,7 +651,7 @@ export default class StoryComplete extends Component {
   }
   render() {
       const {theme, themeSheet, story, comment} = this.state;
-      console.log('comment',comment);
+
       const Title = ({story}) => (
         <View style={styles.titleStyle}>
           <Text h1 style={{fontSize: 45, color: "#fff", textShadowRadius: 2 , textShadowOffset: {width: 1, height: 1}, textShadowColor: 'rgba(0, 0, 0, 0.85)', letterSpacing: 1, fontFamily: story.theme.font1}}>{I18n.t("The_end", "The End")}</Text>

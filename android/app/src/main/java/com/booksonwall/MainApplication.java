@@ -3,7 +3,7 @@ package com.booksonwall;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.rnimagekeyboard.MediaInputPackage;
+import com.reactlibrary.MediaInputPackage;
 import com.reactnativecommunity.toolbarandroid.ReactToolbarPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.github.yamill.orientation.OrientationPackage;
