@@ -19,6 +19,8 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {lineString as makeLineString, bbox} from '@turf/turf';
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
+const fs = RNFetchBlob.fs;
+const Blob = RNFetchBlob.polyfill.Blob;
 // import audio lib
 import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
@@ -52,29 +54,44 @@ const galleryPath = (storyDir, path) => {
   return 'file://' + storyDir + path.replace("assets/stories", "");
 }
 //const Bubbles = ({theme, themeSheet, comment}) => return (comment);
+const Reset = ({resetStory}) => (
+  <TouchableOpacity style={styles.iconLeft} onPress={() => this.resetStory()}>
+    <Button onPress={() => resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")} />
+  </TouchableOpacity>
+);
 const blobImage = async (uri) => {
   try {
-    const response = await fetch(uri);
-    return  await response.blob();
-  } catch(e) {
-    console.log(e.message);
+    const max = uri.split('/').length;
+    const ext = uri.split('/')[max-1].split('.')[1];
+    return await RNFetchBlob.fs.readFile(uri, 'base64')
+    .then((data) => {
+      //console.log(data);
+      return `data:image/${ext};base64,${data}`;
+    });
+    } catch(e) {
+      console.log(e.message);
+    }
   }
-}
 const Bubbles = ({comment, theme, themeSheet}) => {
   return comment.map((line,i) => {
-    return (line.type === 'image') ? <Image key={line.key} source={line.content} /> : <Text key={line.key}>{line.content}</Text>
+    return (line.type === 'image') ? <Image style={{width: 100, height: 50, borderWidth: 1, borderColor: 'red' }} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
   })
 }
 const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const [open, setOpen] = useState(false);
-  const _onImageChange = useCallback(({nativeEvent}) => {
-    const {uri, linkUri, mime, data} = nativeEvent;
-    setSelectedMediaUri(uri);
-    let blob = blobImage(uri).then(blob => blob);
-    console.log('blob',blob);
-    addToComment(blob, 'image');
-    //setSelectedMediaUri(null);
+  const _onImageChange = useCallback(async ({nativeEvent}) => {
+    try  {
+      const {uri, linkUri, mime, data} = nativeEvent;
+      const base64 = await blobImage(uri);
+      await addToComment(base64, 'image');
+      await setSelectedMediaUri(uri);
+      if(base64) {
+        await setSelectedMediaUri(null);
+      }
+    } catch(e) {
+      console.log(e);
+    }
   }, []);
   const _save = () => {
     saveComment();
@@ -615,6 +632,7 @@ export default class StoryComplete extends Component {
       };
     return (
       <>
+      <Reset />
       <View style={themeSheet.card} >
               <View style={themeSheet.rate} >
                 <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
@@ -688,11 +706,7 @@ export default class StoryComplete extends Component {
           <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
         </View>
       );
-      const Reset = () => (
-        <TouchableOpacity style={styles.iconLeft} onPress={() => this.resetStory()}>
-          <Button onPress={() => this.resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")} />
-        </TouchableOpacity>
-      );
+
       return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
@@ -712,7 +726,7 @@ export default class StoryComplete extends Component {
           innerContainerStyle={styles.container}
       />
 
-        <Reset  />
+
         </SafeAreaView>
       </ThemeProvider>
     );
