@@ -1,7 +1,7 @@
 import React, {Component, useState, useCallback} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import { Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
-import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
+import {  Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
+import { Rating, Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
 import NavigationView from "./stage/NavigationView";
 import { NativeModules, TextInput } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
@@ -10,7 +10,6 @@ import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
-import { Rating, AirbnbRating } from 'react-native-ratings';
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import IconSet from "../../utils/Icon";
@@ -51,7 +50,13 @@ function humanFileSize(bytes, si) {
 const galleryPath = (storyDir, path) => {
   return 'file://' + storyDir + path.replace("assets/stories", "");
 }
-
+const Anim = () => {
+  return (<Spring
+      from={{ x: 100 }}
+      to={{ x: 0 }}>
+      {props => children }
+    </Spring>);
+  } ;
 const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const _onImageChange = useCallback(({nativeEvent}) => {
@@ -64,31 +69,29 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
       <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
         <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
       </TouchableOpacity>
-      <View style={styles.mediaContainer}>
-        {selectedMediaUri && (
-          <Image source={{uri: selectedMediaUri}} style={styles.image} />
-        )}
-      </View>
-      <TextInput
-        multiline = {true}
-        numberOfLines = {5}
-        forceStrutHeight={true}
-        onImageChange={_onImageChange}
-        placeholder="Enter Your Comment"
-        underlineColorAndroid='transparent'
-        style={{ backgroundColor: 'transparent'}}
-        editable={true}
-        onPress={() => {}}
-        onImageInput={(image) => {console.log('image', image)}}
-        onChangeText={(text) => handleComment({text})}
-        value={comment}
-        />
+        <TextInput
+          multiline = {true}
+          numberOfLines = {5}
+          forceStrutHeight={true}
+          onImageChange={_onImageChange}
+          placeholder="Enter Your Comment"
+          underlineColorAndroid='transparent'
+          style={{ color: theme.color2, backgroundColor: 'transparent'}}
+          editable={true}
+          onPress={() => {}}
+          keyboardAppearance={"dark"}
+          selectTextOnFocus={true}
+          onImageInput={(image) => {console.log('image', image)}}
+          onEndEditing={(text) => handleComment({text})}
+          onChangeText={(text) => {}}
+          />
       <Button
         onPress={() => saveComment()}
         title="Send"
-        color="#841584"
+        color={theme.color3S}
         accessibilityLabel="Send"
         />
+
 
     </>
   );
@@ -677,6 +680,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#D8D8D8',
     padding: 0,
     margin: 0,
+  },
+  scriptBox: {
+    //willChange: 'width, height, left, top',
+    position: 'relative',
   },
   mediaContainer: {
     flex: 1,
