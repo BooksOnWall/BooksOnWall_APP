@@ -274,8 +274,9 @@ export default class StoryComplete extends Component {
       let extra = await getScores(path);
       extra.comment = comment;
       extra.vote = vote;
+
       await setStat(name, sid, ssid , debug_mode, server, appDir, position, extra);
-      this.setState({comment: [], commentLine: '', commentLoading: true});
+      await this.setState({comment: [], commentLine: '', commentLoading: false});
     } catch(e) {
       console.log(e);
     }
