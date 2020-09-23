@@ -74,7 +74,7 @@ const blobImage = async (uri) => {
   }
 const Bubbles = ({comment, theme, themeSheet}) => {
   return comment.map((line,i) => {
-    return (line.type === 'image') ? <Image style={{width: 100, height: 50, borderWidth: 1, borderColor: 'red' }} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
+    return (line.type === 'image') ? <Image style={styles.image} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
   })
 }
 const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
@@ -103,7 +103,7 @@ const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComme
       <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
         <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
       </TouchableOpacity>
-      <View style={styles.searchContainer}>
+      <View style={styles.commentContainer}>
 
             {selectedMediaUri && (
                 <Image source={{uri: selectedMediaUri}} style={styles.image} />
@@ -121,7 +121,7 @@ const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComme
               onImageChange={_onImageChange}
               placeholder="Enter Your Comment"
               underlineColorAndroid='transparent'
-              style={{ color: theme.color2, backgroundColor: 'transparent'}}
+              style={{ width: '100vw', color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}}
               editable={true}
               onPress={() => {}}
               keyboardAppearance={"dark"}
@@ -777,6 +777,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: 'transparent',
+  },
+  commentContainer: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textInput: {
+    borderColor: '#FF9900'
   },
   containerStyle: {
     backgroundColor: '#C8C1B8',
