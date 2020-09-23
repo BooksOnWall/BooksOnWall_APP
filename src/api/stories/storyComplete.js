@@ -55,11 +55,11 @@ const ratingCompleted = (rating) => {
   console.log("Rating is: " + rating)
 }
 const Comments = ({theme, themeSheet,saveComment, comment }) => {
-  // const [selectedMediaUri, setSelectedMediaUri] = useState(null);
-  // const _onImageChange = useCallback(({nativeEvent}) => {
-  //   const {uri} = nativeEvent;
-  //   setSelectedMediaUri(uri);
-  // }, []);
+  const [selectedMediaUri, setSelectedMediaUri] = useState(null);
+  const _onImageChange = useCallback(({nativeEvent}) => {
+    const {uri} = nativeEvent;
+    setSelectedMediaUri(uri);
+  }, []);
   return (
     <>
       <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
