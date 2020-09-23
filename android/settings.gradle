@@ -1,4 +1,6 @@
 rootProject.name = 'BooksOnWall'
+include ':react-native-image-keyboard'
+project(':react-native-image-keyboard').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-keyboard/android')
 include ':@react-native-community_toolbar-android'
 project(':@react-native-community_toolbar-android').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/toolbar-android/android')
 include ':react-native-sound'

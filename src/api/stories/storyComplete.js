@@ -5,7 +5,7 @@ import { Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIcon
 import NavigationView from "./stage/NavigationView";
 import { NativeModules, TextInput } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
-import { MAPBOX_KEY  } from '@env';
+import { MAPBOX_KEY, DEBUG_MODE  } from '@env';
 import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -48,13 +48,11 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
-const galleryPath = (storyDir, pathName) => {
+const galleryPath = (storyDir, path) => {
   return 'file://' + storyDir + path.replace("assets/stories", "");
 }
-const ratingCompleted = (rating) => {
-  console.log("Rating is: " + rating)
-}
-const Comments = ({theme, themeSheet,saveComment, comment }) => {
+
+const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const _onImageChange = useCallback(({nativeEvent}) => {
     const {uri} = nativeEvent;
@@ -66,6 +64,11 @@ const Comments = ({theme, themeSheet,saveComment, comment }) => {
       <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
         <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
       </TouchableOpacity>
+      <View style={styles.mediaContainer}>
+        {selectedMediaUri && (
+          <Image source={{uri: selectedMediaUri}} style={styles.image} />
+        )}
+      </View>
       <TextInput
         multiline = {true}
         numberOfLines = {5}
@@ -73,14 +76,15 @@ const Comments = ({theme, themeSheet,saveComment, comment }) => {
         onImageChange={_onImageChange}
         placeholder="Enter Your Comment"
         underlineColorAndroid='transparent'
-        style={{ backgroundColor: '#C0C0C0'}}
+        style={{ backgroundColor: 'transparent'}}
         editable={true}
         onPress={() => {}}
-        onChangeText={(text) => saveComment({text})}
+        onImageInput={(image) => {console.log('image', image)}}
+        onChangeText={(text) => handleComment({text})}
         value={comment}
         />
       <Button
-        onPress={() => {}}
+        onPress={() => saveComment()}
         title="Send"
         color="#841584"
         accessibilityLabel="Send"
@@ -128,11 +132,12 @@ export default class StoryComplete extends Component {
       profile: 'mapbox/walking',
       themeSheet: null,
       position: null,
+      debug_mode: (DEBUG_MODE && DEBUG_MODE === "true") ? true: false,
       mbbox: mbbox,
       styleURL: MapboxGL.StyleURL.Dark,
       fromLat: null,
       fromLong: null,
-      vote: null,
+      vote: 5,
       comment: null,
       toLat: coordinates[1],
       toLong: coordinates[0],
@@ -165,6 +170,10 @@ export default class StoryComplete extends Component {
     await KeepAwake.deactivate();
     await this.whoosh.release();
   }
+  ratingCompleted = async (rating) => {
+    await this.setState({vote: rating});
+    await this.saveComment();
+  }
   updateTransportIndex = (transportIndex) => this.setState({transportIndex})
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
   watchID: ?number = null;
@@ -187,7 +196,25 @@ export default class StoryComplete extends Component {
       console.log(e);
     }
   }
-  saveComment = ({text}) => this.setState({comment: text})
+  handleComment = ({text}) => this.setState({comment: text})
+  saveComment = async () => {
+    const {story, appDir, debug_mode, server, position, comment, vote} = this.state;
+    try {
+      const name = "New Comment";
+      const sid = story.id;
+      const path = appDir + '/stories/' + sid +'/';
+      const ssid = null;
+      const order = null;
+      let extra = await getScores(path);
+      console.log(extra);
+      extra.comment = comment;
+      extra.vote = vote;
+      await setStat(name, sid, ssid , debug_mode, server, appDir, position, extra);
+    } catch(e) {
+      console.log(e);
+    }
+
+  }
   getCurrentLocation = async () => {
     const {story, debug_mode, server, appDir, position} = this.state;
     const sid = story.id;
@@ -266,39 +293,7 @@ export default class StoryComplete extends Component {
       // access_token
     );
   }
-  deleteStory = async (sid) => {
-    try {
-      await Alert.alert(
-        I18n.t("Delete_story","Delete Story"),
-        I18n.t("Are_u_Sure","Are you sure you want to do this ?"),
-        [
-          {text: I18n.t("Later","Ask me later"), onPress: () => console.log('Ask me later pressed')},
-          {
-            text: I18n.t("Cancel", "Cancel"),
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: I18n.t("Yes_destroy","Yes destroy it!"), onPress: () => this.destroyStory()},
-        ],
-        {cancelable: true},
-      );
-    } catch(e) {
-      console.log(e);
-    }
-  }
-  destroyStory = async () => {
-    try {
-      let sid = this.state.story.id;
-      let storyPath = this.state.appDir+'/stories/'+sid;
-      await RNFetchBlob.fs.unlink(storyPath).then(success => {
-        Toast.showWithGravity(I18n.t("Story_deleted","Story deleted !"), Toast.LONG, Toast.TOP);
-        return this.storyCheck();
-      });
-    } catch(e) {
-      console.log(e.message);
-    }
 
-  }
   whoosh = null
   audioPlay = async () => {
     try {
@@ -583,11 +578,12 @@ export default class StoryComplete extends Component {
                 ratingColor='#3498db'
                 ratingBackgroundColor='transparent'
                 ratingCount={10}
+                defaultRating={vote}
                 imageSize={40}
                 onFinishRating={this.ratingCompleted}
                 style={{ paddingVertical: 30 }}
               />
-            <Comments theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} comment={comment}/>
+            <Comments theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleComment={this.handleComment} comment={comment}/>
 
               </View>
               <View style={themeSheet.credits} >

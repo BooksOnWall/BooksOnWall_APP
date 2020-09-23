@@ -3,6 +3,7 @@ package com.booksonwall;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnimagekeyboard.MediaInputPackage;
 import com.reactnativecommunity.toolbarandroid.ReactToolbarPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.github.yamill.orientation.OrientationPackage;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new MediaInputPackage(),
             new ReactToolbarPackage(),
             new RNSoundPackage(),
             new OrientationPackage(),
