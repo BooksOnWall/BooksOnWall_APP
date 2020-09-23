@@ -23,6 +23,7 @@ import {unzip} from 'react-native-zip-archive';
 import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores} from '../stats/score';
+import Leaf from '../../../assets/materials/leaf.png';
 
 registerCustomIconType('booksonwall', IconSet);
 
@@ -59,10 +60,16 @@ const Anim = () => {
   } ;
 const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
+  const [open, setOpen] = useState(false);
   const _onImageChange = useCallback(({nativeEvent}) => {
     const {uri} = nativeEvent;
     setSelectedMediaUri(uri);
   }, []);
+  const _save = () => {
+    setOpen(true);
+    saveComment();
+    setOpen(false);
+  };;
   return (
     <>
       <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
@@ -86,9 +93,10 @@ const Comments = ({theme, themeSheet, handleComment, saveComment, comment }) => 
           onChangeText={(text) => {}}
           />
       <Button
-        onPress={() => saveComment()}
+        onPress={() => _save() }
         title="Send"
-        color={theme.color3S}
+        loading={open}
+        color={theme.color3}
         accessibilityLabel="Send"
         />
 
@@ -575,20 +583,23 @@ export default class StoryComplete extends Component {
       <>
       <View style={themeSheet.card} >
               <View style={themeSheet.rate} >
-              <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
-              <Rating
-                type='heart'
-                ratingColor='#3498db'
-                ratingBackgroundColor='transparent'
-                ratingCount={10}
-                defaultRating={vote}
-                imageSize={40}
-                onFinishRating={this.ratingCompleted}
-                style={{ paddingVertical: 30 }}
-              />
-            <Comments theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleComment={this.handleComment} comment={comment}/>
-
+                <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
+                <Rating
+                  fractions={1}
+                  startingValue={vote}
+                  type='custom'
+                  ratingColor={theme.color2}
+                  ratingTextColor={theme.color3}
+                  reviews={["Terrible", "Bad", "Meh", "OK", "Good", "Hmm...", "Very Good", "Wow", "Amazing", "Unbelievable", "Jesus"]}
+                  ratingImage={Leaf}
+                  ratingBackgroundColor='transparent'
+                  ratingCount={10}
+                  imageSize={50}
+                  onFinishRating={this.ratingCompleted}
+                  style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
+                />
               </View>
+              <Comments theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleComment={this.handleComment} comment={comment}/>
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
@@ -628,7 +639,7 @@ export default class StoryComplete extends Component {
   }
   render() {
       const {theme, themeSheet, story, comment} = this.state;
-
+      console.log('comment',comment);
       const Title = ({story}) => (
         <View style={styles.titleStyle}>
           <Text h1 style={{fontSize: 45, color: "#fff", textShadowRadius: 2 , textShadowOffset: {width: 1, height: 1}, textShadowColor: 'rgba(0, 0, 0, 0.85)', letterSpacing: 1, fontFamily: story.theme.font1}}>{I18n.t("The_end", "The End")}</Text>
