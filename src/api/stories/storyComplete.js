@@ -77,7 +77,7 @@ const Bubbles = ({comment, theme, themeSheet}) => {
     return (line.type === 'image') ? <Image style={styles.image} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
   })
 }
-const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
+const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const [open, setOpen] = useState(false);
   const _onImageChange = useCallback(async ({nativeEvent}) => {
@@ -93,12 +93,14 @@ const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComme
       console.log(e);
     }
   }, []);
-  const _save = () => {
-    saveComment();
-    setOpen(false);
+  const _save = async () => {
+    await saveComment();
+    await setOpen(false);
   };;
+
   return (
     <>
+      {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
       <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
       <TouchableOpacity style={{flex:1, flexGrow: 1,}} >
         <Button onPress={() => {}} buttonStyle={themeSheet.button} title={I18n.t("Comment", "Leave a message")} />
@@ -189,6 +191,7 @@ export default class StoryComplete extends Component {
       vote: 5,
       comment: [],
       commentLine: "",
+      commentLoading: false,
       toLat: coordinates[1],
       toLong: coordinates[0],
       distance: null,
@@ -261,6 +264,7 @@ export default class StoryComplete extends Component {
   }
   saveComment = async () => {
     const {story, appDir, debug_mode, server, position, comment, vote} = this.state;
+    this.setState({commentLoading: true});
     try {
       const name = "New Comment";
       const sid = story.id;
@@ -268,10 +272,10 @@ export default class StoryComplete extends Component {
       const ssid = null;
       const order = null;
       let extra = await getScores(path);
-      console.log(extra);
       extra.comment = comment;
       extra.vote = vote;
       await setStat(name, sid, ssid , debug_mode, server, appDir, position, extra);
+      this.setState({comment: [], commentLine: '', commentLoading: true});
     } catch(e) {
       console.log(e);
     }
@@ -458,7 +462,7 @@ export default class StoryComplete extends Component {
 
   }
   renderContent = () => {
-    const {theme, story, distance, vote, comment, commentLine, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {theme, story, distance, vote, comment, commentLine, commentLoading, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
     const themeSheet = StyleSheet.create({
       title: {
@@ -633,8 +637,9 @@ export default class StoryComplete extends Component {
     return (
       <>
       <Reset />
-      <View style={themeSheet.card} >
-              <View style={themeSheet.rate} >
+      <View style={themeSheet.card } >
+        {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
+              <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
                 <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
                 <Rating
                   showRating
@@ -656,7 +661,7 @@ export default class StoryComplete extends Component {
                 <Button buttonStyle={themeSheet.button} title={I18n.t("Leave_a_message", "Leave a message")} />
               </TouchableOpacity>
               </View>
-              <Comments addToComment={this.addToComment} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine}/>
+              <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine}/>
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
@@ -812,6 +817,9 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     borderWidth: 0,
+  },
+  activityContainer: {
+    color: '#FFF'
   },
   location: {
     fontFamily: 'ATypewriterForMe',
