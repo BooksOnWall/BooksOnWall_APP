@@ -121,7 +121,7 @@ const Comments = ({theme, themeSheet, handleCommentLine, addToComment, saveComme
               onImageChange={_onImageChange}
               placeholder="Enter Your Comment"
               underlineColorAndroid='transparent'
-              style={{ width: '100vw', color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}}
+              style={{ width: 'inherit', color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}}
               editable={true}
               onPress={() => {}}
               keyboardAppearance={"dark"}
