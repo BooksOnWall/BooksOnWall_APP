@@ -227,7 +227,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
           onImageChange={_onImageChange}
           placeholder="Enter Your Comment"
           underlineColorAndroid='transparent'
-          style={[styles.textInput, { color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}]}
+          style={[styles.textInput, { color: theme.color3, backgroundColor: 'transparent', margin: 10}]}
           editable={true}
           onPress={() => {}}
           keyboardAppearance={"dark"}
