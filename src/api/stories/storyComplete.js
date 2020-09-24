@@ -1,7 +1,7 @@
 import React, {Component, useState, useCallback} from 'react';
 import SafeAreaView from 'react-native-safe-area-view';
-import {  Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
-import { Rating, Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
+import {  Linking, Dimensions, PermissionsAndroid, Alert, Platform, ActivityIndicator, ScrollView, Animated, Image, StyleSheet, View, Text, I18nManager, ImageBackground, TouchableOpacity } from 'react-native';
+import { SocialIcon, Rating, Header, Card, ListItem, Button, ThemeProvider, Icon, registerCustomIconType } from 'react-native-elements';
 import NavigationView from "./stage/NavigationView";
 import { NativeModules, TextInput } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
@@ -59,6 +59,32 @@ const Reset = ({resetStory}) => (
     <Button onPress={() => resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")} />
   </TouchableOpacity>
 );
+const Social = () => {
+  return (
+    <View style={[styles.social, {backgroundColor: '#FF9900'}]} >
+      <SocialIcon
+        onPress={() => { Linking.openURL('https://twitter.com/booksonwall') }}
+        type='twitter'
+      />
+      <SocialIcon
+        onPress={() => { Linking.openURL('https://www.facebook.com/booksonwall/') }}
+        type='facebook'
+      />
+      <SocialIcon
+        onPress={() => { Linking.openURL('https://www.instagram.com/booksonwall/') }}
+        type='instagram'
+      />
+      <SocialIcon
+        onPress={() => { Linking.openURL('https://www.youtube.com/channel/UCNWiz7RDGgoM3HHgoYPAS3w/') }}
+        type='youtube'
+      />
+      <SocialIcon
+        onPress={() => { Linking.openURL('https://t.me/booksonwall') }}
+        type='telegram'
+      />
+    </View>
+  );
+}
 const blobImage = async (uri) => {
   try {
     const max = uri.split('/').length;
@@ -274,7 +300,6 @@ export default class StoryComplete extends Component {
       let extra = await getScores(path);
       extra.comment = comment;
       extra.vote = vote;
-
       await setStat(name, sid, ssid , debug_mode, server, appDir, position, extra);
       await this.setState({comment: [], commentLine: '', commentLoading: false});
     } catch(e) {
@@ -637,6 +662,7 @@ export default class StoryComplete extends Component {
       };
     return (
       <>
+      <Social />
       <Reset />
       <View style={themeSheet.card } >
         {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
@@ -790,6 +816,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: '#FF9900'
+  },
+  social: {
+    flex: 1,
+    flexDirection:'row',
+    alignItems:'center',
+    alignContent: 'center',
+    justifyContent:'center',
   },
   containerStyle: {
     backgroundColor: '#C8C1B8',

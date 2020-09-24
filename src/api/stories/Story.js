@@ -653,7 +653,7 @@ export default class Story extends Component {
   }
   render() {
       const {theme, themeSheet, story} = this.state;
-
+      const size = (story.zipsize) ? ' • ' + story.zipsize : '';
       const Title = () => (
         <View style={styles.titleStyle}>
           <Text style={{
@@ -664,7 +664,7 @@ export default class Story extends Component {
             textShadowOffset: {width: 1, height: 1},
             textShadowRadius: 2,
             fontFamily: story.theme.font1}} >{story.title}</Text>
-          <Text style={styles.location}>{this.state.story.city + ' • ' + this.state.story.state}</Text>
+          <Text style={styles.location}>{story.city + ' • ' + story.state +  size  }</Text>
         </View>
       );
       return (
