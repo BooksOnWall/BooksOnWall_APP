@@ -129,9 +129,13 @@ const Bubbles = ({comment, theme, themeSheet}) => {
     return (line.type === 'image') ? <Image style={styles.image} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
   })
 }
-const Comments = ({theme, themeSheet, openComment, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
+const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;  // Initial
+  const slideIn = useRef(new Animated.Value(0)).current;  // Initial
+  const slideOut = useRef(new Animated.Value(0)).current;  // Initial
+  const toggleComment = () => setOpenComment(!openComment);
   const _onImageChange = useCallback(async ({nativeEvent}) => {
     try  {
       const {uri, linkUri, mime, data} = nativeEvent;
@@ -145,13 +149,11 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
       console.log(e);
     }
   }, []);
+
   const _save = async () => {
     await saveComment();
-    await setOpen(false);
+    await setOpenComment(false);
   };
-  const fadeAnim = useRef(new Animated.Value(0)).current  // Initial
-  const slideIn = useRef(new Animated.Value(0)).current  // Initial
-  const slideOut = useRef(new Animated.Value(0)).current  // Initial
 
   useEffect(() => {
     console.log('useEffect',openComment);
@@ -177,27 +179,47 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
       }
     ).start();
   }, [fadeAnim, slideIn, slideOut]);
-  let anim = (openComment && openComment === true) ? slideOut : slideIn;
+
   return (
     <>
+    <View style={styles.social} >
+      <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
+      <TouchableOpacity  onPress={()=> toggleComment()}>
+        <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
+      </TouchableOpacity>
+      {openComment && openComment === true ?
+        (<TouchableOpacity  onPress={()=>  _save()}>
+          <Button
+            onPress={() => _save() }
+            buttonStyle={themeSheet.button}
+            title="Send"
+            loading={commentLoading}
+            color={theme.color3}
+            accessibilityLabel="Send"
+            />
+        </TouchableOpacity>)
+      : null}
+
+    </View>
+
     {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
-    <Animated.View                 // Special animatable View
+    <Animated.View   // Special animatable View
       style={[{
-        opacity: fadeAnim,         // Bind opacity to animated value
-        height: anim,
+        opacity: fadeAnim, // Bind opacity to animated value
+        height: (openComment && openComment === true) ? 'auto' : slideOut,
       }, styles.social , {backgroundColor: theme.color1} ]}
       >
       <View style={styles.commentContainer}>
-
         {selectedMediaUri && (
           <Image source={{uri: selectedMediaUri}} style={styles.image} />
         )}
-        <Bubbles
-          theme={theme}
-          themeSheet={themeSheet}
-          comment={comment}
-          />
-
+        <View style={styles.bubbles}>
+          <Bubbles
+            theme={theme}
+            themeSheet={themeSheet}
+            comment={comment}
+            />
+        </View>
         <TextInput
           multiline = {false}
           numberOfLines = {1}
@@ -214,13 +236,6 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
           onEndEditing={text => addToComment(commentLine, 'text')}
           onChangeText={(text) => handleCommentLine(text)}
           defaultValue={commentLine}
-          />
-        <Button
-          onPress={() => _save() }
-          title="Send"
-          loading={open}
-          color={theme.color3}
-          accessibilityLabel="Send"
           />
       </View>
     </Animated.View>
@@ -742,12 +757,9 @@ export default class StoryComplete extends Component {
                   onFinishRating={this.ratingCompleted}
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
-              <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
-              <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={()=> this.toggleComment()}>
-                <Button buttonStyle={themeSheet.button} onPress={()=> this.toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
-              </TouchableOpacity>
+
               </View>
-              <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} openComment={openComment}/>
+              <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} />
 
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
@@ -898,6 +910,15 @@ const styles = StyleSheet.create({
     alignItems:'center',
     alignContent: 'center',
     justifyContent:'center'
+  },
+  bubbles :{
+    flex: 1,
+    marginTop: 20,
+    flexDirection:'column',
+    alignItems:'center',
+    alignContent: 'center',
+    justifyContent:'center',
+    padding: 10,
   },
   rate : {
     flex: 1,
