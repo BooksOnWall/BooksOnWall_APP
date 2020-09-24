@@ -132,10 +132,11 @@ const Bubbles = ({comment, theme, themeSheet}) => {
 const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
   const [openComment, setOpenComment] = useState(false);
-  const fadeAnim = useRef(new Animated.Value(0)).current;  // Initial
-  const slideIn = useRef(new Animated.Value(0)).current;  // Initial
-  const slideOut = useRef(new Animated.Value(0)).current;  // Initial
-  const toggleComment = () => setOpenComment(!openComment);
+  const toggleComment = () => {
+    (!openComment) ? slideIn() : slideOut();
+    (!openComment) ? fadeIn() : fadeOut();
+    setOpenComment(!openComment);
+  };
   const _onImageChange = useCallback(async ({nativeEvent}) => {
     try  {
       const {uri, linkUri, mime, data} = nativeEvent;
@@ -153,32 +154,42 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
   const _save = async () => {
     await saveComment();
     await setOpenComment(false);
+    await slideOut();
+  };
+  // fadeAnim will be used as the value for opacity. Initial Value: 0
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+    }).start();
   };
 
-  useEffect(() => {
-    console.log('useEffect',openComment);
-    Animated.timing(
-      fadeAnim,
-      {
-        toValue: 1,
-        duration: 1000,
-      }
-    ).start();
-    Animated.timing(
-      slideIn,
-      {
-        toValue: 250,
-        duration: 1000,
-      }
-    ).start();
-    Animated.timing(
-      slideOut,
-      {
-        toValue: 0,
-        duration: 1000,
-      }
-    ).start();
-  }, [fadeAnim, slideIn, slideOut]);
+  const fadeOut = () => {
+    // Will change fadeAnim value to 0 in 5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 1000,
+    }).start();
+  };
+  const slideIn = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(slideAnim, {
+      toValue: 250,
+      duration: 1000,
+    }).start();
+  };
+
+  const slideOut = () => {
+    // Will change fadeAnim value to 0 in 5 seconds
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 1000,
+    }).start();
+  };
 
   return (
     <>
@@ -206,7 +217,13 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
     <Animated.View   // Special animatable View
       style={[{
         opacity: fadeAnim, // Bind opacity to animated value
-        height: (openComment && openComment === true) ? 'auto' : slideOut,
+        transform: [{
+          translateY: fadeAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [150, 0]  // 0 : 150, 0.5 : 75, 1 : 0
+          }),
+        }],
+        height: slideAnim,
       }, styles.social , {backgroundColor: theme.color1} ]}
       >
       <View style={styles.commentContainer}>
