@@ -126,7 +126,7 @@ const blobImage = async (uri) => {
   }
 const Bubbles = ({comment, theme, themeSheet}) => {
   return comment.map((line,i) => {
-    return (line.type === 'image') ? <Image style={styles.image} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
+    return (line.type === 'image') ? <Image style={[styles.bubble,styles.image]} key={line.key} source={{uri: line.content }} /> : <Text style={[styles.bubble, {color: theme.color3}]} key={line.key}>{line.content}</Text>
   })
 }
 const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
@@ -227,7 +227,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
           onImageChange={_onImageChange}
           placeholder="Enter Your Comment"
           underlineColorAndroid='transparent'
-          style={{ color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}}
+          style={[styles.textInput, { color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}]}
           editable={true}
           onPress={() => {}}
           keyboardAppearance={"dark"}
@@ -887,7 +887,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
-    borderColor: '#FF9900'
+    padding: 25,
   },
   social: {
     flex: 1,
@@ -910,6 +910,13 @@ const styles = StyleSheet.create({
     alignItems:'center',
     alignContent: 'center',
     justifyContent:'center'
+  },
+  bubble: {
+    backgroundColor: '#000',
+    padding: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 30,
   },
   bubbles :{
     flex: 1,
