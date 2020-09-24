@@ -182,6 +182,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
 
   return (
     <>
+<<<<<<< Updated upstream
     <View style={styles.social} >
       <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
       <TouchableOpacity  onPress={()=> toggleComment()}>
@@ -199,9 +200,15 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
             />
         </TouchableOpacity>)
       : null}
+=======
+      {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
+      <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Leave a message!")}</Text>
+      <View style={styles.commentContainer}>
+>>>>>>> Stashed changes
 
     </View>
 
+<<<<<<< Updated upstream
     {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
     <Animated.View   // Special animatable View
       style={[{
@@ -219,6 +226,32 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
             themeSheet={themeSheet}
             comment={comment}
             />
+=======
+            <TextInput
+              multiline = {false}
+              numberOfLines = {1}
+              forceStrutHeight={true}
+              onImageChange={_onImageChange}
+              placeholder={I18n.t("Comment", "Leave a message!")}
+              underlineColorAndroid='transparent'
+              style={{ color: theme.color3, backgroundColor: 'transparent', borderColor: '#FF9900', margin: 10}}
+              editable={true}
+              onPress={() => {}}
+              keyboardAppearance={"dark"}
+              selectTextOnFocus={true}
+              onImageInput={(image) => {console.log('image', image)}}
+              onEndEditing={text => addToComment(commentLine, 'text')}
+              onChangeText={(text) => handleCommentLine(text)}
+              defaultValue={commentLine}
+              />
+              <Button
+                onPress={() => _save() }
+                title={I18n.t("Send", "Send")}
+                loading={open}
+                color={theme.color3}
+                accessibilityLabel="Send"
+                />
+>>>>>>> Stashed changes
         </View>
         <TextInput
           multiline = {false}
