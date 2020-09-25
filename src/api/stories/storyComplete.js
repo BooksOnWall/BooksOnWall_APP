@@ -84,11 +84,12 @@ const Social = ({ resetStory, theme, themeSheet }) => {
       style={[{
         opacity: fadeAnim,         // Bind opacity to animated value
         height: slideIn,
-      }, styles.social , {backgroundColor: theme.color1} ]}
+      }, styles.social , {backgroundColor: theme.color2} ]}
     >
       <Reset resetStory={resetStory} theme={theme} themeSheet={themeSheet} />
 
       <SocialIcon
+        light
         onPress={() => { Linking.openURL('https://twitter.com/booksonwall') }}
         type='twitter'
       />
@@ -213,7 +214,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
 
     </View>
 
-    {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
+    {commentLoading ?  <View ><ActivityIndicator size="large" color="#" animating={true}/></View> : null }
     <Animated.View   // Special animatable View
       style={[{
         opacity: fadeAnim, // Bind opacity to animated value
@@ -756,7 +757,7 @@ export default class StoryComplete extends Component {
       <>
       <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
       <View style={themeSheet.card } >
-        {commentLoading ?  <View ><ActivityIndicator size="large" color="#00ff00" animating={true}/></View> : null }
+        {commentLoading ?  <View ><ActivityIndicator size="large" color={theme.color2} animating={true}/></View> : null }
               <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
                 <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
                 <Rating
@@ -912,6 +913,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     alignContent: 'center',
     justifyContent:'center',
+    padding: 40,
   },
   containerStyle: {
     backgroundColor: '#C8C1B8',
@@ -972,7 +974,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0
+    padding: 10,
   },
   iconLeft: {
     width: 45,
