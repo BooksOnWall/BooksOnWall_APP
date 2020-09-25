@@ -204,10 +204,10 @@ export default class GpsScene extends Component {
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
-            goToMap={this.goToMap}
-            text={text}
+            next={this.next}
+            message={message}
             font={font}
-            textColor={textColor}
+            textColor={color}
             />
       </ViroARScene>
       </SafeAreaView>
