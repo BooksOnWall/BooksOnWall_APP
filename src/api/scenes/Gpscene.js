@@ -5,6 +5,7 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 iimport {
   ViroConstants,
   ViroARScene,
+  ViroARPlane,
   ViroARImageMarker,
   ViroMaterials,
   ViroVideo,
@@ -171,6 +172,25 @@ export default class GpsScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
+      <ViroARPlane width={parseFloat(scene_options.videos[0].width)} minHeight={parseFloat(scene_options.videos[0].height)} minWidth={parseFloat(scene_options.videos[0].width)} alignment={"Horizontal"}>
+          <ViroVideo
+            source={{uri: videoPath}}
+            dragType="FixedToWorld"
+            onDrag={()=>{}}
+            width={parseFloat(scene_options.videos[0].width)}
+            height={parseFloat(scene_options.videos[0].height)}
+            muted={false}
+            paused={false}
+            visible={imageTracking}
+            loop={videoLoop}
+            position={[0,0,0]}
+            rotation={[-90,0,0]}
+            opacity={1}
+            onFinish={this.onFinishVideo}
+            onError={this.onVideoError}
+            materials={["chromaKeyFilteredVideo"]}
+          />
+        </ViroARPlane>
         {(MatchaudioPath) ?
           <ViroSound
              paused={MatchAudioPaused}
