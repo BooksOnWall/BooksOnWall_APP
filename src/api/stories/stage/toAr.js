@@ -38,6 +38,7 @@ import VAAP from '../../scenes/VaapScene';
 import PORTAL from '../../scenes/PortalScene';
 import PIV from '../../scenes/PIVScene';
 import PSIV from '../../scenes/PSIVScene';
+import GPS from '../../scenes/GpsScene';
 /*
  TODO: Insert your API key below unneeded since v.2.17
  */
@@ -305,9 +306,10 @@ export default class ToAR extends Component {
       'vaamp':  { scene: VAAMP },
       'portal':  { scene: PORTAL},
       'piv': { scene: PIV},
-      'psiv': { scene: PSIV}
+      'psiv': { scene: PSIV},
+      'gps': { scene: GPS}
     };
-    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv'];
+    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv', '3D','gps'];
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
     console.log(type);
     console.log(arScene[type]);

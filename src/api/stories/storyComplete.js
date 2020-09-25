@@ -18,6 +18,7 @@ import Toast from 'react-native-simple-toast';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import {lineString as makeLineString, bbox} from '@turf/turf';
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
+
 import {unzip} from 'react-native-zip-archive';
 const fs = RNFetchBlob.fs;
 const Blob = RNFetchBlob.polyfill.Blob;
@@ -125,10 +126,12 @@ const blobImage = async (uri) => {
       console.log(e.message);
     }
   }
+
+
 const Bubbles = ({comment, theme, themeSheet}) => {
   return comment.map((line,i) => {
-    return (line.type === 'image') ? <Image style={[styles.bubble,styles.image]} key={line.key} source={{uri: line.content }} /> : <Text style={[styles.bubble, {color: theme.color3}]} key={line.key}>{line.content}</Text>
-  })
+    return (line.type === 'image') ? <Image style={[styles.bubble,styles.image]} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
+  });
 }
 const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
@@ -939,7 +942,7 @@ const styles = StyleSheet.create({
   },
   bubbles :{
     flex: 1,
-    marginTop: 20,
+    margin: 10,
     flexDirection:'column',
     alignItems:'center',
     alignContent: 'center',

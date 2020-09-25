@@ -2,9 +2,10 @@
 
 import React, { Component } from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
-iimport {
+import {
   ViroConstants,
   ViroARScene,
+  ViroARPlane,
   ViroARImageMarker,
   ViroMaterials,
   ViroVideo,
@@ -38,13 +39,16 @@ export default class GpsScene extends Component {
       audioPath: "",
       paused: (params.paused) ? params.paused : false,
       muted: (params.muted) ? params.muted : false,
-      MatchAudioPath: null,
+      MatchAudioPath: false,
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
-      finishAll: false,
+      finishAll: params.finishAll,
       animate: {name: 'movePicture'},
-      text : I18n.t("NextPath", "Go to the next point"),
+      anchorFound: false,
+      imageTracking: params.imageTracking,
+      animate: {name: 'movePicture'},
+      message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font1,
       color: params.theme.color2,
@@ -59,7 +63,7 @@ export default class GpsScene extends Component {
     };
     console.log('index', params.index);
     this.onInitialized = this.onInitialized.bind(this);
-    this.buildTrackingTargets = this.buildTrackingTargets.bind(this);
+
     this.setVideoComponent = this.setVideoComponent.bind(this);
     this.loadAndPlayAudio = this.loadAndPlayAudio.bind(this);
   }
@@ -89,6 +93,15 @@ export default class GpsScene extends Component {
     }
   }
   audio = null
+  stopAudio = () => {
+    const {anchorFound} = this.state;
+    console.log('anchorFound', anchorFound);
+    if(anchorFound === null) {
+      console.log('stop audio');
+      this.setState({anchorFound: true, audioLoop: false});
+      this.toggleButtonAudio();
+    }
+  }
   dispatchMedia = async () => {
     try  {
       const {story, index, storyDir} = this.state;
@@ -105,9 +118,9 @@ export default class GpsScene extends Component {
       if (audios['onPictureMatch'] && audios['onPictureMatch'].length > 0 ) {
         let MatchAudio = audios['onPictureMatch'][0];
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
-        Matchpath = 'file://'+ storyDir + path.replace("assets/stories", "");
+        Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
         let Matchloop = MatchAudio.loop;
-        this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
+        this.setState({MatchAudioPath: Matchpath,MatchAudioLoop: Matchloop });
       }
       if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
         let audio = audios['onZoneEnter'][0];
@@ -121,14 +134,28 @@ export default class GpsScene extends Component {
     }
 
   }
+  setVideoComponent = () => {
+    const { videos, storyDir} = this.state;
+
+    if (videos.onPictureMatch && videos.onPictureMatch.length > 0 ) {
+      const video =  videos.onPictureMatch[0];
+      if (video) {
+        let path = video.path.replace(" ", "\ ");
+        path = 'file://' + storyDir + path.replace("assets/stories", "");
+        let loop = video.loop;
+        this.setState({'videoPath': path, 'videoLoop': loop});
+      }
+    }
+  }
   loadAndPlayAudio = (zone) => {
     // play the first audio onZoneEnter or onPictureMatch after the video is finished
     // @zone string onZoneEnter or onPictureMatch
     const {audios, storyDir} = this.state;
       // set path & loop to audios : one by zone
-      (zone === 'onPictureMatch') ? this.setState({MatchAudioPaused: false}) : this.setState({audioPaused: true});
+      (zone === 'onPictureMatch' && audios && audios[zone] && audios[zone].length > 0) ? this.setState({MatchAudioPaused: false}) : this.setState({audioPaused: true, finishAll: true});
   }
   toggleButtonAudio = async () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
+  onFinishAll = () => this.setState({finishAll: true})
   onFinishSound = () => {
     this.toggleButtonAudio();
     console.log("Sound terminated");
@@ -153,10 +180,10 @@ export default class GpsScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, finishAll, text, animate, fontFamily, color, pIndex, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, message,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
-    console.log('index',index);
+    console.log('MatchAudioPath',MatchAudioPath);
     const font = String(fontFamily);
     const textColor = String(color);
     return (
@@ -171,23 +198,33 @@ export default class GpsScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-        {(MatchaudioPath) ?
-          <ViroSound
-             paused={MatchAudioPaused}
-             muted={MatchAudioMuted}
-             source={{uri: MatchAudioPath }}
-             loop={MatchAudioLoop}
-             volume={1.0}
-             onFinish={this.onFinishSound}
-             onError={this.onErrorSound}
-          /> : null}
+      <ViroARPlane width={parseFloat(scene_options.videos[0].width)} minHeight={parseFloat(scene_options.videos[0].height)} minWidth={parseFloat(scene_options.videos[0].width)} alignment={"Horizontal"}>
+          <ViroVideo
+            source={{uri: videoPath}}
+            dragType="FixedToWorld"
+            onDrag={()=>{}}
+            width={parseFloat(scene_options.videos[0].width)}
+            height={parseFloat(scene_options.videos[0].height)}
+            muted={false}
+            paused={false}
+            visible={imageTracking}
+            loop={videoLoop}
+            position={[0,0,0]}
+            rotation={[-90,0,0]}
+            opacity={1}
+            onFinish={this.onFinishVideo}
+            onError={this.onVideoError}
+            materials={["chromaKeyFilteredVideo"]}
+          />
+        </ViroARPlane>
+  
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
-            goToMap={this.goToMap}
-            text={text}
+            next={this.next}
+            message={message}
             font={font}
-            textColor={textColor}
+            textColor={color}
             />
       </ViroARScene>
       </SafeAreaView>
