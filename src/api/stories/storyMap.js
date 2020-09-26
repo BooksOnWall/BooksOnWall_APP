@@ -187,7 +187,7 @@ class StoryMap extends Component {
     console.log('styleURL', this.state.styleURL);
     this.onStart = this.onStart.bind(this);
   }
-  showDistance = () => (this.state.distance) ? this.state.distance : '_'
+  showDistance = () => (this.state.distance) ? this.state.distance : ''
   getMapTheme = async () => {
     const id = this.state.story.id;
     const mapThemePath =  this.props.screenProps.AppDir+ '/stories/'+ id +'/map.json';
