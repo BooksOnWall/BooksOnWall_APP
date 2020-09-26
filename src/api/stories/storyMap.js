@@ -74,7 +74,7 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Header = ({styles, distance, theme, completed, story,  index, showDistance}) => {
   let dis = showDistance();
-  console.log(dis);
+  console.log('dis',dis);
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -89,7 +89,7 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
           fontFamily: theme.font1}} >{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
         <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}</Text>
-        <Text style={styles.complete}>Next in {dis} km </Text>
+        <Text style={styles.complete}>{(dis && dis !=='_') ? 'Next in '+dis+' km': ' '}</Text>
       </ImageBackground>
     </View>
   );
@@ -187,7 +187,7 @@ class StoryMap extends Component {
     console.log('styleURL', this.state.styleURL);
     this.onStart = this.onStart.bind(this);
   }
-  showDistance = () => (this.state.distance) ? this.state.distance : ''
+  showDistance = () => (this.state.distance) ? this.state.distance : '_'
   getMapTheme = async () => {
     const id = this.state.story.id;
     const mapThemePath =  this.props.screenProps.AppDir+ '/stories/'+ id +'/map.json';
@@ -438,8 +438,11 @@ class StoryMap extends Component {
     const feature = e.nativeEvent.payload;
     const index = feature.properties.index;
     this.goTo(feature.geometry.coordinates);
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index});
+
+    //this.launchAR();
+    //this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index});
     Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
+    return this.launchMap();
   }
   renderStages = () => {
     const {theme, completed, selected, routes, index, images} = this.state;
@@ -565,6 +568,7 @@ class StoryMap extends Component {
      if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
      if (toPath) MenuButtons.push({ element: storyMapLine });
      if (selected !== routes.length) MenuButtons.push({ element: storyNext});
+     console.log(MenuButtons);
      const styles = StyleSheet.create({
        buttonCnt: {
          flexDirection: 'row',

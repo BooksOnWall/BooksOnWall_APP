@@ -15,7 +15,6 @@ import {
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 import { Patricie } from './Patricie';
-
 import I18n from "../../utils/i18n";
 
 export default class GpsScene extends Component {
@@ -217,7 +216,7 @@ export default class GpsScene extends Component {
             materials={["chromaKeyFilteredVideo"]}
           />
         </ViroARPlane>
-  
+
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
