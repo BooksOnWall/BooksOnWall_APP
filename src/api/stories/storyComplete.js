@@ -56,8 +56,8 @@ const galleryPath = (storyDir, path) => {
 }
 //const Bubbles = ({theme, themeSheet, comment}) => return (comment);
 const Reset = ({resetStory, theme, themeSheet}) => (
-  <TouchableOpacity style={styles.reset} onPress={() => resetStory()}>
-    <Button onPress={() => resetStory()} type='solid' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")} />
+  <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => resetStory()}>
+    <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")}/>
   </TouchableOpacity>
 );
 const Social = ({ resetStory, theme, themeSheet }) => {
@@ -85,7 +85,7 @@ const Social = ({ resetStory, theme, themeSheet }) => {
       style={[{
         opacity: fadeAnim,         // Bind opacity to animated value
         height: slideIn,
-      }, styles.social , {backgroundColor: theme.color2} ]}
+      }, styles.social , {backgroundColor: theme.color1, flex:1, flexGrow: 1, padding: 0} ]}
     >
       <Reset resetStory={resetStory} theme={theme} themeSheet={themeSheet} />
 
@@ -93,22 +93,27 @@ const Social = ({ resetStory, theme, themeSheet }) => {
         light
         onPress={() => { Linking.openURL('https://twitter.com/booksonwall') }}
         type='twitter'
+        style={{flex:1, flexGrow: 1,}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://www.facebook.com/booksonwall/') }}
         type='facebook'
+        style={{flex:1, flexGrow: 1,}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://www.instagram.com/booksonwall/') }}
         type='instagram'
+        style={{flex:1, flexGrow: 1,}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://www.youtube.com/channel/UCNWiz7RDGgoM3HHgoYPAS3w/') }}
         type='youtube'
+        style={{flex:1, flexGrow: 1,}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://t.me/booksonwall') }}
         type='telegram'
+        style={{flex:1, flexGrow: 1,}}
       />
     </Animated.View>
   );
@@ -197,8 +202,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
 
   return (
     <>
-    <View style={styles.social} >
-      <Text h2 style={themeSheet.title}>{I18n.t("Comment", "Comment")}</Text>
+    <View style={styles.feed , {backgroundColor: theme.color3, flex:1, flexGrow: 1, padding: 40}} >
       <TouchableOpacity  onPress={()=> toggleComment()}>
         <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
       </TouchableOpacity>
@@ -228,7 +232,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
           }),
         }],
         height: slideAnim,
-      }, styles.social , {backgroundColor: theme.color1} ]}
+      }, styles.feed , {backgroundColor: theme.color2, flex:1, flexGrow: 0, paddingHorizontal: 40, borderRadius: 8} ]}
       >
       <View style={styles.commentContainer}>
         {selectedMediaUri && (
@@ -248,7 +252,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
           onImageChange={_onImageChange}
           placeholder="Enter Your Comment"
           underlineColorAndroid='transparent'
-          style={[styles.textInput, { color: theme.color3, backgroundColor: 'transparent', margin: 10}]}
+          style={[styles.textInput, { color: theme.color3, backgroundColor: theme.color2, margin: 10}]}
           editable={true}
           onPress={() => {}}
           keyboardAppearance={"dark"}
@@ -590,9 +594,12 @@ export default class StoryComplete extends Component {
       title: {
         fontFamily: story.theme.font1,
         color: '#fff',
+        fontSize: 20,
+        paddingTop: 40,
+        paddingHorizontal: 40,
       },
       card:{
-        backgroundColor: story.theme.color1,
+        backgroundColor: story.theme.color3,
       },
       credits: {
         backgroundColor: story.theme.color2,
@@ -762,19 +769,19 @@ export default class StoryComplete extends Component {
       <View style={themeSheet.card } >
         {commentLoading ?  <View ><ActivityIndicator size="large" color={theme.color2} animating={true}/></View> : null }
               <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
-                <Text h2 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
+                <Text h1 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
                 <Rating
                   showRating
                   fractions={1}
                   startingValue={vote}
                   type='custom'
                   ratingColor={theme.color2}
-                  ratingTextColor={theme.color3}
+                  ratingTextColor={theme.color1}
                   reviews={["Terrible", "Bad", "Meh", "OK", "Good", "Hmm...", "Very Good", "Wow", "Amazing", "Unbelievable", "Jesus"]}
                   ratingImage={Leaf}
                   ratingBackgroundColor='transparent'
-                  ratingCount={10}
-                  imageSize={50}
+                  ratingCount={7}
+                  imageSize={45}
                   onFinishRating={this.ratingCompleted}
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
@@ -855,8 +862,6 @@ export default class StoryComplete extends Component {
           contentContainerStyle={styles.contentContainer}
           innerContainerStyle={styles.container}
       />
-
-
         </SafeAreaView>
       </ThemeProvider>
     );
@@ -906,6 +911,7 @@ const styles = StyleSheet.create({
   commentContainer: {
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 40,
   },
   textInput: {
     padding: 25,
@@ -916,6 +922,11 @@ const styles = StyleSheet.create({
     alignItems:'center',
     alignContent: 'center',
     justifyContent:'center',
+    padding: 24,
+    paddingHorizontal: 20,
+  },
+  feed:{
+    backgroundColor: '#C8C1B8',
     padding: 40,
   },
   containerStyle: {
