@@ -89,7 +89,7 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
           fontFamily: theme.font1}} >{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
         <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}</Text>
-        <Text style={styles.complete}>{(dis && dis !=='_') ? 'Next in '+dis+' km': ' '}</Text>
+        <Text style={styles.complete}>{(dis && dis !=='') ? 'Next in '+dis+' km': ' '}</Text>
       </ImageBackground>
     </View>
   );
