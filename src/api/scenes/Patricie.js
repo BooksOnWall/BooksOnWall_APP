@@ -6,6 +6,7 @@ import {
   ViroConstants,
   ViroImage,
   ViroText,
+  ViroNode,
   ViroFlexView,
   ViroAnimations,
   ViroMaterials,
@@ -47,39 +48,35 @@ ViroAnimations.registerAnimations({
       positionX:"+=0.3"
     },
     easing:"EaseInEaseOut",
-    duration: 500
+    duration: 300
   },
   moveLeft:{
     properties:{
       positionX:"-=0.3"
     },
     easing:"EaseInEaseOut",
-    duration: 500
+    duration: 300
   },
   wait: {
     properties:{
       opacity:"-=0"
     },
     easing:"EaseInEaseOut",
-    duration: 2000
+    duration: 2600
   },
   moveForward: {
     properties:{
-      positionZ: "+=.5",
+      positionZ: "+=0.5",
     },
     easing:"EaseInEaseOut",
-    duration: 500
+    duration: 300
   },
   scale: {
     properties:{
       opacity:"+=1",
-      scaleX:"+=0.05",
-      scaleY:"+=0.05",
-      positionY: "+=0.3",
-      positionZ: "+=0.1",
     },
     easing:"EaseInEaseOut",
-    duration: 500
+    duration: 300
   },
   movePicture:[
     ["moveRight", "rotate", "moveLeft"]
@@ -87,6 +84,50 @@ ViroAnimations.registerAnimations({
   moveBaloon: [["wait","scale", "moveForward"]],
 });
 const Patricie = ({animate, animate2, finishAll, next, message, textColor, font }) => {
+  // <ViroFlexView
+  //   style={{padding: 0, backgroundColor: 'transparent'}}
+  //   animation={animate2}
+  //   width={.5}
+  //   height={.5}
+  //   position={[0,.5,-.2]}
+  //   visible={finishAll}
+  //   opacity={0}
+  //   scale={[1,1,1]}
+  //   onPress={() => next()}
+  //   onClick={() => next()}
+  //   rotation={[0, 0, 0]} >
+    // <ViroImage
+    //   width={.5}
+    //   height={.5}
+    //   visible={finishAll}
+    //   resizeMode="ScaleToFit"
+    //   source={Bubble2}
+    //   scale={[1,1,1]}
+    //   onPress={() => next()}
+    //   onClick={() => next()}
+    //   position={[0,0,0]}
+    // />
+    // <ViroText
+    //   text={message}
+    //   textAlign="center"
+    //   textAlignVertical="top"
+    //   textLineBreakMode="Justify"
+    //   textClipMode="ClipToBounds"
+    //   fontSize={12}
+    //   style={{
+    //     fontFamily: font,
+    //     fontWeight: 'bold',
+    //     color: textColor
+    //   }}
+    //   position={[0, 0, 0]}
+    //   width={20}
+    //   height={5}
+    //   scale={[1,1,1]}
+    //   visible={finishAll}
+    //   onPress={() => next()}
+    //   onClick={() => next()}
+    //   />
+  //     </ViroFlexView >
   return (
         <>
       <ViroSpotLight position={[0, -0.25, 0]}
@@ -98,6 +139,61 @@ const Patricie = ({animate, animate2, finishAll, next, message, textColor, font 
         outerAngle={20}
         castsShadow={true}
       />
+    <ViroNode
+        position={[0,0,-2]}
+        animation={animate}
+        visible={finishAll}
+        opacity={1}
+        onPress={() => next()}
+        onClick={() => next()}
+        rotation={[0, 0, 0]} >
+        <ViroText
+          text={message}
+          textAlign="center"
+          textAlignVertical="top"
+          textLineBreakMode="Justify"
+          textClipMode="ClipToBounds"
+          fontSize={12}
+          style={{
+            fontFamily: font,
+            fontWeight: 'bold',
+            color: textColor
+          }}
+          animation={animate2}
+          position={[0, 0, 0]}
+          scale={[1,1,1]}
+          rotation={[0, 0, 0]}
+          visible={finishAll}
+          onPress={() => next()}
+          onClick={() => next()}
+          />
+        <ViroImage
+          width={.3}
+          height={.3}
+          visible={finishAll}
+          resizeMode="ScaleToFit"
+          source={Bubble2}
+          animation={animate2}
+          scale={[1,1,1]}
+          onPress={() => next()}
+          onClick={() => next()}
+          position={[0,0,0]}
+        />
+        <ViroImage
+          width={1}
+          height={1}
+          visible={finishAll}
+          animation={animate}
+          resizeMode="ScaleToFit"
+          source={Bubble}
+          scale={[1,1,1]}
+          onPress={() => next()}
+          onClick={() => next()}
+          position={[0,0,0]}
+        />
+
+    </ViroNode >
+
       <ViroParticleEmitter
         position={[0, 4.5, 0]}
         duration={2000}
@@ -152,73 +248,8 @@ const Patricie = ({animate, animate2, finishAll, next, message, textColor, font 
             initialRange:[[-2,-.5,0], [2,-3.5,0]]}
           }}
       />
-      <ViroFlexView
-        style={{padding: 0, backgroundColor: 'transparent'}}
-        width={1}
-        height={1}
-        position={[0,0,-2]}
-        animation={animate}
-        visible={finishAll}
-        opacity={1}
-        onPress={() => next()}
-        onClick={() => next()}
-        rotation={[0, 0, 0]} >
-        <ViroImage
-          width={1}
-          height={1}
-          visible={finishAll}
-          animation={animate}
-          resizeMode="ScaleToFit"
-          source={Bubble}
-          onPress={() => next()}
-          onClick={() => next()}
-          position={[0,-.5,-.2]}
-        />
-      </ViroFlexView >
-      <ViroFlexView
-        style={{padding: 0, backgroundColor: 'transparent'}}
-        animation={animate2}
-        width={.5}
-        height={.5}
-        position={[0,.5,-.2]}
-        visible={finishAll}
-        opacity={0}
-        scale={[1,1,1]}
-        onPress={() => next()}
-        onClick={() => next()}
-        rotation={[0, 0, 0]} >
-        <ViroImage
-          width={.5}
-          height={.5}
-          visible={finishAll}
-          resizeMode="ScaleToFit"
-          source={Bubble2}
-          scale={[1,1,1]}
-          onPress={() => next()}
-          onClick={() => next()}
-          position={[0,0,0]}
-        />
-        <ViroText
-          text={message}
-          textAlign="center"
-          textAlignVertical="top"
-          textLineBreakMode="Justify"
-          textClipMode="ClipToBounds"
-          fontSize={12}
-          style={{
-            fontFamily: font,
-            fontWeight: 'bold',
-            color: textColor
-          }}
-          position={[0, 0, 0]}
-          width={20}
-          height={5}
-          scale={[1,1,1]}
-          visible={finishAll}
-          onPress={() => next()}
-          onClick={() => next()}
-          />
-          </ViroFlexView >
+
+
       </>
     );
 }
