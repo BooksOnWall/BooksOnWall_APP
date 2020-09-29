@@ -52,7 +52,7 @@ function humanFileSize(bytes, si) {
     return bytes.toFixed(1)+' '+units[u];
 }
 const galleryPath = (storyDir, path) => {
-  return 'file://' + storyDir + path.replace("assets/stories", "");
+  return 'file://' + storyDir + path.replace("assets/stories/", "");
 }
 //const Bubbles = ({theme, themeSheet, comment}) => return (comment);
 const Reset = ({resetStory, theme, themeSheet}) => (
@@ -61,10 +61,8 @@ const Reset = ({resetStory, theme, themeSheet}) => (
   </TouchableOpacity>
 );
 const Sponsors = ({gallery, storyDir}) => {
-  let image1 = gallery[0].path;
-  image1 = 'file://' + storyDir + image1.replace("assets/stories/", "");
-  let image2 = gallery[1].path;
-  image2 = 'file://' + storyDir + image2.replace("assets/stories/", "");
+  const image1 = (gallery[0]) ? galleryPath(storyDir,gallery[0].path) : null;
+  const image2 = (gallery[1]) ? galleryPath(storyDir,gallery[1].path) : null;
   return (
     <View style={{backgroundColor: "#000"}}>
         {gallery[0] && <Image style={{width: '100%', height: 150}} source={{uri: image1}} />}
