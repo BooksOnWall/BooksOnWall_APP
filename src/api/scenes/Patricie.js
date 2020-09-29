@@ -66,15 +66,18 @@ ViroAnimations.registerAnimations({
   },
   positionText: {
     properties:{
-      positionY:"-=0.8",
-      positionZ: "+=0.5",
+      opacity:"+=1",
+      positionY:"+=0.01",
+      positionZ: "+=0.2",
     },
     easing:"EaseInEaseOut",
     duration: 300
   },
   moveForward: {
     properties:{
-      rotateX:"+=180",
+      positionY:"-=0.5",
+      scaleX: "+=2",
+      scaleY: "-=0.1",
       positionZ: "+=0.5",
     },
     easing:"EaseInEaseOut",
@@ -94,50 +97,7 @@ ViroAnimations.registerAnimations({
   moveText: [["wait", "positionText"]],
 });
 const Patricie = ({animate, animate2, animate3, finishAll, next, message, textColor, font }) => {
-  // <ViroFlexView
-  //   style={{padding: 0, backgroundColor: 'transparent'}}
-  //   animation={animate2}
-  //   width={.5}
-  //   height={.5}
-  //   position={[0,.5,-.2]}
-  //   visible={finishAll}
-  //   opacity={0}
-  //   scale={[1,1,1]}
-  //   onPress={() => next()}
-  //   onClick={() => next()}
-  //   rotation={[0, 0, 0]} >
-    // <ViroImage
-    //   width={.5}
-    //   height={.5}
-    //   visible={finishAll}
-    //   resizeMode="ScaleToFit"
-    //   source={Bubble2}
-    //   scale={[1,1,1]}
-    //   onPress={() => next()}
-    //   onClick={() => next()}
-    //   position={[0,0,0]}
-    // />
-    // <ViroText
-    //   text={message}
-    //   textAlign="center"
-    //   textAlignVertical="top"
-    //   textLineBreakMode="Justify"
-    //   textClipMode="ClipToBounds"
-    //   fontSize={12}
-    //   style={{
-    //     fontFamily: font,
-    //     fontWeight: 'bold',
-    //     color: textColor
-    //   }}
-    //   position={[0, 0, 0]}
-    //   width={20}
-    //   height={5}
-    //   scale={[1,1,1]}
-    //   visible={finishAll}
-    //   onPress={() => next()}
-    //   onClick={() => next()}
-    //   />
-  //     </ViroFlexView >
+
   return (
         <>
       <ViroSpotLight position={[0, -0.25, 0]}
@@ -201,11 +161,12 @@ const Patricie = ({animate, animate2, animate3, finishAll, next, message, textCo
           height={1}
           fontSize={10}
           style={{
+            opacity: 0,
             fontFamily: font,
             fontWeight: '400',
             color: textColor
           }}
-          extrusionDepth={8}
+          extrusionDepth={2}
           materials={["frontMaterial", "backMaterial", "sideMaterial"]}
           animation={animate3}
           position={[0, 0, -.4]}
