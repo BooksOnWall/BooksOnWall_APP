@@ -195,10 +195,10 @@ const Patricie = ({animate, animate2, animate3, finishAll, next, message, textCo
           text={message}
           textAlign="left"
           textAlignVertical="top"
-          textLineBreakMode="justify"
-          textClipMode="clipToBounds"
+          textLineBreakMode="Justify"
+          textClipMode="ClipToBounds"
           width={1}
-          height={2}
+          height={1}
           fontSize={10}
           style={{
             fontFamily: font,

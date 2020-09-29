@@ -87,7 +87,7 @@ const Social = ({ resetStory, theme, themeSheet }) => {
         height: slideIn,
       }, styles.social , {backgroundColor: theme.color1, flex:1, flexGrow: 1, padding: 0} ]}
     >
-      <Reset resetStory={resetStory} theme={theme} themeSheet={themeSheet} />
+
 
       <SocialIcon
         light
@@ -765,7 +765,8 @@ export default class StoryComplete extends Component {
       };
     return (
       <>
-      <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
+      <Reset resetStory={this.resetStory} theme={theme} themeSheet={themeSheet} />
+
       <View style={themeSheet.card } >
         {commentLoading ?  <View ><ActivityIndicator size="large" color={theme.color2} animating={true}/></View> : null }
               <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
@@ -788,7 +789,7 @@ export default class StoryComplete extends Component {
 
               </View>
               <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} />
-
+              <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
