@@ -57,6 +57,12 @@ ViroAnimations.registerAnimations({
     easing:"EaseInEaseOut",
     duration: 300
   },
+  hide: {
+    properties:{
+      opacity:"-=0"
+    },
+    duration: 2
+  },
   wait: {
     properties:{
       opacity:"-=0"
@@ -67,17 +73,19 @@ ViroAnimations.registerAnimations({
   positionText: {
     properties:{
       opacity:"+=1",
-      positionY:"+=0.01",
-      positionZ: "+=0.2",
+      positionY:"+=0.03",
+      positionX: "+=0.5",
+      positionZ: "+=0.15",
     },
     easing:"EaseInEaseOut",
     duration: 300
   },
   moveForward: {
     properties:{
-      positionY:"-=0.5",
-      scaleX: "+=2",
-      scaleY: "-=0.1",
+      positionY:"-=0.4",
+      positionX: "-=0.4",
+      scaleX: "+=3",
+      scaleY: "+=0.45",
       positionZ: "+=0.5",
     },
     easing:"EaseInEaseOut",
@@ -93,8 +101,8 @@ ViroAnimations.registerAnimations({
   movePicture:[
     ["moveRight", "rotate", "moveLeft"]
   ],
-  moveBaloon: [["wait","scale", "moveForward"]],
-  moveText: [["wait", "positionText"]],
+  moveBaloon: [["hide","wait","scale", "moveForward"]],
+  moveText: [["hide","wait", "positionText"]],
 });
 const Patricie = ({animate, animate2, animate3, finishAll, next, message, textColor, font }) => {
 
