@@ -264,9 +264,8 @@ class StoryMap extends Component {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
         position => {
-          const initialPosition = position;
           this.setState({
-            initialPosition,
+            position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
         },
@@ -274,7 +273,7 @@ class StoryMap extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},

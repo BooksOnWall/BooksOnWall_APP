@@ -8,14 +8,28 @@ import {
   ViroText,
   ViroFlexView,
   ViroAnimations,
+  ViroMaterials,
   ViroAmbientLight,
   ViroParticleEmitter,
   ViroSpotLight
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 import Bubble from '../../../assets/materials/patricie.png';
+import Bubble2 from '../../../assets/materials/baloon.png';
 import Leaf from '../../../assets/materials/leaf.png';
 import I18n from "../../utils/i18n";
+
+ViroMaterials.createMaterials({
+    frontMaterial: {
+      diffuseColor: '#FFFFFF',
+    },
+    backMaterial: {
+      diffuseColor: '#FF0000',
+    },
+    sideMaterial: {
+      diffuseColor: '#0000FF',
+    },
+});
 
 ViroAnimations.registerAnimations({
   rotate:{
@@ -42,11 +56,37 @@ ViroAnimations.registerAnimations({
     easing:"EaseInEaseOut",
     duration: 500
   },
+  wait: {
+    properties:{
+      opacity:"-=0"
+    },
+    easing:"EaseInEaseOut",
+    duration: 2000
+  },
+  moveForward: {
+    properties:{
+      positionZ: "+=.5",
+    },
+    easing:"EaseInEaseOut",
+    duration: 500
+  },
+  scale: {
+    properties:{
+      opacity:"+=1",
+      scaleX:"+=0.05",
+      scaleY:"+=0.05",
+      positionY: "+=0.3",
+      positionZ: "+=0.1",
+    },
+    easing:"EaseInEaseOut",
+    duration: 500
+  },
   movePicture:[
     ["moveRight", "rotate", "moveLeft"]
-  ]
+  ],
+  moveBaloon: [["wait","scale", "moveForward"]],
 });
-const Patricie = ({animate, finishAll, next, message, textColor, font }) => {
+const Patricie = ({animate, animate2, finishAll, next, message, textColor, font }) => {
   return (
         <>
       <ViroSpotLight position={[0, -0.25, 0]}
@@ -70,7 +110,7 @@ const Patricie = ({animate, finishAll, next, message, textColor, font }) => {
           source: Leaf,
           height:0.1,
           width:0.1,
-          bloomThreshold:1.0
+          bloomThreshold: .1
         }}
         spawnBehavior={{
           particleLifetime:[4000,4000],
@@ -113,7 +153,7 @@ const Patricie = ({animate, finishAll, next, message, textColor, font }) => {
           }}
       />
       <ViroFlexView
-        style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
+        style={{padding: 0, backgroundColor: 'transparent'}}
         width={1}
         height={1}
         position={[0,0,-2]}
@@ -136,34 +176,47 @@ const Patricie = ({animate, finishAll, next, message, textColor, font }) => {
         />
       </ViroFlexView >
       <ViroFlexView
-        style={{flexDirection: 'row', padding: 0, backgroundColor: 'transparent'}}
-        animation={animate}
-        width={1}
-        height={1}
-        position={[0,0,-21.9]}
+        style={{padding: 0, backgroundColor: 'transparent'}}
+        animation={animate2}
+        width={.5}
+        height={.5}
+        position={[0,.5,-.2]}
         visible={finishAll}
-        opacity={1}
+        opacity={0}
+        scale={[1,1,1]}
         onPress={() => next()}
         onClick={() => next()}
         rotation={[0, 0, 0]} >
+        <ViroImage
+          width={.5}
+          height={.5}
+          visible={finishAll}
+          resizeMode="ScaleToFit"
+          source={Bubble2}
+          scale={[1,1,1]}
+          onPress={() => next()}
+          onClick={() => next()}
+          position={[0,0,0]}
+        />
         <ViroText
           text={message}
           textAlign="center"
           textAlignVertical="top"
           textLineBreakMode="Justify"
           textClipMode="ClipToBounds"
-          width={.3}
-          height={.3}
-          visible={finishAll}
-          onPress={() => next()}
-          onClick={() => next()}
+          fontSize={12}
           style={{
             fontFamily: font,
             fontWeight: 'bold',
-            fontSize: 6,
             color: textColor
           }}
-          position={[0,0,0]}
+          position={[0, 0, 0]}
+          width={20}
+          height={5}
+          scale={[1,1,1]}
+          visible={finishAll}
+          onPress={() => next()}
+          onClick={() => next()}
           />
           </ViroFlexView >
       </>

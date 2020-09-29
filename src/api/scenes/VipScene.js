@@ -50,7 +50,6 @@ export default class VipScene extends Component {
       animate: {name: 'movePicture'},
       anchorFound: false,
       imageTracking: params.imageTracking,
-      animate: {name: 'movePicture'},
       message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font1,
@@ -268,6 +267,7 @@ export default class VipScene extends Component {
           /> : null}
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
+            animate2={{name: 'moveBaloon', run: finishAll, loop: false}}
             finishAll={finishAll}
             next={this.next}
             message={message}
