@@ -60,6 +60,20 @@ const Reset = ({resetStory, theme, themeSheet}) => (
     <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")}/>
   </TouchableOpacity>
 );
+const Sponsors = ({gallery, storyDir}) => {
+  let image1 = gallery[0].path;
+  image1 = 'file://' + storyDir + image1.replace("assets/stories/", "");
+  let image2 = gallery[1].path;
+  image2 = 'file://' + storyDir + image2.replace("assets/stories/", "");
+  console.log('first image',image1);
+  console.log('second image',image2);
+  return (
+    <View style={{backgroundColor: "#000"}}>
+        <Image style={{width: '100%', height: 150}} source={{uri: image1}} />
+        <Image style={{width: '100%', height: 150}}  source={{uri: image2}} />
+    </View>
+  );
+};
 const Social = ({ resetStory, theme, themeSheet }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current  // Initial
   const slideIn = useRef(new Animated.Value(0)).current  // Initial
@@ -587,9 +601,9 @@ export default class StoryComplete extends Component {
 
   }
   renderContent = () => {
-    const {theme, story, distance, vote, comment, openComment, commentLine, commentLoading, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {theme, story, distance, storyDir, vote, comment, openComment, commentLine, commentLoading, transportIndex, dlIndex,  access_token, profile, granted, fromLat, fromLong, toLat, toLong } = this.state;
     const transportbuttons = [ I18n.t('Auto'),  I18n.t('Pedestrian'),  I18n.t('Bicycle')];
-    console.log(openComment);
+    const gallery = theme.gallery;
     const themeSheet = StyleSheet.create({
       title: {
         fontFamily: story.theme.font1,
@@ -791,9 +805,12 @@ export default class StoryComplete extends Component {
               <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} />
               <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
               <View style={themeSheet.credits} >
+
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
+
             </View>
+            <Sponsors gallery={gallery} storyDir={storyDir}/>
       </View>
       </>
     )
