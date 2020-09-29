@@ -65,10 +65,10 @@ ViroAnimations.registerAnimations({
   },
   wait: {
     properties:{
-      opacity:"-=0"
+      opacity:"=0"
     },
     easing:"EaseInEaseOut",
-    duration: 2600
+    duration: 3000
   },
   positionText: {
     properties:{
@@ -82,6 +82,7 @@ ViroAnimations.registerAnimations({
   },
   moveForward: {
     properties:{
+      opacity:"+=1",
       positionY:"-=0.4",
       positionX: "-=0.4",
       scaleX: "+=3",
@@ -91,17 +92,10 @@ ViroAnimations.registerAnimations({
     easing:"EaseInEaseOut",
     duration: 300
   },
-  scale: {
-    properties:{
-      opacity:"+=1",
-    },
-    easing:"EaseInEaseOut",
-    duration: 300
-  },
   movePicture:[
     ["moveRight", "rotate", "moveLeft"]
   ],
-  moveBaloon: [["hide","wait","scale", "moveForward"]],
+  moveBaloon: [["hide","wait","moveForward"]],
   moveText: [["hide","wait", "positionText"]],
 });
 const Patricie = ({animate, animate2, animate3, finishAll, next, message, textColor, font }) => {
@@ -133,6 +127,7 @@ const Patricie = ({animate, animate2, animate3, finishAll, next, message, textCo
           resizeMode="ScaleToFit"
           source={Bubble2}
           animation={animate2}
+          style={{opacity: 0}}
           scale={[1,1,1]}
           onPress={() => next()}
           onClick={() => next()}
