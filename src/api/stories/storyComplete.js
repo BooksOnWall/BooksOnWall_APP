@@ -69,8 +69,8 @@ const Sponsors = ({gallery, storyDir}) => {
   console.log('second image',image2);
   return (
     <View style={{backgroundColor: "#000"}}>
-        <Image style={{width: '100%', height: 150}} source={{uri: image1}} />
-        <Image style={{width: '100%', height: 150}}  source={{uri: image2}} />
+        {gallery[0] && <Image style={{width: '100%', height: 150}} source={{uri: image1}} />}
+        {gallery[1] && <Image style={{width: '100%', height: 150}}  source={{uri: image2}} />}
     </View>
   );
 };
