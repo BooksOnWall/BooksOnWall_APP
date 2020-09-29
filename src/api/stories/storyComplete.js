@@ -65,8 +65,6 @@ const Sponsors = ({gallery, storyDir}) => {
   image1 = 'file://' + storyDir + image1.replace("assets/stories/", "");
   let image2 = gallery[1].path;
   image2 = 'file://' + storyDir + image2.replace("assets/stories/", "");
-  console.log('first image',image1);
-  console.log('second image',image2);
   return (
     <View style={{backgroundColor: "#000"}}>
         {gallery[0] && <Image style={{width: '100%', height: 150}} source={{uri: image1}} />}
