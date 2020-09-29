@@ -268,6 +268,7 @@ export default class VipScene extends Component {
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             animate2={{name: 'moveBaloon', run: finishAll, loop: false}}
+            animate3={{name:  'moveText', run: finishAll, loop: false }}
             finishAll={finishAll}
             next={this.next}
             message={message}
