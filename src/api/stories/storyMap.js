@@ -259,7 +259,8 @@ class StoryMap extends Component {
     }
   }
   getCurrentLocation = async () => {
-    const {story, index, timeout} = this.state;
+    const {story, debug_mode, index, timeout} = this.state;
+    const radius = story.radius;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
@@ -294,6 +295,7 @@ class StoryMap extends Component {
           let dis = distance(from, to, "kilometers");
           if (dis) {
             this.setState({distance: dis.toFixed(2)});
+            if (dis && radius > 0 && debug_mode === false && (dis * 1000) <= radius && timeout > 0) this.switchToAR();
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
@@ -302,6 +304,13 @@ class StoryMap extends Component {
     } catch(e) {
       console.log(e);
     }
+  }
+  switchToAR = () => {
+    const {index, story, unset, debug_mode, distance} = this.state;
+    let newIndex =(parseInt(index) <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
+    Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
+    this.setState({timeout: 0, index: newIndex});
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   watchID: ?number = null;
   renderRoute() {

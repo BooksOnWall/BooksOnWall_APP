@@ -20,17 +20,7 @@ import Bubble2 from '../../../assets/materials/baloonBlanc.png';
 import Leaf from '../../../assets/materials/leaf.png';
 import I18n from "../../utils/i18n";
 
-ViroMaterials.createMaterials({
-    frontMaterial: {
-      diffuseColor: '#FFFFFF',
-    },
-    backMaterial: {
-      diffuseColor: '#FF0000',
-    },
-    sideMaterial: {
-      diffuseColor: '#0000FF',
-    },
-});
+
 
 ViroAnimations.registerAnimations({
   rotate:{
@@ -98,8 +88,18 @@ ViroAnimations.registerAnimations({
   moveBaloon: [["hide","wait","moveForward"]],
   moveText: [["hide","wait", "positionText"]],
 });
-const Patricie = ({animate, animate2, animate3, finishAll, next, message, textColor, font }) => {
-
+const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message, textColor, font }) => {
+  ViroMaterials.createMaterials({
+      frontMaterial: {
+        diffuseColor: theme.color1,
+      },
+      backMaterial: {
+        diffuseColor: theme.color2,
+      },
+      sideMaterial: {
+        diffuseColor: theme.color3,
+      },
+  });
   return (
         <>
       <ViroSpotLight position={[0, -0.25, 0]}
@@ -182,17 +182,17 @@ const Patricie = ({animate, animate2, animate3, finishAll, next, message, textCo
     </ViroNode>
       <ViroParticleEmitter
         position={[0, 4.5, 0]}
-        duration={2000}
+        duration={500}
         run={finishAll}
         visible={finishAll}
-        delay={0}
-        loop={true}
+        delay={3000}
+        loop={finishAll}
         fixedToEmitter={true}
         image={{
           source: Leaf,
           height:0.1,
           width:0.1,
-          bloomThreshold: .1
+          bloomThreshold: 1.0
         }}
         spawnBehavior={{
           particleLifetime:[4000,4000],

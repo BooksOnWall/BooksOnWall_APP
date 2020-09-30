@@ -52,8 +52,8 @@ export default class VipScene extends Component {
       imageTracking: params.imageTracking,
       message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
-      fontFamily: params.theme.font3,
-      color: params.theme.color3,
+      fontFamily: params.theme.font1,
+      color: params.theme.color1,
       audios: [],
       video: {},
       audioLoop: false,
@@ -270,6 +270,7 @@ export default class VipScene extends Component {
             animate2={{name: 'moveBaloon', run: finishAll, loop: false}}
             animate3={{name:  'moveText', run: finishAll, loop: false }}
             finishAll={finishAll}
+            theme={theme}
             next={this.next}
             message={message}
             font={font}
