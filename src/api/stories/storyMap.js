@@ -74,7 +74,7 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Header = ({styles, distance, theme, completed, story,  index, showDistance}) => {
   let dis = showDistance();
-  console.log(dis);
+  console.log('dis',dis);
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -89,7 +89,7 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
           fontFamily: theme.font1}} >{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
         <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}</Text>
-        <Text style={styles.complete}>Next in {dis} km </Text>
+        <Text style={styles.complete}>{(dis && dis !=='') ? 'Next in '+dis+' km': ' '}</Text>
       </ImageBackground>
     </View>
   );
@@ -264,9 +264,8 @@ class StoryMap extends Component {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
         position => {
-          const initialPosition = position;
           this.setState({
-            initialPosition,
+            position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
         },
@@ -274,7 +273,7 @@ class StoryMap extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},
@@ -441,6 +440,7 @@ class StoryMap extends Component {
     this.goTo(feature.geometry.coordinates);
     this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
     Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
+    return this.launchMap();
   }
   renderStages = () => {
     const {theme, completed, selected, routes, index, images} = this.state;
@@ -572,6 +572,7 @@ class StoryMap extends Component {
      if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
      if (toPath) MenuButtons.push({ element: storyMapLine });
      if (selected !== routes.length) MenuButtons.push({ element: storyNext});
+     console.log(MenuButtons);
      const styles = StyleSheet.create({
        buttonCnt: {
          flexDirection: 'row',

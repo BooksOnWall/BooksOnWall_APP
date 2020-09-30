@@ -38,6 +38,7 @@ import VAAP from '../../scenes/VaapScene';
 import PORTAL from '../../scenes/PortalScene';
 import PIV from '../../scenes/PIVScene';
 import PSIV from '../../scenes/PSIVScene';
+import GPS from '../../scenes/GpsScene';
 /*
  TODO: Insert your API key below unneeded since v.2.17
  */
@@ -305,9 +306,10 @@ export default class ToAR extends Component {
       'vaamp':  { scene: VAAMP },
       'portal':  { scene: PORTAL},
       'piv': { scene: PIV},
-      'psiv': { scene: PSIV}
+      'psiv': { scene: PSIV},
+      'gps': { scene: GPS}
     };
-    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv'];
+    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv', '3D','gps'];
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
     console.log(type);
     console.log(arScene[type]);
@@ -316,15 +318,14 @@ export default class ToAR extends Component {
     return (
       // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
       // ref={(component) => {this.nav = component}} do we need ref ?
+      // //  {debug_mode && 1===2 && <DebugArea style={{position: 'absolute', zIndex: 1001}} distance={distance} debug={debug_mode} />}
       <SafeAreaView style={styles.mainContainer}>
-        {debug_mode && 1===2 && <DebugArea style={{position: 'absolute', zIndex: 1001}} distance={distance} debug={debug_mode} />}
-
         <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={arScene[type]} style={styles.viroContainer}/>
-        <ButtonGroup style={styles.menu}
+        <ButtonGroup
           buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
           onPress={this.updateDlIndex}
           selectedIndex={this.state.arIndex}
-          selectedButtonStyle= {{backgroundColor: '#750000'}}
+          selectedButtonStyle={{backgroundColor: '#750000'}}
           buttons={arButtons}
           containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
           innerBorderStyle= {{ color: '#570402' }}
@@ -337,13 +338,13 @@ export default class ToAR extends Component {
 var styles = StyleSheet.create({
   mainContainer: {
     flex : 1,
-    backgroundColor: "#750000",
+    backgroundColor: '#750000'
   },
   menu: {
-    backgroundColor: "#750000",
+    backgroundColor: '#750000'
   },
   viroContainer :{
     flex : 1,
-    backgroundColor: "#750000",
+    backgroundColor: '#750000'
   }
 });
