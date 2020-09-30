@@ -157,7 +157,7 @@ export default class VipScene extends Component {
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
         Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
         let Matchloop = MatchAudio.loop;
-        this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
+        this.setState({MatchAudioPath: Matchpath,MatchAudioLoop: Matchloop });
       }
       if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
         let audio = audios['onZoneEnter'][0];
@@ -273,6 +273,7 @@ export default class VipScene extends Component {
             theme={theme}
             next={this.next}
             message={message}
+            theme={theme}
             font={font}
             textColor={color}
             />

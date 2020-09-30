@@ -21,6 +21,9 @@ export default class VaapScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
+    this.toogleButtonAudio = params.toggleButtonAudio;
+    this.goToMap = params.goToMap;
+    this.next = params.next;
     // Set initial state here
     this.state = {
       server: params.server,
@@ -29,9 +32,9 @@ export default class VaapScene extends Component {
       storyDir: params.appDir+'/stories/',
       story: params.story,
       index: params.index,
-      stage: params.stage,
       pIndex: 0,
       scene_options: params.stage.scene_options,
+      stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
       audioPath: "",
@@ -41,9 +44,12 @@ export default class VaapScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
-      finishAll: false,
+      finishAll: params.finishAll,
       animate: {name: 'movePicture'},
-      text : I18n.t("NextPath", "Go to the next point"),
+      anchorFound: false,
+      imageTracking: params.imageTracking,
+      animate: {name: 'movePicture'},
+      message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font1,
       color: params.theme.color2,
@@ -132,7 +138,7 @@ export default class VaapScene extends Component {
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
         Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
         let Matchloop = MatchAudio.loop;
-        this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
+        this.setState({MatchAudioPath: Matchpath,MatchAudioLoop: Matchloop });
       }
       if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
         let audio = audios['onZoneEnter'][0];
@@ -192,7 +198,7 @@ export default class VaapScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, pIndex, finishAll, animate, fontFamily, text, color, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, message,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     const font = String(fontFamily);
@@ -243,10 +249,11 @@ export default class VaapScene extends Component {
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
-            goToMap={this.goToMap}
-            text={text}
+            next={this.next}
+            message={message}
+            theme={theme}
             font={font}
-            textColor={textColor}
+            textColor={color}
             />
       </ViroARScene>
       </SafeAreaView>

@@ -330,7 +330,7 @@ export default class Story extends Component {
           let units = I18n.t("kilometers","kilometers");
           let dis = distance(from, to, "kilometers");
           if (dis) {
-            this.setState({distance: dis.toFixed(2)});
+            this.setState({distance: dis.toFixed(3)});
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
