@@ -138,9 +138,9 @@ export default class PSIVScene extends Component {
       if (audios['onPictureMatch'] && audios['onPictureMatch'].length > 0 ) {
         let MatchAudio = audios['onPictureMatch'][0];
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
-        Matchpath = 'file://'+ storyDir + path.replace("assets/stories", "");
+        Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
         let Matchloop = MatchAudio.loop;
-        this.setState({'MatchAudioPath': Matchpath,'MatchAudioLoop': Matchloop });
+        this.setState({MatchAudioPath: Matchpath,MatchAudioLoop: Matchloop });
       }
       if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
         let audio = audios['onZoneEnter'][0];
