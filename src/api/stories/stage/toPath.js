@@ -527,7 +527,7 @@ class ToPath extends Component {
     // if index === 0  && selected ===1 && completed === 0
     console.log('selected', selected);
     console.log('completed', completed);
-    newIndex = (index === 0 && selected ==== 1 && completed ==== 0) ? 0 :newIndex;
+    newIndex = (index === 0 && selected === 1 && completed === 0) ? 0 : newIndex;
     console.log('newIndex', newIndex);
 
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
