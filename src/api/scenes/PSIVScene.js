@@ -21,6 +21,9 @@ export default class PSIVScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
+    this.toogleButtonAudio = params.toggleButtonAudio;
+    this.goToMap = params.goToMap;
+    this.next = params.next;
     // Set initial state here
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.state = {
@@ -42,9 +45,12 @@ export default class PSIVScene extends Component {
       MatchAudioPaused: true,
       MatchAudioMuted: false,
       MatchAudioLoop: false,
-      finishAll: false,
+      finishAll: params.finishAll,
       animate: {name: 'movePicture'},
-      text : I18n.t("NextPath", "Go to the next point"),
+      anchorFound: false,
+      imageTracking: params.imageTracking,
+      animate: {name: 'movePicture'},
+      message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font1,
       color: params.theme.color2,
@@ -245,10 +251,11 @@ export default class PSIVScene extends Component {
           <Patricie
             animate={{name: 'movePicture', run: finishAll, loop: false}}
             finishAll={finishAll}
-            goToMap={this.goToMap}
-            text={text}
+            next={this.next}
+            message={message}
+            theme={theme}
             font={font}
-            textColor={textColor}
+            textColor={color}
             />
       </ViroARScene>
       </SafeAreaView>

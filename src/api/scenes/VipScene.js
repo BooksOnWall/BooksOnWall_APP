@@ -271,6 +271,7 @@ export default class VipScene extends Component {
             finishAll={finishAll}
             next={this.next}
             message={message}
+            theme={theme}
             font={font}
             textColor={color}
             />

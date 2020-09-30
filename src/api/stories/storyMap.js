@@ -435,10 +435,11 @@ class StoryMap extends Component {
     });
   }
   enterStage = (e) => {
+    const {distance} = this.state;
     const feature = e.nativeEvent.payload;
     const index = feature.properties.index;
     this.goTo(feature.geometry.coordinates);
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index});
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
     Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
   }
   renderStages = () => {
@@ -549,8 +550,14 @@ class StoryMap extends Component {
     const coords = this.state.routes[id].coordinates;
     this.goTo(coords, false);
   }
-  launchMap = () => this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, distance: distance, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
-  launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, distance: distance, index: (this.state.selected > 0) ? (this.state.selected - 1): 0})
+  launchMap = () => {
+    const {distance , story, selected, index} = this.state;
+    this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index: (selected > 0) ? (selected - 1): 0});
+  }
+  launchAR = () => {
+    const {distance , story, selected, index} = this.state;
+    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, distance: distance, index: (selected > 0) ? (selected - 1): 0});
+  }
   render() {
 
     const {index, routes , toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;

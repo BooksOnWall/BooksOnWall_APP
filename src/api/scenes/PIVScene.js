@@ -21,6 +21,9 @@ export default class PivScene extends Component {
   constructor(props) {
     super(props);
     let params = this.props.sceneNavigator.viroAppProps;
+    this.toogleButtonAudio = params.toggleButtonAudio;
+    this.goToMap = params.goToMap;
+    this.next = params.next;
     // Set initial state here
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.state = {
@@ -242,10 +245,11 @@ export default class PivScene extends Component {
             <Patricie
               animate={{name: 'movePicture', run: finishAll, loop: false}}
               finishAll={finishAll}
-              goToMap={this.goToMap}
-              text={text}
+              next={this.next}
+              message={message}
+              theme={theme}
               font={font}
-              textColor={textColor}
+              textColor={color}
               />
 
         </ViroARImageMarker>
