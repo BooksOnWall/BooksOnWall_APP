@@ -198,7 +198,7 @@ export default class VaapScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, pIndex, finishAll, animate, fontFamily, text, color, scene_options, MatchaudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, message,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     const font = String(fontFamily);
