@@ -36,15 +36,15 @@ const addNewIndex = async ({sid, ssid, order, path, newIndex}) => {
           if (exists) {
               // get write new value to file
               // rimraf file
-              RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+              return RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
               });
 
           } else {
-              RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+              return RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
               });
           }
       });
-      await storeTimestamp({sid, ssid, order, path, newIndex});
+      return await storeTimestamp({sid, ssid, order, path, newIndex});
   } catch(e) {
     console.log(e.message);
   }
@@ -58,6 +58,7 @@ const humanTime = (ms) => {
   humanTime = (duration._data.hours > 0 ) ? humanTime+' '+duration._data.hours: humanTime + '00';
   humanTime = (duration._data.minutes > 0 ) ? humanTime+':'+duration._data.minutes : humanTime + ':00';
   humanTime = (duration._data.seconds > 0 ) ? humanTime+':'+duration._data.seconds : humanTime + ':00';
+  console.log('humanTime', humanTime);
   return humanTime;
 }
 const getScores = async (path) => {
@@ -86,7 +87,7 @@ const storeTimestamp = async ({sid, ssid, order, path, newIndex }) => {
       .then( (exists) => {
           if (exists) {
               // get id from file
-              RNFetchBlob.fs.readFile(timeHF, 'utf8')
+             return RNFetchBlob.fs.readFile(timeHF, 'utf8')
               .then((data) => {
                 const time = Math.round((new Date()).getTime());
                 console.log('time', time);
@@ -95,18 +96,19 @@ const storeTimestamp = async ({sid, ssid, order, path, newIndex }) => {
                 let elapsed = (time-start);
                 elapsed = humanTime(elapsed);
                 const stage = {sid: sid, ssid: ssid, order: order, newIndex: newIndex, time: time, elapsed: elapsed};
-                file.stages.[index] = stage;
-                RNFetchBlob.fs.writeFile(timeHF, JSON.stringify(file), 'utf8')
-                .then((data) => {return data;})
-              })
+                file.stages[index] = stage;
+               return RNFetchBlob.fs.writeFile(timeHF, JSON.stringify(file), 'utf8')
+                .then((data) => {return data })
+              });
           } else {
               const time = Math.round((new Date()).getTime());
               const stages = [{sid: sid, ssid: ssid, order: order, newIndex: newIndex, time: time, elapsed: 0 }];
               const file = {stages: stages};
-              RNFetchBlob.fs.createFile(timeHF, JSON.stringify(file), 'utf8').then(()=>{
+             return RNFetchBlob.fs.createFile(timeHF, JSON.stringify(file), 'utf8').then(()=>{
                 return 0;
               });
           }
+          return true;
       });
     } catch(e) {
       console.log(e);

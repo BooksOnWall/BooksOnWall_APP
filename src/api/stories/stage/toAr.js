@@ -123,10 +123,9 @@ export default class ToAR extends Component {
   }
   componentWillUnmount = async () => {
     try {
-      this.setState({timeout:0});
+      await this.setState({navigatorType : UNSET, timeout:0});
       await Geolocation.clearWatch(this.watchId);
       this.watchID = null;
-      await this.setState({ navigatorType : UNSET });
       await KeepAwake.deactivate();
     } catch(e) {
       console.log(e);
@@ -233,7 +232,7 @@ export default class ToAR extends Component {
       try  {
         await addNewIndex({sid, ssid, order, path , newIndex });
         // clean audio
-        await this.setState({imageTracking: false, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false});
+        await this.setState({imageTracking: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false});
         (this.woosh) ? this.woosh.release() : '';
         return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance} );
       } catch(e) {
