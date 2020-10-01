@@ -580,8 +580,8 @@ class ToPath extends Component {
     MenuButtons.push({ element: launchNavigation});
     if (completed > 0) MenuButtons.push({ element: storyOrigin});
     MenuButtons.push({ element: storyDestination });
-    if((!debug_mode && ((distance*1000) <= radius)) || debug_mode) MenuButtons.push({ element: launchAR });
-    MenuButtons.push({ element: storyMapDl});
+    if (debug_mode === true) MenuButtons.push({ element: launchAR });
+    //MenuButtons.push({ element: storyMapDl});
     if(sound !== null) MenuButtons.push({element: sound});
 
 
