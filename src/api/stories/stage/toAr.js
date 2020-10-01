@@ -46,12 +46,12 @@ let sharedProps = {
   apiKey:"API_KEY_HERE",
 };
 let UNSET = "UNSET";
-let AR_NAVIGATOR_TYPE = "AR";
+
 
 // This determines which type of experience to launch in, or UNSET, if the user should
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
 let defaultNavigatorType = "AR";
-const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal', 'PIV', 'PSIV', '3D'];
+const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal', 'PIV', 'PSIV', '3D', 'GPS'];
 
 const DebugArea = ({distance, debug}) => {
   console.log(distance);
@@ -70,6 +70,8 @@ export default class ToAR extends Component {
     const ssid = this.props.navigation.getParam('story').stages[index].id;
     const order = this.props.navigation.getParam('story').stages[index].stageOrder;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
+    const scene_type = this.props.navigation.getParam('story').stages[index].scene_type;
+    const scene_options = this.props.navigation.getParam('story').stages[index].scene_options;
     console.log('index', index);
     this.state = {
       navigatorType : defaultNavigatorType,
@@ -96,16 +98,16 @@ export default class ToAR extends Component {
       toLong: null,
       toLat: null,
       lastPosition: null,
-      scene_type: this.props.navigation.getParam('story').stages[index].scene_type,
-      scene_options: this.props.navigation.getParam('story').stages[index].scene_options,
+      scene_type: scene_type,
+      scene_options: scene_options,
       index: index,
       stage: this.props.navigation.getParam('story').stages[index],
       sharedProps : sharedProps
     }
     console.log('index', this.props.navigation.getParam('index'));
-    console.log('stage', this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')]);
-    console.log('scene_options', this.state.scene_options);
-    console.log('scene type',sceneTypes[this.state.scene_type]);
+    console.log('stage', this.props.navigation.getParam('story').stages[index]);
+    console.log('scene_options', scene_options);
+    console.log('scene type',sceneTypes[scene_type]);
     console.log('selected', this.state.selected);
   }
   static navigationOptions = {

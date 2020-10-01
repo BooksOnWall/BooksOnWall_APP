@@ -534,7 +534,7 @@ class ToPath extends Component {
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
     this.setState({timeout: 0, index: (index+1)});
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
+    return this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
