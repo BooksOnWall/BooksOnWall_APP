@@ -93,9 +93,9 @@ export default class PortalScene extends Component {
   }
   onInitialized(state, reason) {
     if (state == ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        text : "Search for me ..."
-      });
+      // this.setState({
+      //   text : "Search for me ..."
+      // });
     } else if (state == ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
