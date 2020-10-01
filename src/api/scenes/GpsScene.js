@@ -46,7 +46,6 @@ export default class GpsScene extends Component {
       MatchAudioMuted: false,
       MatchAudioLoop: false,
       finishAll: params.finishAll,
-      animate: {name: 'movePicture'},
       anchorFound: false,
       imageTracking: params.imageTracking,
       animate: {name: 'movePicture'},
@@ -73,6 +72,7 @@ export default class GpsScene extends Component {
     try {
       await KeepAwake.activate();
       await this.dispatchMedia();
+      await this.setVideoComponent();
     } catch(e) {
       console.log(e);
     }
@@ -188,9 +188,10 @@ export default class GpsScene extends Component {
     console.log('MatchAudioPath',MatchAudioPath);
     const font = String(fontFamily);
     const textColor = String(color);
+    console.log('videoPath', videoPath);
     return (
       <SafeAreaView>
-      <ViroARScene onTrackingUpdated={this.onInitialized}  >
+      <ViroARScene  >
         <ViroSound
            paused={audioPaused}
            muted={audioMuted}
@@ -209,7 +210,6 @@ export default class GpsScene extends Component {
             height={parseFloat(scene_options.videos[0].height)}
             muted={false}
             paused={false}
-            visible={imageTracking}
             loop={videoLoop}
             position={[0,0,0]}
             rotation={[-90,0,0]}

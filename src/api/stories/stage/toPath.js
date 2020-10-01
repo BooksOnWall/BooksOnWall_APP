@@ -110,7 +110,7 @@ const circleStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({styles, distance, theme, completed, story, index}) => (
+const Header = ({styles, position, distance, theme, completed, story, index}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
       <Badge  value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
@@ -124,6 +124,7 @@ const Header = ({styles, distance, theme, completed, story, index}) => (
         fontFamily: story.theme.font1}} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
       <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
+      <Text style={styles.complete}>{JSON.stringify(position.coords)}</Text>
     </ImageBackground>
   </View>
 );
@@ -260,7 +261,7 @@ class ToPath extends Component {
   }
   getCurrentLocation = async () => {
     const {story, index, timeout, radius, debug_mode} = this.state;
-
+    console.log('Location index', index);
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       Toast.showWithGravity(I18n.t("Getting_GPS","Please wait , Trying to get your position ..."), Toast.SHORT, Toast.TOP);
@@ -298,7 +299,7 @@ class ToPath extends Component {
           if (dis) {
             this.setState({distance: dis.toFixed(3)});
           };
-          if (dis && radius > 0 && debug_mode === false && dis <= radius && timeout > 0) this.switchToAR();
+          if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
@@ -323,11 +324,11 @@ class ToPath extends Component {
   }
   getSelected = async() => {
     try {
-      const {AppDir, story} = this.state;
+      const {AppDir, story, index} = this.state;
       // get history from file
       try {
         // get history from file
-        const index = this.props.navigation.getParam('index');
+        //const index = this.props.navigation.getParam('index');
         console.log('index', index)
         const sid = story.id;
         const ssid = story.stages[index].id;
@@ -620,7 +621,7 @@ class ToPath extends Component {
     const prevIndex = index -1;
     const stage = (index === 0) ? null : story.stages[prevIndex];
     if (stage) {
-      const count =  stage.onZoneLeave.length;
+      const count =  (stage && stage.onZoneLeave) ? stage.onZoneLeave.length : 0;
       this.setState({audioButton: true});
       if (count > 1) {
         const audio = stage.onZoneLeave[0];
@@ -729,7 +730,7 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
-    const {unset, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
+    const {unset, position, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
     if(unset) return null;
     const styles = StyleSheet.create({
       buttonCnt: {
@@ -772,6 +773,7 @@ class ToPath extends Component {
           theme={theme}
           completed={completed}
           story={story}
+          position={position}
           styles={styles}
           index={index}
           />

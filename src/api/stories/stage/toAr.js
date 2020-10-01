@@ -138,9 +138,8 @@ export default class ToAR extends Component {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
         position => {
-          const initialPosition = position;
           this.setState({
-            initialPosition,
+            position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
         },
@@ -148,7 +147,7 @@ export default class ToAR extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        this.setState({lastPosition: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
           "properties": {},
@@ -169,7 +168,7 @@ export default class ToAR extends Component {
           let dis = distance(from, to, "kilometers");
           if (dis) {
             this.setState({distance: dis.toFixed(3)});
-            Toast.showWithGravity(I18n.t("GetOutZone","To continue your story , please go outside the AR search zone"), Toast.LONG, Toast.TOP);
+            //Toast.showWithGravity(I18n.t("GetOutZone","To continue your story , please go outside the AR search zone"), Toast.LONG, Toast.TOP);
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
@@ -217,8 +216,9 @@ export default class ToAR extends Component {
   togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   activateAR = () => this.setState({imageTracking: true})
   next = async () => {
-    let {appDir, debug_mode, server, position, story, selected, completed, distance} = this.state;
-    const index = parseInt(this.props.navigation.getParam('index'));
+    let {appDir, debug_mode, server, position, index, story, selected, completed, distance} = this.state;
+
+    //const index = parseInt(this.props.navigation.getParam('index'));
     console.log('index', index);
     let newIndex = (index < (story.stages.length-1)) ? (index+1) : null;
     const sid = story.id;
@@ -235,7 +235,7 @@ export default class ToAR extends Component {
         // clean audio
         await this.setState({imageTracking: false, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false});
         (this.woosh) ? this.woosh.release() : '';
-        return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance} );
+        return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance} );
       } catch(e) {
         console.log(e);
       }
@@ -250,7 +250,7 @@ export default class ToAR extends Component {
       }
       await this.setState({finishAll: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
 
-      return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: this.state.story, index: 0} );
+      return await this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0} );
     }
 
   }
