@@ -573,7 +573,7 @@ class ToPath extends Component {
           return null;
         }
     };
-
+    console.log('sound', sound);
     const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
     let MenuButtons = [];
     MenuButtons.push({ element: storyLocation});
