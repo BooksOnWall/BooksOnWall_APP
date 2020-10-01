@@ -297,9 +297,14 @@ export default class ToAR extends Component {
         return null;
       }
     };
-    const storyMap = () => (debug_mode) ? <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} /> : '';
+    const storyMap = () =>  <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} /> ;
     const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
-    const arButtons = [ { element: storyReload }, { element: storyMap }, { element: sound}, { element: storyNext} ];
+    const arButtons = [];
+    arButtons.push({ element: storyReload });
+    arButtons.push({ element: storyReload });
+    if(debug_mode) arButtons.push({ element: storyMap });
+    arButtons.push({ element: sound});
+    arButtons.push({ element: storyNext});
     const arScene = {
       'vip':  { scene: VIP },
       'vaap':  { scene: VAAP },
@@ -315,20 +320,34 @@ export default class ToAR extends Component {
     console.log(arScene[type]);
     console.log('index', index);
     console.log('selected', selected);
+    const btnStyle = {
+      backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44
+    };
+    const selectedBtnStyle = {
+      backgroundColor: '#750000'
+    };
+    const containerStyle = {
+      flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0
+    };
+    const innerBorderStyle = {
+      color: '#570402'
+    };
+    // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
+    // ref={(component) => {this.nav = component}} do we need ref ?
+    // //  {debug_mode && 1===2 && <DebugArea style={{position: 'absolute', zIndex: 1001}} distance={distance} debug={debug_mode} />}
+
     return (
-      // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
-      // ref={(component) => {this.nav = component}} do we need ref ?
-      // //  {debug_mode && 1===2 && <DebugArea style={{position: 'absolute', zIndex: 1001}} distance={distance} debug={debug_mode} />}
+
       <SafeAreaView style={styles.mainContainer}>
         <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={arScene[type]} style={styles.viroContainer}/>
         <ButtonGroup
-          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
           onPress={this.updateDlIndex}
           selectedIndex={this.state.arIndex}
-          selectedButtonStyle={{backgroundColor: '#750000'}}
           buttons={arButtons}
-          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
-          innerBorderStyle= {{ color: '#570402' }}
+          selectedButtonStyle={selectedBtnStyle}
+          buttonStyle={btnStyle}
+          containerStyle={containerStyle}
+          innerBorderStyle={innerBorderStyle}
           />
       </SafeAreaView>
     );
