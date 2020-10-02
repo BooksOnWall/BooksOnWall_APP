@@ -131,7 +131,8 @@ class StoryMap extends Component {
     var mbbox = bbox(line);
     const index = this.props.navigation.getParam('index');
     const id = this.props.navigation.getParam('story').id;
-
+    console.log('index at storymap start', index);
+    const selected = index+1;
     this.state = {
       featureCollection: featureCollection([]),
       latitude: null,
@@ -162,11 +163,11 @@ class StoryMap extends Component {
       fromLong: null,
       toLong: null,
       toLat: null,
-      lastPosition: null,
+      position: null,
       debug_mode:  (DEBUG_MODE === "true") ? true: false,
       distance: (this.props.navigation.getParam('distance')) ? this.props.navigation.getParam('distance') : null,
       radius: 20,
-      selected:1,
+      selected: selected,
       completed: null,
       selectedMenu: 0,
       offlinePack: null,
@@ -251,7 +252,7 @@ class StoryMap extends Component {
   componentWillUnmount() {
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
     this.cancelTimeout();
-    Geolocation.clearWatch(this.watchId);
+    Geolocation.clearWatch(this.watchID);
     this.watchID = null;
     if (this.state.routeSimulator) {
       this.state.routeSimulator.stop();
@@ -447,7 +448,7 @@ class StoryMap extends Component {
     const feature = e.nativeEvent.payload;
     const index = feature.properties.index;
     this.goTo(feature.geometry.coordinates);
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
+    //this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
     Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
     return this.launchMap();
   }

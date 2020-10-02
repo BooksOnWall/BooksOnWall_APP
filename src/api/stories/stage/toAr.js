@@ -126,7 +126,7 @@ export default class ToAR extends Component {
   componentWillUnmount = async () => {
     try {
       await this.setState({navigatorType : UNSET, timeout:0});
-      await Geolocation.clearWatch(this.watchId);
+      await Geolocation.clearWatch(this.watchID);
       this.watchID = null;
       await KeepAwake.deactivate();
     } catch(e) {
@@ -193,11 +193,10 @@ export default class ToAR extends Component {
   }
 
   getSelected = async() => {
-      let {appDir, story, selected} = this.state;
+      let {appDir, story, selected, index} = this.state;
 
       try {
         // get history from file
-        const index = this.props.navigation.getParam('index');
         const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
         const sid = story.id;
         let ssid = story.stages[index].id;
@@ -236,6 +235,7 @@ export default class ToAR extends Component {
         // clean audio
         await this.setState({imageTracking: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false});
         (this.woosh) ? this.woosh.release() : '';
+        this.setState({index: newIndex});
         return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance} );
       } catch(e) {
         console.log(e);

@@ -116,7 +116,7 @@ export default class Story extends Component {
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
     this.cancelTimeout();
-    Geolocation.clearWatch(this.watchId);
+    Geolocation.clearWatch(this.watchID);
     this.watchID = null;
   }
   networkCheck = () => {
@@ -294,7 +294,7 @@ export default class Story extends Component {
     }
   }
   getCurrentLocation = async () => {
-    let {timeout} = this.state;
+    let {timeout, selected, completed , story} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
@@ -308,7 +308,9 @@ export default class Story extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-
+        let index = (selected >= 1) ? selected : 0;
+        console.log('GPS index toPath', index);
+        let toPath = Array.from(story.stages[index].geometry.coordinates);
         this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
@@ -323,7 +325,7 @@ export default class Story extends Component {
             "properties": {},
               "geometry": {
                 "type": "Point",
-                "coordinates": [this.state.toLong,this.state.toLat ]
+                "coordinates": toPath
               }
             };
           console.log('position from', from);
@@ -637,10 +639,10 @@ export default class Story extends Component {
   )
   storyMap = () => {
     const {index, story, completed, debug_mode, distance} = this.state;
-    console.log('storyMap', debug_mode);
+    this.setState({timeout: 0});
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
-    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance}) ;
+    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: completed, distance: distance}) ;
   }
   toPath = () => {
     const {index, story, completed, selected, debug_mode, distance} = this.state;

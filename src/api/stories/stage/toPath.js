@@ -296,7 +296,7 @@ class ToPath extends Component {
             };
           let units = I18n.t("kilometers","kilometers");
           let dis = distance(from, to, "kilometers");
-          if (dis) {
+          if (dis && timeout > 0) {
             this.setState({distance: dis.toFixed(3)});
           };
           if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
@@ -312,15 +312,20 @@ class ToPath extends Component {
   cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount() {
     const {routeSimulator} = this.state;
-    this.cancelTimeout();
+
     (this.whoosh) ? this.whoosh.release() : '';
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
-    Geolocation.clearWatch(this.watchId);
-    this.watchID = null;
+
+    this.clearGPS();
     if (routeSimulator) {
       routeSimulator.stop();
     }
     this.setState({unset: true});
+  }
+  clearGPS = () => {
+    this.cancelTimeout();
+    Geolocation.clearWatch(this.watchID);
+    this.watchID = null;
   }
   getSelected = async() => {
     try {
@@ -530,10 +535,10 @@ class ToPath extends Component {
     console.log('completed', completed);
     newIndex = (index === 0 && selected === 1 && completed === 0) ? 0 : newIndex;
     console.log('newIndex', newIndex);
-
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
     this.setState({timeout: 0, index: (index+1)});
+    this.clearGPS();
     return this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
@@ -573,7 +578,7 @@ class ToPath extends Component {
           return null;
         }
     };
-    console.log('sound', sound);
+
     const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
     let MenuButtons = [];
     MenuButtons.push({ element: storyLocation});
