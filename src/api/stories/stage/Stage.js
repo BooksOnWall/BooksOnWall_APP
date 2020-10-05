@@ -35,7 +35,6 @@ export default class Stage extends Component {
         this.setState({lastPosition});
         if(record) {
           var newLatLng = {latitude:lastPosition.coords.latitude, longitude: lastPosition.coords.longitude};
-
           this.setState({ track: this.state.track.concat([newLatLng]) });
           this.setState({ distanceTotal: (distanceTotal + this.calcDistance(newLatLng)) });
           this.setState({ prevLatLng: newLatLng });

@@ -200,6 +200,7 @@ export default class PivScene extends Component {
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     console.log('index',index);
+    //console.log('videoPosition.x', scene_options.pictures[pIndex].videoPosition.x);
     const font = String(fontFamily);
     const textColor = String(color);
     return (
@@ -225,14 +226,14 @@ export default class PivScene extends Component {
               paused={false}
               visible={true}
               loop={videoLoop}
-              position={[parseFloat(scene_options.pictures[pIndex].videoPosition.x),parseFloat(scene_options.pictures[pIndex].videoPosition.y),parseFloat(scene_options.pictures[pIndex].videoPosition.z)]}
+              position={[parseFloat(scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
               rotation={[-90,0,0]}
               opacity={1}
               onError={this.onVideoError}
               onFinish={this.onFinishVideo}
               materials={["chromaKeyFilteredVideo"]}
             />
-          {(MatchaudioPath) ?
+          {(MatchAudioPath) ?
             <ViroSound
                paused={MatchAudioPaused}
                muted={MatchAudioMuted}
