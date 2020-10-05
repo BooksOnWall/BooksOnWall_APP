@@ -231,7 +231,7 @@ export default class VaampScene extends Component {
 
 
           </ViroARImageMarker>
-          {(MatchaudioPath) ?
+          {(MatchAudioPath) ?
             <ViroSound
                paused={MatchAudioPaused}
                muted={MatchAudioMuted}

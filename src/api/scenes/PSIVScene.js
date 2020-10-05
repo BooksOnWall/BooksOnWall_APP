@@ -238,7 +238,7 @@ export default class PSIVScene extends Component {
 
 
         </ViroARImageMarker>
-        {(MatchaudioPath) ?
+        {(MatchAudioPath) ?
           <ViroSound
              paused={MatchAudioPaused}
              muted={MatchAudioMuted}
