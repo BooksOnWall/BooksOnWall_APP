@@ -123,7 +123,7 @@ const Header = ({styles, position, distance, theme, completed, story, index}) =>
         textShadowRadius: 2,
         fontFamily: story.theme.font1}} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-      <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
+      <Text style={styles.complete}>Complete: {completed}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
       <Text style={styles.complete}>{JSON.stringify(position.coords)}</Text>
     </ImageBackground>
   </View>
@@ -278,29 +278,31 @@ class ToPath extends Component {
       );
       this.watchID = await Geolocation.watchPosition(position => {
         console.log('accuracy',position.accuracy);
-        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-        let from = {
-          "type": "Feature",
-          "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [this.state.fromLong,this.state.fromLat ]
-            }
-          };
-          let to = {
+        if(position.accuracy <= radius) {
+          this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+          let from = {
             "type": "Feature",
             "properties": {},
               "geometry": {
                 "type": "Point",
-                "coordinates": story.stages[index].geometry.coordinates
+                "coordinates": [this.state.fromLong,this.state.fromLat ]
               }
             };
-          let units = I18n.t("kilometers","kilometers");
-          let dis = distance(from, to, "kilometers");
-          if (dis && timeout > 0) {
-            this.setState({distance: dis.toFixed(3)});
-          };
-          if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
+            let to = {
+              "type": "Feature",
+              "properties": {},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": story.stages[index].geometry.coordinates
+                }
+              };
+            let units = I18n.t("kilometers","kilometers");
+            let dis = distance(from, to, "kilometers");
+            if (dis && timeout > 0) {
+              this.setState({distance: dis.toFixed(3)});
+            };
+            if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
+        }
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},
