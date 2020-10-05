@@ -55,7 +55,7 @@ export default class Story extends Component {
     super(props);
 
     this.loadStories = this.props.loadStories;
-    let coordinates = (this.props.story) ? this.props.story.stages[0].geometry.coordinates :this.props.navigation.getParam('story').stages[0].geometry.coordinates;
+    let coordinates = (this.props.story) ? this.props.story.stages[0].geometry.coordinates : this.props.navigation.getParam('story').stages[0].geometry.coordinates;
     const stages = (this.props.story) ? this.props.story.stages : this.props.navigation.getParam('story').stages;
     const storyPoints = stages.map((stage, i) => {
       return stage.geometry.coordinates;
@@ -310,30 +310,35 @@ export default class Story extends Component {
       this.watchID = await Geolocation.watchPosition(position => {
         let index = (selected >= 1) ? selected : 0;
         console.log('GPS index toPath', index);
-        let toPath = Array.from(story.stages[index].geometry.coordinates);
-        this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-        let from = {
-          "type": "Feature",
-          "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [this.state.fromLong,this.state.fromLat ]
-            }
-          };
-          let to = {
+        console.log('stages length', story.stages.length);
+        if (index && index !== story.stages.length ) {
+
+          let toPath = Array.from(story.stages[index].geometry.coordinates);
+          this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+          let from = {
             "type": "Feature",
             "properties": {},
               "geometry": {
                 "type": "Point",
-                "coordinates": toPath
+                "coordinates": [this.state.fromLong,this.state.fromLat ]
               }
             };
-          console.log('position from', from);
-          let units = I18n.t("kilometers","kilometers");
-          let dis = distance(from, to, "kilometers");
-          if (dis) {
-            this.setState({distance: dis.toFixed(3)});
-          };
+            let to = {
+              "type": "Feature",
+              "properties": {},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": toPath
+                }
+              };
+            console.log('position from', from);
+            let units = I18n.t("kilometers","kilometers");
+            let dis = distance(from, to, "kilometers");
+            if (dis) {
+              this.setState({distance: dis.toFixed(3)});
+            };
+        }
+
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},

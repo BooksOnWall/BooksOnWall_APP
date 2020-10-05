@@ -229,18 +229,10 @@ class ToPath extends Component {
       await this.offlineLoad();
       await this.getSelected();
       MapboxGL.setTelemetryEnabled(false);
-      const reqOptions = {
-        waypoints: this.state.routes,
-        profile: 'walking',
-        geometries: 'geojson',
-      };
-      const index = this.props.navigation.getParam('index');
-      const res = await directionsClient.getDirections(reqOptions).send();
+      await this.setItinerary();
+
       await this.audioPlay();
 
-      this.setState({
-        route: makeLineString(res.body.routes[0].geometry.coordinates),
-      });
       await request(
         Platform.select({
           android: PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION,
@@ -259,6 +251,19 @@ class ToPath extends Component {
     } catch(e) {
       console.log(e);
     }
+  }
+  setItinerary = async () => {
+    const reqOptions = {
+      waypoints: this.state.routes,
+      profile: 'walking',
+      geometries: 'geojson',
+    };
+    const index = this.props.navigation.getParam('index');
+    const res = await directionsClient.getDirections(reqOptions).send();
+    console.log('res',res.body.routes);
+    return this.setState({
+      route: makeLineString(res.body.routes[0].geometry.coordinates),
+    });
   }
   getDistance = async (position, index, story, debug_mode, radius, timeout) => {
     try {
@@ -365,12 +370,13 @@ class ToPath extends Component {
 
   }
   renderRoute() {
-    if (!this.state.route) {
+    const {route} = this.state;
+    if (!route) {
       return null;
     }
 
     return (
-      <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
+      <MapboxGL.ShapeSource id="routeSource" shape={route}>
         <MapboxGL.LineLayer
           id="routeFill"
           style={layerStyles.route}
@@ -381,28 +387,27 @@ class ToPath extends Component {
   }
 
   renderCurrentPoint() {
-    if (!this.state.currentPoint) {
+    const {position} = this.state;
+    if (!position) {
       return;
     }
     return (
       <PulseCircleLayer
-        shape={this.state.currentPoint}
+        shape={position.coords}
         aboveLayerID="destinationInnerCircle"
         />
     );
   }
 
   renderProgressLine() {
-    if (!this.state.currentPoint) {
+    const {position, index, route} = this.state;
+    if (!position || !route) {
       return null;
     }
-
-    const {nearestIndex} = this.state.currentPoint.properties;
-    const coords = this.state.route.geometry.coordinates.filter(
-      (c, i) => i <= nearestIndex,
+    let coords = route.geometry.coordinates.filter(
+      (c, i) => i <= index,
     );
-    coords.push(this.state.currentPoint.geometry.coordinates);
-
+    coords.push(position.coords);
     if (coords.length < 2) {
       return null;
     }
@@ -540,7 +545,7 @@ class ToPath extends Component {
     }
   }
   switchToAR = () => {
-    const {index, story, unset, debug_mode, selected, completed, distance} = this.state;
+    const {index, timeout, story, unset, debug_mode, selected, completed, distance} = this.state;
     console.log('switch2ar', index);
     let newIndex =(parseInt(index) <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
     // if index === 0  && selected ===1 && completed === 0
@@ -550,9 +555,8 @@ class ToPath extends Component {
     console.log('newIndex', newIndex);
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
-    this.setState({timeout: 0});
     this.clearGPS();
-    return this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
+    if (timeout > 0) this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
