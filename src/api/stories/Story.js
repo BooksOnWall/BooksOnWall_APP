@@ -640,7 +640,8 @@ export default class Story extends Component {
   storyMap = () => {
     const {index, story, completed, debug_mode, distance} = this.state;
     this.setState({timeout: 0});
-    let newIndex = (completed > 0 ) ? (completed+1) : index;
+    let newIndex = (completed && completed > 0 ) ? (completed+1) : 0;
+    console.log(newIndex);
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
     : (completed > 0)

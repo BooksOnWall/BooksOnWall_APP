@@ -171,7 +171,6 @@ class StoryMap extends Component {
       completed: null,
       selectedMenu: 0,
       offlinePack: null,
-      currentPoint: null,
       routeSimulator: null,
       styleURL: MapboxGL.StyleURL.Dark, // todo import story map styles
       server: this.props.screenProps.server,
@@ -227,6 +226,7 @@ class StoryMap extends Component {
       const res = await directionsClient.getDirections(reqOptions).send();
       await this.history();
       await this.getMapTheme();
+      console.log(res.body.routes);
       this.setState({
         route: makeLineString(res.body.routes[0].geometry.coordinates),
       });
@@ -315,12 +315,13 @@ class StoryMap extends Component {
   }
   watchID: ?number = null;
   renderRoute() {
-    if (!this.state.route) {
+    const {route} = this.state;
+    if (!route) {
       return null;
     }
 
     return (
-      <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
+      <MapboxGL.ShapeSource id="routeSource" shape={route}>
         <MapboxGL.LineLayer
           id="routeFill"
           style={layerStyles.route}
@@ -331,27 +332,29 @@ class StoryMap extends Component {
   }
 
   renderCurrentPoint() {
-    if (!this.state.currentPoint) {
+    const {route, position} = this.state;
+    if (!position) {
       return;
     }
     return (
       <PulseCircleLayer
-        shape={this.state.currentPoint}
+        shape={position}
         aboveLayerID="destinationInnerCircle"
         />
     );
   }
 
   renderProgressLine() {
-    if (!this.state.currentPoint) {
+    const {route, position} = this.state;
+    if (!position) {
       return null;
     }
 
-    const {nearestIndex} = this.state.currentPoint.properties;
-    const coords = this.state.route.geometry.coordinates.filter(
+    const {nearestIndex} = position.properties;
+    const coords = route.geometry.coordinates.filter(
       (c, i) => i <= nearestIndex,
     );
-    coords.push(this.state.currentPoint.geometry.coordinates);
+    coords.push(position.geometry.coordinates);
 
     if (coords.length < 2) {
       return null;
