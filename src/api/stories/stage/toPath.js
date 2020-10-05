@@ -124,7 +124,7 @@ const Header = ({styles, position, distance, theme, completed, story, index}) =>
         fontFamily: story.theme.font1}} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
       <Text style={styles.complete}>Complete: {completed}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
-      <Text style={styles.complete}>{JSON.stringify(position.coords)}</Text>
+      <Text style={styles.complete}>{(position && position.coords && position.coords) ? JSON.stringify(position.coords.accuracy) : ''}</Text>
     </ImageBackground>
   </View>
 );
@@ -153,8 +153,9 @@ class ToPath extends Component {
     const ssid = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].id;
     const order = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].stageOrder;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
-    const origin = (index > 0) ? routes[index].coordinates: location;
-    const radius = stages[index].radius;
+    const prevIndex = (index > 0) ? (index-1) : null;
+    const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
+    const radius = parseFloat(stages[index].radius);
     console.log('radius', radius);
     console.log('index', index);
     this.state = {
@@ -259,50 +260,59 @@ class ToPath extends Component {
       console.log(e);
     }
   }
+  getDistance = async (position, index, story, debug_mode, radius, timeout) => {
+    try {
+      // console.log('accuracy',position.coords.accuracy);
+      // console.log('radius type of', typeof(radius));
+      const precision = (radius + 20);
+      // console.log('precision',precision);
+      this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+      let from = {
+        "type": "Feature",
+        "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": [this.state.fromLong,this.state.fromLat ]
+          }
+        };
+        let to = {
+          "type": "Feature",
+          "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": story.stages[index].geometry.coordinates
+            }
+          };
+        let units = I18n.t("kilometers","kilometers");
+        let dis = distance(from, to, "kilometers");
+        if (dis && timeout > 0) {
+          this.setState({distance: dis.toFixed(3)});
+        };
+        if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
+    } catch(e) {
+      console.log(e);
+    }
+  }
   getCurrentLocation = async () => {
     const {story, index, timeout, radius, debug_mode} = this.state;
     console.log('Location index', index);
     try {
+
       // Instead of navigator.geolocation, just use Geolocation.
       Toast.showWithGravity(I18n.t("Getting_GPS","Please wait , Trying to get your position ..."), Toast.SHORT, Toast.TOP);
       await Geolocation.getCurrentPosition(
         position => {
-          const initialPosition = position;
           this.setState({
             position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
+            this.getDistance(position, index, story, debug_mode, radius, timeout);
         },
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
         { timeout: timeout, maximumAge: 3000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        console.log('accuracy',position.accuracy);
-        if(position.accuracy <= radius) {
-          this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-          let from = {
-            "type": "Feature",
-            "properties": {},
-              "geometry": {
-                "type": "Point",
-                "coordinates": [this.state.fromLong,this.state.fromLat ]
-              }
-            };
-            let to = {
-              "type": "Feature",
-              "properties": {},
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": story.stages[index].geometry.coordinates
-                }
-              };
-            let units = I18n.t("kilometers","kilometers");
-            let dis = distance(from, to, "kilometers");
-            if (dis && timeout > 0) {
-              this.setState({distance: dis.toFixed(3)});
-            };
-            if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
-        }
+          this.getDistance(position, index, story, debug_mode, radius, timeout);
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},
@@ -540,7 +550,7 @@ class ToPath extends Component {
     console.log('newIndex', newIndex);
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
-    this.setState({timeout: 0, index: (index+1)});
+    this.setState({timeout: 0});
     this.clearGPS();
     return this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
