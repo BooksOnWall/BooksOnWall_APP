@@ -336,7 +336,7 @@ export default class Story extends Component {
           };
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},
       );
     } catch(e) {
       console.log(e);
@@ -640,9 +640,12 @@ export default class Story extends Component {
   storyMap = () => {
     const {index, story, completed, debug_mode, distance} = this.state;
     this.setState({timeout: 0});
+    let newIndex = (completed > 0 ) ? (completed+1) : index;
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
-    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: completed, distance: distance}) ;
+    : (completed > 0)
+    ? this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance})
+    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance}) ;
   }
   toPath = () => {
     const {index, story, completed, selected, debug_mode, distance} = this.state;

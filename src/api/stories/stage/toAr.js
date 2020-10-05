@@ -118,7 +118,7 @@ export default class ToAR extends Component {
     try {
       await KeepAwake.activate();
       await this.getSelected();
-      await this.getCurrentLocation();
+      //await this.getCurrentLocation();
     } catch(e) {
       console.log(e);
     }
@@ -126,8 +126,8 @@ export default class ToAR extends Component {
   componentWillUnmount = async () => {
     try {
       await this.setState({navigatorType : UNSET, timeout:0});
-      await Geolocation.clearWatch(this.watchID);
-      this.watchID = null;
+      // await Geolocation.clearWatch(this.watchID);
+      // this.watchID = null;
       await KeepAwake.deactivate();
     } catch(e) {
       console.log(e);
@@ -148,6 +148,7 @@ export default class ToAR extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
+        console.log('accuracy',position.accuracy);
         this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",

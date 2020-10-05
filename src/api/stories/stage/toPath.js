@@ -274,9 +274,10 @@ class ToPath extends Component {
             fromLong: position.coords.longitude});
         },
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-        { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
+        { timeout: timeout, maximumAge: 3000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
+        console.log('accuracy',position.accuracy);
         this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
         let from = {
           "type": "Feature",
@@ -302,7 +303,7 @@ class ToPath extends Component {
           if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
-      {timeout: timeout, maximumAge: 1000, enableHighAccuracy: true, distanceFilter: 1},
+      {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},
       );
     } catch(e) {
       console.log(e);
