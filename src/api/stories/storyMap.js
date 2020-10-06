@@ -23,6 +23,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {featureCollection, feature} from '@turf/helpers';
 import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
 // import PulseCircle from './stage/mapbox-gl/PulseCircleLayer';
+import {getScore} from '../stats/score';
 
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -188,6 +189,7 @@ class StoryMap extends Component {
       offlinePack: null,
       routeSimulator: null,
       route: null,
+      score: null,
       currentPoint: null,
       styleURL: MapboxGL.StyleURL.Dark, // todo import story map styles
       server: this.props.screenProps.server,
@@ -203,6 +205,25 @@ class StoryMap extends Component {
     };
     console.log('styleURL', this.state.styleURL);
     this.onStart = this.onStart.bind(this);
+  }
+  getNav = async () => {
+    const {story, AppDir, routes} = this.state;
+
+      try {
+        const sid = story.id;
+        const ssid = 0;
+        const order =1;
+        const path = AppDir + '/stories/'+sid+'/';
+        console.log('path',path);
+        const score = await getScore({sid, ssid, order, path});
+        console.log('score',score);
+        const toPath = (score.complete === routes.length) ? false : true;
+        this.setState({toPath: toPath, score, selected: score.selected, completed: score.completed, index: score.index});
+        if (score.index > 0)   this.goTo(routes[score.index].coordinates, false);
+        return score;
+      } catch(e) {
+        console.log(e.message);
+      }
   }
   showDistance = () => (this.state.distance) ? this.state.distance : ''
   getMapTheme = async () => {
@@ -249,6 +270,7 @@ class StoryMap extends Component {
     try {
       await this.offlineLoad();
       MapboxGL.setTelemetryEnabled(false);
+      await this.getNav();
       await this.setItinerary();
       await request(
         Platform.select({
@@ -262,15 +284,8 @@ class StoryMap extends Component {
           ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
         }),
       );
-
       await this.getCurrentLocation();
-
-      await this.history();
       await this.getMapTheme();
-
-
-      //await findCoordinates();
-
     } catch(e) {
       console.log(e);
     }
@@ -443,34 +458,6 @@ class StoryMap extends Component {
   }
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
-  }
-  history= async () =>  {
-    const {AppDir, routes, index, selected} = this.state;
-    // get history from file
-    const storyHF = AppDir + '/stories/' + this.state.story.id + '/complete.txt';
-    console.log(storyHF);
-    // // check if file exist
-    await RNFS.exists(storyHF)
-    .then( (exists) => {
-        if (exists) {
-            console.log("History File exist");
-            // get id from file
-            RNFetchBlob.fs.readFile(storyHF, 'utf8')
-            .then((data) => {
-              // handle the data ..
-              const toPath = (parseInt(data) === routes.length) ? false : true;
-              this.setState({toPath: toPath, completed: parseInt(data), selected: (parseInt(data))});
-              if (data > 0)   this.goTo(routes[(parseInt(data)-1)].coordinates, false);
-              return data;
-            })
-        } else {
-            console.log("File need to be created with index 1");
-            RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
-              this.setState({completed: 0});
-              console.log('file created');
-             });
-        }
-    });
   }
   enterStage = (e) => {
     const {distance} = this.state;

@@ -8,22 +8,25 @@ const getScore = async ({sid, ssid, order, path}) => {
   // // check if file exist
   try {
    const storyHF = path + 'nav.json';
+   console.log('path', storyHF);
    const nav = {
      index: (order > 0) ? (order-1) : 0,
      selected: (order) ? order : 1,
-     completed: null,
+     completed: 0,
    };
    console.log('nav',nav);
    return await RNFS.exists(storyHF)
    .then( (exists) => {
        if (exists) {
-           // get id from file
+           // get nav from file
            return RNFetchBlob.fs.readFile(storyHF, 'utf8')
-           .then((data) => {
-             return JSON.parse(data);
+           .then((nav) => {
+             return JSON.parse(nav);
            })
        } else {
-           return RNFetchBlob.fs.createFile(storyHF, JSON.stringify(nav), 'utf8').then(()=>{
+         const navString = JSON.stringify(nav);
+         console.log('navString',navString);
+           return RNFetchBlob.fs.createFile(storyHF, navString, 'utf8').then((data)=>{
              return nav;
            });
        }
@@ -33,12 +36,12 @@ const getScore = async ({sid, ssid, order, path}) => {
   }
 
 }
-const addNewIndex = async ({sid, ssid, order, path, newIndex}) => {
+const addNewIndex = async ({sid, ssid, order, path, newIndex, completed}) => {
   try {
     // // check if complete need to be updated
     const nav = {
       index: newIndex,
-      selected: selected,
+      selected: (newIndex+1),
       completed: completed,
     };
       const storyHF = path + 'nav.json'

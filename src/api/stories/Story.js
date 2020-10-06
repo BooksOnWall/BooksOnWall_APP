@@ -96,26 +96,28 @@ export default class Story extends Component {
   }
   getNav = async () => {
     const {story, appDir} = this.state;
-    const sid = story.id;
-    if(this.isInstalled(sid)) {
+
       try {
+        const sid = story.id;
+        const ssid = 0;
+        const order =1;
         const path = appDir + '/stories/'+sid+'/';
-        const score = await getScore(sid, 0, 0, path);
-        console.log('score',score);
         console.log('path',path);
+        const score = await getScore({sid, ssid, order, path});
+        console.log('score',score);
+
         this.setState({score, selected: score.selected, completed: score.completed, index: score.index});
         return score;
       } catch(e) {
         console.log(e.message);
       }
-    }
   }
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
       await this.networkCheck();
       await this.storyCheck();
-      await this.getNav();
+
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -286,11 +288,11 @@ export default class Story extends Component {
   }
   storyCheck = async () => {
     let { story } = this.state;
-    console.log('story',story)
     const sid = story.id;
     try {
         story.isInstalled = await this.isInstalled(sid);
         this.setState({story: story});
+        if(story.isInstalled) await this.getNav();
         //if(story.isInstalled) await this.getSelected();
     } catch(e) {
       console.log(e);

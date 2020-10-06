@@ -184,8 +184,25 @@ class ToPath extends Component {
     };
     this.onStart = this.onStart.bind(this);
   }
+  getNav = async () => {
+    const {story, AppDir} = this.state;
 
-  onStart() {
+      try {
+        const sid = story.id;
+        const ssid = 0;
+        const order =1;
+        const path = AppDir + '/stories/'+sid+'/';
+        console.log('path',path);
+        const score = await getScore({sid, ssid, order, path});
+        console.log('score',score);
+
+        this.setState({score, selected: score.selected, completed: score.completed, index: score.index});
+        return score;
+      } catch(e) {
+        console.log(e.message);
+      }
+  }
+  onStart = () => {
     const {route} = this.state;
     const routeSimulator = new RouteSimulator(route);
     routeSimulator.addListener(currentPoint => this.setState({currentPoint}));
@@ -195,7 +212,8 @@ class ToPath extends Component {
   componentDidMount = async () => {
     try {
       await this.offlineLoad();
-      await this.getSelected();
+      await this.getNav();
+
       MapboxGL.setTelemetryEnabled(false);
       await this.setItinerary();
       await this.audioPlay();
@@ -237,7 +255,7 @@ class ToPath extends Component {
       this.setState({
         route: makeLineString(res.body.routes[0].geometry.coordinates),
       });
-      this.onStart();
+      //this.onStart();
     }
   }
   getDistance = async (position, index, story, debug_mode, radius, timeout) => {
@@ -319,30 +337,6 @@ class ToPath extends Component {
     this.cancelTimeout();
     Geolocation.clearWatch(this.watchID);
     this.watchID = null;
-  }
-  getSelected = async() => {
-    try {
-      const {AppDir, story, index} = this.state;
-      // get history from file
-      try {
-        // get history from file
-        //const index = this.props.navigation.getParam('index');
-        console.log('index', index)
-        const sid = story.id;
-        const ssid = story.stages[index].id;
-        const order = story.stages[index].stageOrder;
-        const path = AppDir + '/stories/' + story.id + '/';
-        let completed = await getScore({sid, ssid, order, path, index});
-        completed = parseInt(completed);
-        mselected = (completed && completed > 0) ? completed : 1;
-        await this.setState({completed: parseInt(completed), selected: parseInt(mselected)});
-      } catch (e) {
-        console.log(e);
-      }
-    } catch(e) {
-      console.log(e);
-    }
-
   }
   renderRoute = (layerStyles) => {
     const {route} = this.state;

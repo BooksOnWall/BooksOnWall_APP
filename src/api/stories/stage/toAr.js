@@ -226,13 +226,14 @@ export default class ToAR extends Component {
     const ssid = story.stages[index].id;
     const order = story.stages[index].stageOrder;
     const path = appDir + '/stories/' + story.id + '/';
+    completed = (newIndex+1);
     console.log('completed', completed);
     console.log('index', index);
     if (newIndex) {
       console.log('new index', newIndex);
       // get history from file
       try  {
-        await addNewIndex({sid, ssid, order, path , newIndex });
+        await addNewIndex({sid, ssid, order, path , newIndex, completed });
         // clean audio
         this.setState({imageTracking: false,finishAll: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
         if(this.woosh) this.woosh.release();
@@ -242,7 +243,7 @@ export default class ToAR extends Component {
       }
     } else {
       newIndex = story.stages.length;
-      await addNewIndex({sid, ssid, order, path , newIndex });
+      await addNewIndex({sid, ssid, order, path , newIndex, completed });
       if(!debug_mode) {
         const name="Finish story";
         const AppDir = appDir;
