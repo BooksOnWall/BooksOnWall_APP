@@ -23,7 +23,8 @@ import {unzip} from 'react-native-zip-archive';
 import NetInfo from "@react-native-community/netinfo";
 import {getStat, setStat} from "../stats/stats";
 import {getScore} from '../stats/score';
-registerCustomIconType('booksonwall', IconSet);
+
+registerCustomIconType('booksonWall', IconSet);
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -504,12 +505,19 @@ export default class Story extends Component {
         margin: 0,
         padding: 0
       },
-      p: { fontFamily: 'Roboto-Light',
+      p: {
+        fontFamily: 'Roboto-Light',
       },
       b: { fontFamily: 'Roboto-bold'
       },
-      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 6, paddingVertical: 6 },
-      button: { marginHorizontal: 3, backgroundColor: story.theme.color2}
+      li: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 9,
+        textTransform: 'uppercase',
+        color: story.theme.color3,
+      },
+      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 12 },
+      button: { backgroundColor: story.theme.color2},
       });
     const creditsThemeSheet = StyleSheet.create({
       p: {
@@ -521,6 +529,7 @@ export default class Story extends Component {
           marginTop: 0,
           marginBottom: 0,
           marginHorizontal: 0,
+          textAlign: 'center'
         },
         br: {
           marginTop: 0,
@@ -602,28 +611,27 @@ export default class Story extends Component {
         container: {
           flex: 1,
           alignItems: 'center',
-          flex: 1,
           backgroundColor: '#D8D8D8',
           padding: 20,
         },
         i:{
-          fontSize: 24,
+          fontSize: 32,
           fontFamily: story.theme.font2
         }
       });
       const ButtonGroup = () => {
         return (
           <View style={themeSheet.nav}>
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 24, color: 'white'}}/>
+          <TouchableOpacity style={{flex:1, flexGrow: 1, paddingHorizontal: 10}}  onPress={() => this.deleteStory(story.id)} >
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'BooksonWall', size: 32, color: 'white'}}/>
           </TouchableOpacity>
           {distance && (
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchNavigation()}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
+          <TouchableOpacity style={{flex:2, flexGrow: 2}} onPress={() => this.launchNavigation()}>
+            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'BooksonWall', size: 32, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
+          <TouchableOpacity style={{flex:2, flexGrow: 2}} onPress={() => this.storyMap()} >
+            <Button buttonStyle={themeSheet.button} icon={{name: 'play', type:'BooksonWall', size: 32, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
         );
@@ -634,7 +642,7 @@ export default class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            {(story.isInstalled) ? <ButtonGroup /> : <TouchableOpacity style={{flex:1, flexGrow: 1, padding: 10}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button}  loading={this.state.dlLoading}  rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonwall', size: 16, color: theme.color3}} title='Descargar esta historia' titleStyle={{color: theme.color1, fontSize: 12, textTransform: 'uppercase'}}/></TouchableOpacity> }
+            {(story.isInstalled) ? <ButtonGroup /> : <View style={themeSheet.nav}><TouchableOpacity style={{flex:1, flexGrow: 1}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button} loading={this.state.dlLoading} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonWall', size: 32, color: theme.color3}} title='Descargar esta historia' titleStyle={{color: theme.color1, fontSize: 12, textTransform: 'uppercase'}}/></TouchableOpacity></View> }
 
               <View style={themeSheet.sinopsys} >
                 <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>
@@ -650,18 +658,18 @@ export default class Story extends Component {
     )
   }
   renderNavBar = () => {
-    const {theme} = this.state;
-    return (
-      <View style={styles.navContainer}>
-        <View style={styles.statusBar} />
-        <View style={styles.navBar}>
-          <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color1}]}  onPress={() => this.props.navigation.goBack()}>
-            <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
-          </TouchableOpacity>
+      const {theme} = this.state;
+      return (
+        <View style={styles.navContainer}>
+          <View style={styles.statusBar} />
+          <View style={styles.navBar}>
+            <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => this.props.navigation.goBack()}>
+              <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    )
-  }
+      )
+    }
   storyMap = () => {
     const {index, story, completed, debug_mode, distance} = this.state;
     this.setState({timeout: 0});
@@ -704,7 +712,7 @@ export default class Story extends Component {
         <ReactNativeParallaxHeader
           headerMinHeight={HEADER_HEIGHT}
           headerMaxHeight={250}
-          extraScrollHeight={30}
+          extraScrollHeight={50}
           navbarColor={story.theme.color1}
           title={<Title/>}
           titleStyle={styles.titleStyle}
@@ -734,7 +742,7 @@ const styles = StyleSheet.create({
   },
   navContainer: {
     height: HEADER_HEIGHT,
-    marginHorizontal: 20,
+    marginHorizontal: 13,
   },
   statusBar: {
     height: STATUS_BAR_HEIGHT,
@@ -778,7 +786,6 @@ const styles = StyleSheet.create({
   iconLeft: {
     width: 45,
     height: 45,
-    backgroundColor: 'rgba(0, 0, 0, .12)',
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

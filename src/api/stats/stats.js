@@ -23,7 +23,8 @@ import {
   android,
   getAndroidId,
   getManufacturer } from 'react-native-device-info';
-registerCustomIconType('booksonwall', IconSet);
+
+registerCustomIconType('booksonWall', IconSet);
 
 const getStat = async (name, sid, ssid, debug_mode,server, AppDir, position) => {
   try {

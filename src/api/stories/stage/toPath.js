@@ -88,15 +88,8 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 const Header = ({styles, position, distance, theme, completed, story, index}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-      <Badge  value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 10, right: 10 }}/>
-      <Text style={{
-        fontSize: 26,
-        letterSpacing: 1,
-        color: "#fff",
-        textShadowColor: 'rgba(0, 0, 0, 0.85)',
-        textShadowOffset: {width: 1, height: 1},
-        textShadowRadius: 2,
-        fontFamily: story.theme.font1}} >{story.title}</Text>
+      <Badge  value={'Completed: ' + completed} badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
+      <Text style={styles.texto} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
       <Text style={styles.complete}>Complete: {completed}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
       <Text style={styles.complete}>{(position && position.coords && position.coords) ? JSON.stringify(position.coords.accuracy) : ''}</Text>
@@ -555,30 +548,57 @@ class ToPath extends Component {
         margin: 0,
         padding: 0,
         borderWidth: 0,
-        backgroundColor: theme.color1,
+        backgroundColor: theme.color2,
         alignContent: 'stretch',
-        justifyContent:'center'
+        justifyContent:'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 9 },
+        shadowOpacity: 0.9,
+        shadowRadius: 0,
+        elevation: 1,
       },
       menu: {
         backgroundColor: theme.color1,
-      }
+      },
+      button: {
+        borderRadius: 3,
+        backgroundColor: theme.color2,
+      },
+      buttonCnt: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        bottom: 16,
+        left: 0,
+        right: 0,
+      },
+      containerMenu: {
+        flex: 1,
+        borderWidth: 0,
+        backgroundColor:  theme.color2,
+      },
+      innerLine: {
+        width: 3,
+        color:theme.color2,
+      },
     });
-    const storyLocation = () => <Icon size={30} name='location' type='booksonwall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
-    const storyDestination = () => <Icon size={30} name='destiny' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
-    const storyOrigin = () =>  <Icon size={30} name='origin' type='booksonwall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
-    const launchAR = () =>  <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.switchToAR()} />;
-    const launchNavigation = () => <Icon size={30} name='route' type='booksonwall' color='#fff' onPress={() => this.launchNavigation()} />;
+    const storyLocation = () => <Icon size={32} name='location' type='booksonWall' color='#fff' onPress={() => this.goTo([this.state.position.coords.longitude,this.state.position.coords.latitude], true)} />;
+    const storyDestination = () => <Icon size={32} name='destiny' type='booksonWall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
+    const storyOrigin = () =>  <Icon size={32} name='origin' type='booksonWall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
+    const launchAR = () =>  <Icon size={32} name='isologo' type='booksonWall' color='#fff' onPress={() => this.switchToAR()} />;
+    const launchNavigation = () => <Icon size={32} name='navi' type='booksonWall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
         if(audioButton && audioPaused) {
-          return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+          return <Icon size={32} name='play' type='booksonWall' color='#fff' onPress={() => this.togglePlaySound()} />;
         } else if (audioButton && !audioPaused) {
-          return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+          return <Icon size={32} name='pause' type='booksonWall' color='#fff' onPress={() => this.togglePlaySound()} />;
         } else {
           return null;
         }
     };
 
-    const storyMapDl = () => <Icon size={30} name='download' type='booksonwall' color='#fff' onPress={() => this.offlineSave()} />;
+    const storyMapDl = () => <Icon size={32} name='download' type='booksonWall' color='#fff' onPress={() => this.offlineSave()} />;
     let MenuButtons = [];
     MenuButtons.push({ element: storyLocation});
     MenuButtons.push({ element: launchNavigation});
@@ -592,13 +612,13 @@ class ToPath extends Component {
     return (
       <View style={rstyles.footer}>
         <ButtonGroup style={rstyles.menu}
-          buttonStyle={{ backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44}}
+          buttonStyle={rstyles.button}
           onPress={this.updateMenu}
           selectedIndex={this.state.selectedMenu}
-          selectedButtonStyle= {{backgroundColor: '#750000'}}
+          selectedButtonStyle= {rstyles.button}
           buttons={MenuButtons}
-          containerStyle= {{flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0}}
-          innerBorderStyle= {{ color: '#570402' }}
+          containerStyle= {rstyles.containerMenu}
+          innerBorderStyle= {rstyles.innerLine}
         />
       </View>
     );
@@ -774,18 +794,51 @@ class ToPath extends Component {
       },
       button: {
         borderRadius: 3,
-        backgroundColor: 'blue',
+        backgroundColor: theme.color2,
       },
       header: {
         flex: 0,
         flexDirection:'column',
         alignItems:'stretch',
         minHeight: STATUS_BAR_HEIGHT,
-        backgroundColor: '#750000',
+        backgroundColor: theme.color1,
         alignContent: 'stretch',
-        justifyContent:'center'
+        justifyContent:'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -9 },
+        shadowOpacity: 0.9,
+        shadowRadius: 0,
+        padding: 1,
+        paddingHorizontal: 0
       },
-
+      footer: {
+        flex: 0,
+        flexDirection:'column',
+        alignItems:'stretch',
+        minHeight: NAV_BAR_HEIGHT,
+        margin: 0,
+        padding: 0,
+        borderWidth: 0,
+        backgroundColor: theme.color2,
+        alignContent: 'stretch',
+        justifyContent:'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 9 },
+        shadowOpacity: 0.9,
+        shadowRadius: 0,
+        elevation: 1,
+       },
+      texto: {
+        fontSize: 26,
+        letterSpacing: 1,
+        color: '#fff',
+        textShadowColor: 'rgba(0, 0, 0, 0.85)',
+        textShadowRadius: 2,
+        fontFamily: story.theme.font1
+      },
+      menu: {
+        backgroundColor: theme.color1,
+      },
       location: {
         color: "#FFF",
       },
@@ -794,6 +847,22 @@ class ToPath extends Component {
       },
       headerBackground: {
         flex: 0,
+        padding: 40,
+      },
+      badgeStyle:{
+        backgroundColor: theme.color1
+      },
+      badgeTextStyle: {
+        fontSize: 9,
+      },
+      containerMenu: {
+        flex: 1,
+        borderWidth: 0,
+        backgroundColor:  theme.color2,
+      },
+      innerLine: {
+        width: 3,
+        color:theme.color2,
       },
     });
     return (

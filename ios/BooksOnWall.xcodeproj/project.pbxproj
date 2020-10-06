@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		004155131E6144BCB018D146 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC8E40C1C36F430892E86FC8 /* libRNGestureHandler-tvOS.a */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -118,6 +117,7 @@
 		B0B0252D6E804CC3819F2DBD /* BooksonWall.otf in Resources */ = {isa = PBXBuildFile; fileRef = CB5C0143C7234E52AFE82634 /* BooksonWall.otf */; };
 		E24A862B411D49C19EC2B87E /* libRNCToolbarAndroid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85AD21FCDB34976B92FD0E6 /* libRNCToolbarAndroid.a */; };
 		3A1D0033843E4E5F9F63585D /* libMediaInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3366DFEA500E4AB797E3AC4D /* libMediaInput.a */; };
+		0250B0EA6F5E4C0C90FB3C4B /* BooksonWall.svg in Resources */ = {isa = PBXBuildFile; fileRef = 27E63496AA7040E9A976301E /* BooksonWall.svg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -714,6 +714,7 @@
 		F85AD21FCDB34976B92FD0E6 /* libRNCToolbarAndroid.a */ = {isa = PBXFileReference; name = "libRNCToolbarAndroid.a"; path = "libRNCToolbarAndroid.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		AA47924470FD41F4BC92E3A8 /* MediaInput.xcodeproj */ = {isa = PBXFileReference; name = "MediaInput.xcodeproj"; path = "../node_modules/react-native-image-keyboard/ios/MediaInput.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		3366DFEA500E4AB797E3AC4D /* libMediaInput.a */ = {isa = PBXFileReference; name = "libMediaInput.a"; path = "libMediaInput.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		27E63496AA7040E9A976301E /* BooksonWall.svg */ = {isa = PBXFileReference; name = "BooksonWall.svg"; path = "../assets/nav/BooksonWall.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1077,6 +1078,7 @@
 				C289F5A6D77A40A78386C7D6 /* RobotoCondensed-Regular.otf */,
 				5026B391FCDD4A9182B32B05 /* BooksonWall.ttf */,
 				CB5C0143C7234E52AFE82634 /* BooksonWall.otf */,
+				27E63496AA7040E9A976301E /* BooksonWall.svg */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2041,6 +2043,7 @@
 				25AFCD59879B4A93954625EA /* RobotoCondensed-Regular.otf in Resources */,
 				9861C4231D9445E8AAF391F0 /* BooksonWall.ttf in Resources */,
 				B0B0252D6E804CC3819F2DBD /* BooksonWall.otf in Resources */,
+				0250B0EA6F5E4C0C90FB3C4B /* BooksonWall.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,12 +7,13 @@ import I18n from "../../utils/i18n";
 const getScore = async ({sid, ssid, order, path}) => {
   // // check if file exist
   try {
-   const storyHF = path + 'nav.json'
+   const storyHF = path + 'nav.json';
    const nav = {
      index: (order > 0) ? (order-1) : 0,
-     selected: order,
+     selected: (order) ? order : 1,
      completed: null,
    };
+   console.log('nav',nav);
    return await RNFS.exists(storyHF)
    .then( (exists) => {
        if (exists) {
@@ -23,7 +24,7 @@ const getScore = async ({sid, ssid, order, path}) => {
            })
        } else {
            return RNFetchBlob.fs.createFile(storyHF, JSON.stringify(nav), 'utf8').then(()=>{
-             return 0;
+             return nav;
            });
        }
    });

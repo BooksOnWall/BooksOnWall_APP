@@ -28,7 +28,7 @@ import {setStat} from "../stats/stats";
 import {getScores} from '../stats/score';
 import Leaf from '../../../assets/materials/leaf.png';
 
-registerCustomIconType('booksonwall', IconSet);
+registerCustomIconType('booksonWall', IconSet);
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -57,7 +57,7 @@ const galleryPath = (storyDir, path) => {
 //const Bubbles = ({theme, themeSheet, comment}) => return (comment);
 const Reset = ({resetStory, theme, themeSheet}) => (
   <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => resetStory()}>
-    <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonwall'}} title={I18n.t("Start_again", "Start Again")}/>
+    <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
   </TouchableOpacity>
 );
 const Sponsors = ({gallery, storyDir}) => {
@@ -760,15 +760,15 @@ export default class StoryComplete extends Component {
         return (
           <View style={themeSheet.nav}>
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonwall', size: 24, color: 'white'}}/>
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonWall', size: 24, color: 'white'}}/>
           </TouchableOpacity>
           {distance && (
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchNavigation()}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'route',  type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
+            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'booksonWall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
           <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonwall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
+            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonWall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
         );
@@ -816,7 +816,7 @@ export default class StoryComplete extends Component {
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})}>
-        <Button onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
+        <Button onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
       </TouchableOpacity>
     </View>
   </View>

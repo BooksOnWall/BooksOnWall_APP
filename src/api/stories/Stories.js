@@ -302,15 +302,16 @@ export default class Stories extends Component {
       );
     }
     const size = 36;
+    const {theme} = this.state;
     return (
       <ThemeProvider>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', bottom: 'always' }}>
         <ImageBackground  style={{width: 'auto', height: '100%', backgroundColor: '#C8C1B8'}} >
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', paddingBottom: 23 }}
-            centerComponent={<Icon name='bow-logo' size={22} containerStyle={styles.logoContainer} style={styles.logo}/>}
+            centerComponent={<Icon name='bowLogo' size={24} containerStyle={styles.logoContainer} style={styles.logo}/>}
             rightComponent={<TouchableOpacity style={styles.reload}  onPress={() => this.storiesUpdate()}>
-            <Button type='clear' underlayColor='#FFFFFF' loading={this.state.loading} onPress={() => this.storiesUpdate()} iconContainerStyle={{ height: 26, width: 26}} icon={{name:'reload', size:24, color:'#887B72', type:'booksonwall'}} ></Button>
+            <Button type='clear' underlayColor='#FFFFFF' loading={this.state.loading} onPress={() => this.storiesUpdate()} iconContainerStyle={{ height: 32, width: 32}} icon={{name:'reload', size:32, color:'#887B72', type:"BooksonWall"}} ></Button>
             </TouchableOpacity>}
             />
 
@@ -380,12 +381,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   reload: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     backgroundColor: 'rgba(0, 0, 0, .12)',
-    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0
+    paddingHorizontal: 5,
+    borderRadius: 30,
   }
 });

@@ -286,18 +286,18 @@ export default class ToAR extends Component {
       togglePlaySound: this.togglePlaySound,
       toggleButtonAudio: this.toggleButtonAudio,
     };
-    const storyReload = () => <Icon size={30} name='reload' type='booksonwall' color='#fff' onPress={() => this.reload()} />;
+    const storyReload = () => <Icon size={30} name='reload' type='booksonWall' color='#fff' onPress={() => this.reload()} />;
     const sound = () => {
       if(buttonaudioPaused && !audioPaused) {
-        return <Icon size={30} name='pause' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+        return <Icon size={30} name='pause' type='booksonWall' color='#fff' onPress={() => this.togglePlaySound()} />;
       } else if(buttonaudioPaused && audioPaused) {
-        return <Icon size={30} name='play' type='booksonwall' color='#fff' onPress={() => this.togglePlaySound()} />;
+        return <Icon size={30} name='play' type='booksonWall' color='#fff' onPress={() => this.togglePlaySound()} />;
       } else {
         return null;
       }
     };
-    const storyMap = () =>  <Icon size={30} name='geopoint' type='booksonwall' color='#fff' onPress={() => this.map()} /> ;
-    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={(e) => this.next()} />;
+    const storyMap = () =>  <Icon size={30} name='geopoint' type='booksonWall' color='#fff' onPress={() => this.map()} /> ;
+    const storyNext = () => <Icon size={30} name='rightArrow' type='booksonWall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [];
     arButtons.push({ element: storyReload });
     arButtons.push({ element: storyReload });
