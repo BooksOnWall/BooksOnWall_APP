@@ -53,32 +53,7 @@ const iconstyles = {
     ],
   },
 };
-const layerStyles = {
-  origin: {
-    circleRadius: 40,
-    circleColor: '#750000',
-    circleBlur: .8,
-    circleOpacity: .9,
 
-  },
-  destination: {
-    circleRadius: 40,
-    circleColor: 'black',
-    circleBlur: .8,
-    circleOpacity: .9,
-
-  },
-  route: {
-    lineColor: '#314ccd',
-    lineCap: MapboxGL.LineJoin.Round,
-    lineWidth: 7,
-    lineOpacity: 0.84,
-  },
-  progress: {
-    lineColor: '#750000',
-    lineWidth: 5,
-  },
-};
 const circleStyles = {
   innerCircle: {
     circleStrokeWidth: 3,
@@ -376,7 +351,7 @@ class ToPath extends Component {
     }
 
   }
-  renderRoute() {
+  renderRoute = (layerStyles) => {
     const {route} = this.state;
     if (!route) {
       return null;
@@ -406,7 +381,7 @@ class ToPath extends Component {
     );
   }
 
-  renderProgressLine() {
+  renderProgressLine = (layerStyles) => {
     const {currentPoint, index, route} = this.state;
     if (!currentPoint || !route) {
       return null;
@@ -434,7 +409,7 @@ class ToPath extends Component {
   }
 
 
-  renderMarkers() {
+  renderMarkers = (layerStyles) => {
 
     const {index, currentPoint, images} = this.state;
     let backgroundColor = '#750000';
@@ -761,6 +736,32 @@ class ToPath extends Component {
   render() {
     const {unset, position, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
     if(unset) return null;
+    const layerStyles = {
+      origin: {
+        circleRadius: 40,
+        circleColor: '#750000',
+        circleBlur: .8,
+        circleOpacity: .9,
+
+      },
+      destination: {
+        circleRadius: 40,
+        circleColor: 'black',
+        circleBlur: .8,
+        circleOpacity: .9,
+
+      },
+      route: {
+        lineColor: theme.color1,
+        lineCap: MapboxGL.LineJoin.Round,
+        lineWidth: 7,
+        lineOpacity: 0.84,
+      },
+      progress: {
+        lineColor: '#750000',
+        lineWidth: 5,
+      },
+    };
     const styles = StyleSheet.create({
       buttonCnt: {
         flexDirection: 'row',
@@ -826,10 +827,10 @@ class ToPath extends Component {
             followUserMode='compass'
             onUserTrackingModeChange={false}
             />
-          {(!unset) ? this.renderMarkers() : null}
-          {this.renderRoute()}
+          {(!unset) ? this.renderMarkers(layerStyles) : null}
+          {this.renderRoute(layerStyles)}
 
-          {this.renderProgressLine()}
+          {/*this.renderProgressLine(layerStyles) */}
           <MapboxGL.UserLocation
             onUpdate={newUserLocation => this.onUserLocationUpdate(newUserLocation)}
             animated={true}
