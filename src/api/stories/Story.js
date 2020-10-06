@@ -95,16 +95,19 @@ export default class Story extends Component {
   }
   getNav = async () => {
     const {story, appDir} = this.state;
-    console.log(appDir);
-    try {
-      const path = appDir + '/stories/'+story.id+'/';
-      const score = await getScore(story.id, null, 0, path);
-      this.setState({score});
-      return score;
-    } catch(e) {
-      console.log(e.message);
+    const sid = story.id;
+    if(this.isInstalled(sid)) {
+      try {
+        const path = appDir + '/stories/'+sid+'/';
+        const score = await getScore(sid, 0, 0, path);
+        console.log('score',score);
+        console.log('path',path);
+        this.setState({score, selected: score.selected, completed: score.completed, index: score.index});
+        return score;
+      } catch(e) {
+        console.log(e.message);
+      }
     }
-
   }
   componentDidMount = async () => {
     try {
@@ -143,12 +146,17 @@ export default class Story extends Component {
   }
   getSelected = async() => {
     const {appDir, selected, index} = this.state;
-    let { story } = this.props.navigation.getParam('story');
-    if(this.isInstalled(story.id)) {
+    let { story } = this.state;
+    console.log('index', index);
+    console.log('story', story);
+    const sid = story.id;
+    if(this.isInstalled(sid)) {
       try {
         // get history from file
-        const path = appDir + '/stories/' + story.id + '/';
-        const score =  await getScore(story.id, story.stages[index].id, story.stages[index].stageOrder, path);
+        const ssid = (story.stages && index) ? story.stages[index].id : 0;
+        const order = story.stages[index].stageOrder;
+        const path = appDir + '/stories/' + sid + '/';
+        const score =  await getScore(sid, ssid, order, path);
         console.log('score',score);
         if(score.completed) {
           this.setState({completed: parseInt(score.completed), selected: parseInt(score.completed)});
@@ -276,11 +284,13 @@ export default class Story extends Component {
 
   }
   storyCheck = async () => {
-    let {story} = this.state;
+    let { story } = this.state;
+    console.log('story',story)
+    const sid = story.id;
     try {
-        story.isInstalled = await this.isInstalled(story.id);
+        story.isInstalled = await this.isInstalled(sid);
         this.setState({story: story});
-        (story.isInstalled) ? await this.getSelected() : '';
+        //if(story.isInstalled) await this.getSelected();
     } catch(e) {
       console.log(e);
     }
@@ -639,21 +649,24 @@ export default class Story extends Component {
       </>
     )
   }
-  renderNavBar = () => (
-    <View style={styles.navContainer}>
-      <View style={styles.statusBar} />
-      <View style={styles.navBar}>
-        <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.goBack()}>
-          <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
-        </TouchableOpacity>
+  renderNavBar = () => {
+    const {theme} = this.state;
+    return (
+      <View style={styles.navContainer}>
+        <View style={styles.statusBar} />
+        <View style={styles.navBar}>
+          <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color1}]}  onPress={() => this.props.navigation.goBack()}>
+            <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'left-arrow', size:24, color:'#fff', type:'booksonwall'}} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  )
+    )
+  }
   storyMap = () => {
     const {index, story, completed, debug_mode, distance} = this.state;
     this.setState({timeout: 0});
     let newIndex = (completed && completed > 0 ) ? (completed+1) : 0;
-    console.log(newIndex);
+    console.log('newIndex',newIndex);
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
     : (completed > 0)
