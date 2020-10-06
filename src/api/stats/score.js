@@ -7,17 +7,22 @@ import I18n from "../../utils/i18n";
 const getScore = async ({sid, ssid, order, path}) => {
   // // check if file exist
   try {
-   const storyHF = path + 'complete.txt'
+   const storyHF = path + 'nav.json'
+   const nav = {
+     index: (order > 0) ? (order-1) : 0,
+     selected: order,
+     completed: null,
+   };
    return await RNFS.exists(storyHF)
    .then( (exists) => {
        if (exists) {
            // get id from file
            return RNFetchBlob.fs.readFile(storyHF, 'utf8')
            .then((data) => {
-             return data;
+             return JSON.parse(data);
            })
        } else {
-           return RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
+           return RNFetchBlob.fs.createFile(storyHF, JSON.stringify(nav), 'utf8').then(()=>{
              return 0;
            });
        }
@@ -30,17 +35,22 @@ const getScore = async ({sid, ssid, order, path}) => {
 const addNewIndex = async ({sid, ssid, order, path, newIndex}) => {
   try {
     // // check if complete need to be updated
-      const storyHF = path + 'complete.txt'
+    const nav = {
+      index: newIndex,
+      selected: selected,
+      completed: completed,
+    };
+      const storyHF = path + 'nav.json'
       await RNFS.exists(storyHF)
       .then( (exists) => {
           if (exists) {
               // get write new value to file
               // rimraf file
-              return RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+              return RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(nav), 'utf8').then(()=>{
               });
 
           } else {
-              return RNFetchBlob.fs.createFile(storyHF, JSON.stringify(newIndex), 'utf8').then(()=>{
+              return RNFetchBlob.fs.createFile(storyHF, JSON.stringify(nav), 'utf8').then(()=>{
               });
           }
       });

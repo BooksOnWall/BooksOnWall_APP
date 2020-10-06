@@ -22,7 +22,7 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import {unzip} from 'react-native-zip-archive';
 import NetInfo from "@react-native-community/netinfo";
 import {getStat, setStat} from "../stats/stats";
-
+import {getScore} from '../stats/score';
 registerCustomIconType('booksonwall', IconSet);
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -81,6 +81,7 @@ export default class Story extends Component {
       themeSheet: null,
       position: null,
       mbbox: mbbox,
+      score: null,
       styleURL: MapboxGL.StyleURL.Dark,
       fromLat: null,
       fromLong: null,
@@ -92,11 +93,25 @@ export default class Story extends Component {
     this.updateDlIndex = this.updateDlIndex.bind(this);
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
   }
+  getNav = async () => {
+    const {story, appDir} = this.state;
+    console.log(appDir);
+    try {
+      const path = appDir + '/stories/'+story.id+'/';
+      const score = await getScore(story.id, null, 0, path);
+      this.setState({score});
+      return score;
+    } catch(e) {
+      console.log(e.message);
+    }
+
+  }
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
       await this.networkCheck();
       await this.storyCheck();
+      await this.getNav();
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -128,32 +143,20 @@ export default class Story extends Component {
   }
   getSelected = async() => {
     const {appDir, selected, index} = this.state;
-    let { story } = this.state;
+    let { story } = this.props.navigation.getParam('story');
     if(this.isInstalled(story.id)) {
       try {
         // get history from file
-        const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-        // // check if file exist
-        await RNFS.exists(storyHF)
-        .then( (exists) => {
-            if (exists) {
-                // get id from file
-                RNFetchBlob.fs.readFile(storyHF, 'utf8')
-                .then((data) => {
-                  // handle the data ..
-                  this.setState({completed: parseInt(data), selected: parseInt(data)});
-                  if (parseInt(data) === story.stages.length) {
-                    story.isComplete = true;
-                    this.setState({story: story});
-                  }
-                  return data;
-                })
-            } else {
-                RNFetchBlob.fs.createFile(storyHF, '0', 'utf8').then(()=>{
-                  this.setState({completed: 0, selected: 1});
-                });
-            }
-        });
+        const path = appDir + '/stories/' + story.id + '/';
+        const score =  await getScore(story.id, story.stages[index].id, story.stages[index].stageOrder, path);
+        console.log('score',score);
+        if(score.completed) {
+          this.setState({completed: parseInt(score.completed), selected: parseInt(score.completed)});
+          if (parseInt(score.completed) === story.stages.length) {
+            story.isComplete = true;
+            this.setState({story: story});
+          }
+        }
         return true;
       } catch(e) {
         console.log(e);
@@ -273,7 +276,7 @@ export default class Story extends Component {
 
   }
   storyCheck = async () => {
-    let story = this.state.story;
+    let {story} = this.state;
     try {
         story.isInstalled = await this.isInstalled(story.id);
         this.setState({story: story});
@@ -308,36 +311,40 @@ export default class Story extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        let index = (selected >= 1) ? selected : 0;
-        console.log('GPS index toPath', index);
-        console.log('stages length', story.stages.length);
-        if (index && index !== story.stages.length ) {
+        if(timeout >0) {
+          let index = (selected >= 1) ? selected : 0;
+          console.log('GPS index toPath', index);
+          console.log('stages length', story.stages.length);
+          if (index && index !== story.stages.length ) {
 
-          let toPath = Array.from(story.stages[index].geometry.coordinates);
-          this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-          let from = {
-            "type": "Feature",
-            "properties": {},
-              "geometry": {
-                "type": "Point",
-                "coordinates": [this.state.fromLong,this.state.fromLat ]
-              }
-            };
-            let to = {
+            let toPath = Array.from(story.stages[index].geometry.coordinates);
+            this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+            let from = {
               "type": "Feature",
               "properties": {},
                 "geometry": {
                   "type": "Point",
-                  "coordinates": toPath
+                  "coordinates": [this.state.fromLong,this.state.fromLat ]
                 }
               };
-            console.log('position from', from);
-            let units = I18n.t("kilometers","kilometers");
-            let dis = distance(from, to, "kilometers");
-            if (dis) {
-              this.setState({distance: dis.toFixed(3)});
-            };
+              let to = {
+                "type": "Feature",
+                "properties": {},
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": toPath
+                  }
+                };
+              console.log('position from', from);
+              let units = I18n.t("kilometers","kilometers");
+              let dis = distance(from, to, "kilometers");
+              if (dis) {
+                this.setState({distance: dis.toFixed(3)});
+              };
+          }
+
         }
+
 
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
