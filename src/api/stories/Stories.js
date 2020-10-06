@@ -308,9 +308,9 @@ export default class Stories extends Component {
         <ImageBackground  style={{width: 'auto', height: '100%', backgroundColor: '#C8C1B8'}} >
           <Header
             containerStyle={{ backgroundColor: '#C8C1B8', justifyContent: 'space-around', paddingBottom: 23 }}
-            centerComponent={<Icon name='bow-logo' size={22} containerStyle={styles.logoContainer} style={styles.logo}/>}
+            centerComponent={<Icon name='bow-logo' size={24} containerStyle={styles.logoContainer} style={styles.logo}/>}
             rightComponent={<TouchableOpacity style={styles.reload}  onPress={() => this.storiesUpdate()}>
-            <Button type='clear' underlayColor='#FFFFFF' loading={this.state.loading} onPress={() => this.storiesUpdate()} iconContainerStyle={{ height: 26, width: 26}} icon={{name:'reload', size:24, color:'#887B72', type:'booksonwall'}} ></Button>
+            <Button type='clear' underlayColor='#FFFFFF' loading={this.state.loading} onPress={() => this.storiesUpdate()} iconContainerStyle={{ height: 26, width: 26}} icon={{name:'reload', size:32, color:'#887B72', type:"BooksonWall"}} ></Button>
             </TouchableOpacity>}
             />
 

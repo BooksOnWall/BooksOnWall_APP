@@ -602,10 +602,10 @@ class StoryMap extends Component {
     const {index, routes , toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
     if(!mapTheme) return false;
     if(distance && distance !== null && (distance*1000 <= story.stages[index].radius)) this.launchAR();
-    const storyPrev = () =>  <Icon size={30} name='left-arrow' type='booksonwall' color='#fff' onPress={() => this.prev()} />;
-    const storyMapLine = () => <Icon size={30} name='map-line' type='booksonwall' color='#fff' onPress={() => this.launchMap()} />
-    const launchAR = () => <Icon size={30} name='bow-isologo' type='booksonwall' color='#fff' onPress={() => this.launchAR()} />
-    const storyNext = () => <Icon size={30} name='right-arrow' type='booksonwall' color='#fff' onPress={() => this.next()} />;
+    const storyPrev = () =>  <Icon size={30} name='leftArrow' type='booksonWall' color='#fff' onPress={() => this.prev()} />;
+    const storyMapLine = () => <Icon size={30} name='mapLine' type='booksonWall' color='#fff' onPress={() => this.launchMap()} />
+    const launchAR = () => <Icon size={30} name='isologo' type='booksonWall' color='#fff' onPress={() => this.launchAR()} />
+    const storyNext = () => <Icon size={30} name='rightArrow' type='booksonWall' color='#fff' onPress={() => this.next()} />;
     let MenuButtons = [];
      if (selected > 0) MenuButtons.push({ element: storyPrev });
      if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
@@ -679,7 +679,6 @@ class StoryMap extends Component {
        headerBackground: {
          flex: 0,
          padding: 40,
-
        },
        badgeStyle:{
          backgroundColor: theme.color1

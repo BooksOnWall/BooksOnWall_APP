@@ -8,7 +8,7 @@ import { Images } from '../../../assets/intro';
 import IconSet from '../../utils/Icon';
 import Orientation from 'react-native-orientation';
 
-registerCustomIconType('booksonwall', IconSet);
+registerCustomIconType('BooksonWall', IconSet);
 
 const slides = [
   {
@@ -17,7 +17,7 @@ const slides = [
     text: I18n.t("Invite","Welcome! We invite you to explore a story..."),
     image: Images['image1'],
     backgroundColor: '#D0CBC5',
-    icon: 'bow-isologo',
+    icon: 'isologo',
   },
   {
     key: 'p2',
@@ -25,7 +25,7 @@ const slides = [
     text: I18n.t("discover","Soon in your city"),
     image: Images['image2'],
     backgroundColor: '#D0CBC5',
-    icon: 'bow-isologo',
+    icon: 'isologo',
   },
   {
     key: 'p3',
@@ -33,7 +33,7 @@ const slides = [
     text: I18n.t("reveal","With art, music, animation..."),
     image: Images['image3'],
     backgroundColor: '#D0CBC5',
-    icon: 'bow-isologo',
+    icon: 'isologo',
   },
   {
     key: 'p4',
@@ -41,7 +41,7 @@ const slides = [
     text: I18n.t("Press","Choose the story next to you and begin the adventure."),
     image: Images['image4'],
     backgroundColor: '#D0CBC5',
-    icon: 'bow-isologo',
+    icon: 'isologo',
   },
   {
     key: 'p5',
@@ -141,7 +141,7 @@ export default class Intro extends Component {
            <Icon
               style={styles.icon}
               name={item.icon}
-              type="booksonwall"
+              type="BooksonWall"
               size={120}
               color="#fff"
               />
@@ -156,9 +156,9 @@ export default class Intro extends Component {
     return (
       <View style={styles.buttonCircle}>
         <Icon
-          name="right-arrow"
+          name="rightArrow"
           color="rgba(255, 255, 255, .9)"
-          type="booksonwall"
+          type="BooksonWall"
           size={22}
           style={{ backgroundColor: 'transparent' }}
         />
@@ -169,8 +169,8 @@ export default class Intro extends Component {
     return (
       <View style={styles.buttonCircle}>
         <Icon
-          name="md-checkmark"
-          type="ionicon"
+          name="check"
+          type="BooksonWall"
           color="rgba(255, 255, 255, .9)"
           size={20}
           style={{ backgroundColor: 'transparent' }}
