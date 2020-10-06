@@ -22,7 +22,7 @@ import  distance from '@turf/distance';
 import Geolocation from '@react-native-community/geolocation';
 import {featureCollection, feature} from '@turf/helpers';
 import {lineString as makeLineString, bbox, centroid, polygon} from '@turf/turf';
-// import PulseCircle from './mapbox-gl/PulseCircleLayer';
+// import PulseCircle from './stage/mapbox-gl/PulseCircleLayer';
 
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -58,6 +58,20 @@ const circleStyles = {
 };
 
 const layerStyles = {
+  origin: {
+    circleRadius: 40,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+
+  },
+  destination: {
+    circleRadius: 40,
+    circleColor: 'black',
+    circleBlur: .8,
+    circleOpacity: .9,
+
+  },
   route: {
     lineColor: 'white',
     lineCap: MapboxGL.LineJoin.Round,
@@ -74,7 +88,6 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Header = ({styles, distance, theme, completed, story,  index, showDistance}) => {
   let dis = showDistance();
-  console.log('dis',dis);
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
@@ -121,6 +134,7 @@ class StoryMap extends Component {
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
     const routes = stages.map((stage, i) => {
+      console.log('init stage geo',stage.geometry);
       return {coordinates: stage.geometry.coordinates};
     });
 
@@ -133,17 +147,18 @@ class StoryMap extends Component {
     const id = this.props.navigation.getParam('story').id;
     console.log('index at storymap start', index);
     const selected = index+1;
+    const prevIndex = (index > 0) ? (index-1) : null;
+    const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
     this.state = {
       featureCollection: featureCollection([]),
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: routes[index].coordinates,
-      destination: routes[(index+1)].coordinates,
+      origin: origin,
+      destination: routes[(routes.length-1)].coordinates,
       goto: routes[index].coordinates ,
       zoom: 15,
       followUserLocation: false,
-      route: null,
       stages: stages,
       routes: routes,
       mbbox: mbbox,
@@ -172,6 +187,8 @@ class StoryMap extends Component {
       selectedMenu: 0,
       offlinePack: null,
       routeSimulator: null,
+      route: null,
+      currentPoint: null,
       styleURL: MapboxGL.StyleURL.Dark, // todo import story map styles
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
@@ -208,28 +225,31 @@ class StoryMap extends Component {
     });
   }
   onStart() {
-    const routeSimulator = new RouteSimulator(this.state.route);
+    const {route} = this.state;
+    const routeSimulator = new RouteSimulator(route);
     routeSimulator.addListener(currentPoint => this.setState({currentPoint}));
     routeSimulator.start();
     this.setState({routeSimulator});
+  }
+  setItinerary = async () => {
+    const {routes, index} = this.state;
+    const reqOptions = {
+      waypoints: routes,
+      profile: 'walking',
+      geometries: 'geojson',
+    };
+
+    const res = await directionsClient.getDirections(reqOptions).send();
+    this.setState({
+      route: makeLineString(res.body.routes[0].geometry.coordinates),
+    });
+    //this.onStart();
   }
   componentDidMount = async () => {
     try {
       await this.offlineLoad();
       MapboxGL.setTelemetryEnabled(false);
-      const reqOptions = {
-        waypoints: this.state.routes,
-        profile: 'walking',
-        geometries: 'geojson',
-      };
-
-      const res = await directionsClient.getDirections(reqOptions).send();
-      await this.history();
-      await this.getMapTheme();
-      console.log(res.body.routes);
-      this.setState({
-        route: makeLineString(res.body.routes[0].geometry.coordinates),
-      });
+      await this.setItinerary();
       await request(
         Platform.select({
           android: PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION,
@@ -242,21 +262,28 @@ class StoryMap extends Component {
           ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
         }),
       );
-      //await findCoordinates();
+
       await this.getCurrentLocation();
+
+      await this.history();
+      await this.getMapTheme();
+
+
+      //await findCoordinates();
+
     } catch(e) {
       console.log(e);
     }
   }
   cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount() {
-    MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+    const {routeSimulator, story} = this.state;
+    MapboxGL.offlineManager.unsubscribe('story'+story.id);
     this.cancelTimeout();
     Geolocation.clearWatch(this.watchID);
     this.watchID = null;
-    if (this.state.routeSimulator) {
-      this.state.routeSimulator.stop();
-
+    if (routeSimulator) {
+      routeSimulator.stop();
     }
   }
   getCurrentLocation = async () => {
@@ -310,7 +337,7 @@ class StoryMap extends Component {
     const {index, story, unset, debug_mode, distance} = this.state;
     let newIndex =(parseInt(index) <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
-    this.setState({timeout: 0, index: newIndex});
+    this.setState({timeout: 0});
     this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   watchID: ?number = null;
@@ -325,42 +352,41 @@ class StoryMap extends Component {
         <MapboxGL.LineLayer
           id="routeFill"
           style={layerStyles.route}
-          belowLayerID="originInnerCircle"
+          belowLayerID="pulse"
           />
       </MapboxGL.ShapeSource>
     );
   }
 
   renderCurrentPoint() {
-    const {route, position} = this.state;
-    if (!position) {
+    const {currentPoint} = this.state;
+    if (!currentPoint) {
       return;
     }
     return (
       <PulseCircleLayer
-        shape={position}
-        aboveLayerID="destinationInnerCircle"
+        shape={currentPoint}
+        aboveLayerID="pulse"
         />
     );
   }
 
   renderProgressLine() {
-    const {route, position} = this.state;
-    if (!position) {
+    const {currentPoint, index, route} = this.state;
+    if (!currentPoint || !route) {
       return null;
     }
 
-    const {nearestIndex} = position.properties;
-    const coords = route.geometry.coordinates.filter(
-      (c, i) => i <= nearestIndex,
+    let coords = route.geometry.coordinates.filter(
+      (c, i) => i <= index,
     );
-    coords.push(position.geometry.coordinates);
-
+    coords.push(currentPoint);
     if (coords.length < 2) {
       return null;
     }
 
     const lineString = makeLineString(coords);
+
     return (
       <MapboxGL.Animated.ShapeSource id="progressSource" shape={lineString}>
         <MapboxGL.Animated.LineLayer
@@ -525,7 +551,7 @@ class StoryMap extends Component {
 
        <MapboxGL.ShapeSource
          id="StagesShapeSource"
-         hitbox={{width: 20, height: 20}}
+         hitbox={{width: 30, height: 30}}
          onPress={this.enterStage}
          shape={features}
          >
@@ -585,7 +611,6 @@ class StoryMap extends Component {
      if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
      if (toPath) MenuButtons.push({ element: storyMapLine });
      if (selected !== routes.length) MenuButtons.push({ element: storyNext});
-     console.log(MenuButtons);
      const styles = StyleSheet.create({
        buttonCnt: {
          flexDirection: 'row',
@@ -630,6 +655,7 @@ class StoryMap extends Component {
          shadowOffset: { width: 0, height: 9 },
          shadowOpacity: 0.9,
          shadowRadius: 0,
+         zIndex: 1200,
          elevation: 1,
         },
        containerMenu: {
@@ -693,7 +719,10 @@ class StoryMap extends Component {
             followUserMode='compass'
             onUserTrackingModeChange={false}
             />
-            {this.renderStages()}
+
+          {this.renderStages()}
+          {this.renderRoute()}
+          {this.renderProgressLine()}
         </MapboxGL.MapView>
         <Footer
           MenuButtons={MenuButtons}

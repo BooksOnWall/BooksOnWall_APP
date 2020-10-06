@@ -136,6 +136,7 @@ class ToPath extends Component {
   };
   constructor(props) {
     super(props);
+    const index = this.props.navigation.getParam('index');
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
 
@@ -148,7 +149,7 @@ class ToPath extends Component {
 
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
-    const index = this.props.navigation.getParam('index');
+
     const sid = this.props.navigation.getParam('story').id;
     const ssid = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].id;
     const order = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].stageOrder;
@@ -217,20 +218,18 @@ class ToPath extends Component {
   }
 
   onStart() {
-    const routeSimulator = new RouteSimulator(this.state.route);
+    const {route} = this.state;
+    const routeSimulator = new RouteSimulator(route);
     routeSimulator.addListener(currentPoint => this.setState({currentPoint}));
     routeSimulator.start();
     this.setState({routeSimulator});
   }
   componentDidMount = async () => {
-    const {routes} = this.state;
-
     try {
       await this.offlineLoad();
       await this.getSelected();
       MapboxGL.setTelemetryEnabled(false);
       await this.setItinerary();
-
       await this.audioPlay();
 
       await request(
@@ -253,17 +252,25 @@ class ToPath extends Component {
     }
   }
   setItinerary = async () => {
-    const reqOptions = {
-      waypoints: this.state.routes,
-      profile: 'walking',
-      geometries: 'geojson',
-    };
-    const index = this.props.navigation.getParam('index');
-    const res = await directionsClient.getDirections(reqOptions).send();
-    console.log('res',res.body.routes);
-    return this.setState({
-      route: makeLineString(res.body.routes[0].geometry.coordinates),
-    });
+    const {routes, index} = this.state;
+    let points = routes.slice((index-1), index+1);
+    console.log('points',points);
+    console.log('index',index);
+    console.log('routes',routes);
+    if(index > 0) {
+      const reqOptions = {
+        waypoints: points,
+        profile: 'walking',
+        geometries: 'geojson',
+      };
+
+      const res = await directionsClient.getDirections(reqOptions).send();
+
+      this.setState({
+        route: makeLineString(res.body.routes[0].geometry.coordinates),
+      });
+      this.onStart();
+    }
   }
   getDistance = async (position, index, story, debug_mode, radius, timeout) => {
     try {
@@ -380,39 +387,41 @@ class ToPath extends Component {
         <MapboxGL.LineLayer
           id="routeFill"
           style={layerStyles.route}
-          belowLayerID="originInnerCircle"
+          belowLayerID="destination"
           />
       </MapboxGL.ShapeSource>
     );
   }
 
   renderCurrentPoint() {
-    const {position} = this.state;
-    if (!position) {
+    const {currentPoint} = this.state;
+    if (!currentPoint) {
       return;
     }
     return (
       <PulseCircleLayer
-        shape={position.coords}
-        aboveLayerID="destinationInnerCircle"
+        shape={currentPoint}
+        aboveLayerID="destination"
         />
     );
   }
 
   renderProgressLine() {
-    const {position, index, route} = this.state;
-    if (!position || !route) {
+    const {currentPoint, index, route} = this.state;
+    if (!currentPoint || !route) {
       return null;
     }
+    console.log('route',route);
     let coords = route.geometry.coordinates.filter(
       (c, i) => i <= index,
     );
-    coords.push(position.coords);
+    coords.push(currentPoint);
     if (coords.length < 2) {
       return null;
     }
-
+    console.log('coords', coords);
     const lineString = makeLineString(coords);
+    console.log('linestring',lineString);
     return (
       <MapboxGL.Animated.ShapeSource id="progressSource" shape={lineString}>
         <MapboxGL.Animated.LineLayer
@@ -427,9 +436,9 @@ class ToPath extends Component {
 
   renderMarkers() {
 
-    const {index, images} = this.state;
+    const {index, currentPoint, images} = this.state;
     let backgroundColor = '#750000';
-    if (this.state.currentPoint) {
+    if (currentPoint) {
       backgroundColor = '#314ccd';
     }
 
@@ -560,10 +569,8 @@ class ToPath extends Component {
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
-    const {routeSimulator, theme, completed, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
-    if (this.state.routeSimulator) {
-      return null;
-    }
+    const {theme, completed, index, audioButton, audioPaused, unset, debug_mode, distance, radius} = this.state;
+
     const rstyles = StyleSheet.create({
       footer: {
         flex: 0,
@@ -821,7 +828,7 @@ class ToPath extends Component {
             />
           {(!unset) ? this.renderMarkers() : null}
           {this.renderRoute()}
-          {this.renderCurrentPoint()}
+
           {this.renderProgressLine()}
           <MapboxGL.UserLocation
             onUpdate={newUserLocation => this.onUserLocationUpdate(newUserLocation)}
