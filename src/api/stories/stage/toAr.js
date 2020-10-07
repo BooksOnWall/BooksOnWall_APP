@@ -11,6 +11,7 @@ import {
 import { ViroARSceneNavigator} from 'react-viro';
 import { DEBUG_MODE } from '@env';
 import KeepAwake from 'react-native-keep-awake';
+import { withNavigationFocus } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
 import { ButtonGroup } from 'react-native-elements';
 import Icon from "../../../utils/Icon";
@@ -62,17 +63,13 @@ const DebugArea = ({distance, debug}) => {
   </View>
   );
 };
-export default class ToAR extends Component {
+class ToAR extends Component {
   constructor(props) {
     super(props);
-    const index = this.props.navigation.getParam('index');
+
     const sid = this.props.navigation.getParam('story').id;
-    const ssid = this.props.navigation.getParam('story').stages[index].id;
-    const order = this.props.navigation.getParam('story').stages[index].stageOrder;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
-    const scene_type = this.props.navigation.getParam('story').stages[index].scene_type;
-    const scene_options = this.props.navigation.getParam('story').stages[index].scene_options;
-    console.log('index', index);
+
     this.state = {
       navigatorType : defaultNavigatorType,
       server: this.props.screenProps.server,
@@ -81,7 +78,7 @@ export default class ToAR extends Component {
       story: this.props.navigation.getParam('story'),
       position: this.props.navigation.getParam('position'),
       arIndex: -1,
-      selected: 0,
+      selected: null,
       finishAll: false,
       completed: null,
       buttonaudioPaused: true,
@@ -91,24 +88,19 @@ export default class ToAR extends Component {
       imageTracking: true,
       timeout: 10000,
       distance: this.props.navigation.getParam('distance'),
-      radius: this.props.navigation.getParam('story').stages[index].radius,
+      radius: null,
       initialPosition: null,
       fromLat: null,
       fromLong: null,
       toLong: null,
       toLat: null,
       lastPosition: null,
-      scene_type: scene_type,
-      scene_options: scene_options,
-      index: index,
-      stage: this.props.navigation.getParam('story').stages[index],
+      scene_type: null,
+      scene_options: null,
+      index: null,
+      stage: null,
       sharedProps : sharedProps
     }
-    console.log('index', this.props.navigation.getParam('index'));
-    console.log('stage', this.props.navigation.getParam('story').stages[index]);
-    console.log('scene_options', scene_options);
-    console.log('scene type',sceneTypes[scene_type]);
-    console.log('selected', this.state.selected);
   }
   static navigationOptions = {
     title: 'To Augmented Reality',
@@ -117,7 +109,7 @@ export default class ToAR extends Component {
   componentDidMount = async () => {
     try {
       await KeepAwake.activate();
-      await this.getSelected();
+      await this.getNav();
       //await this.getCurrentLocation();
     } catch(e) {
       console.log(e);
@@ -132,6 +124,40 @@ export default class ToAR extends Component {
     } catch(e) {
       console.log(e);
     }
+  }
+  getNav = async () => {
+    const {story, appDir} = this.state;
+
+      try {
+        const sid = story.id;
+        const path = appDir + '/stories/'+sid+'/';
+        console.log('path',path);
+        const score = await getScore({sid, ssid, order, path});
+        const index = score.index;
+        console.log('score',score);
+        const stage = story.stages[index];
+        const ssid = stage.id;
+        const order = stage.stageOrder;
+        const radius = stage.radius;
+        const scene_type = stage.scene_type;
+        const scene_options = stage.scene_options;
+        const unset = false;
+        this.setState({
+          score,
+          order,
+          stage,
+          radius,
+          unset,
+          scene_type,
+          scene_options,
+          selected: score.selected,
+          completed: score.completed,
+          index
+        });
+        return score;
+      } catch(e) {
+        console.log(e.message);
+      }
   }
   getCurrentLocation = async () => {
     let {story, index, timeout} = this.state;
@@ -192,27 +218,6 @@ export default class ToAR extends Component {
     this.setState({ imageTracking: false, buttonaudioPaused: true, audioPaused: true, timeout: 0, finishAll: false, navigatorType : UNSET });
     this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
-
-  getSelected = async() => {
-      let {appDir, story, selected, index} = this.state;
-
-      try {
-        // get history from file
-        const storyHF = appDir + '/stories/' + story.id + '/complete.txt';
-        const sid = story.id;
-        let ssid = story.stages[index].id;
-        let order = story.stages[index].stageOrder;
-        const path = appDir + '/stories/' + story.id + '/';
-        let completed = await getScore({sid, ssid, order, path});
-        console.log('completed', completed);
-        console.log('index', index);
-        mselected = (completed && completed > 0) ? completed : 1;
-        this.setState({completed: parseInt(completed), selected: parseInt(mselected)});
-      } catch (e) {
-        console.log(e);
-      }
-
-  }
   toggleButtonAudio = () => this.setState({buttonaudioPaused: !this.state.buttonaudioPaused})
   togglePlaySound = () => this.setState({audioPaused: !this.state.audioPaused})
   activateAR = () => this.setState({imageTracking: true})
@@ -237,7 +242,7 @@ export default class ToAR extends Component {
         // clean audio
         this.setState({imageTracking: false,finishAll: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
         if(this.woosh) this.woosh.release();
-        return await this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance} );
+        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, unset: false, distance: distance} );
       } catch(e) {
         console.log(e);
       }
@@ -258,6 +263,7 @@ export default class ToAR extends Component {
   // if you are building a specific type of experience.
   render() {
     const { distance, debug_mode, imageTracking, finishAll, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
+    if(index === null) return null;
     let params = {
       sharedProps: sharedProps,
       server: server,
@@ -367,3 +373,4 @@ var styles = StyleSheet.create({
     backgroundColor: '#750000'
   }
 });
+export default withNavigationFocus(ToAR);

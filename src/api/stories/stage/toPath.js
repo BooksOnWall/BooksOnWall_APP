@@ -3,6 +3,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {NativeModules,Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button, ButtonGroup, Icon, Badge} from 'react-native-elements';
+import { withNavigationFocus } from 'react-navigation';
 import {lineString as makeLineString, bbox} from '@turf/turf';
 import Toast from 'react-native-simple-toast';
 import RouteSimulator from './mapbox-gl/showDirection/RouteSimulator';
@@ -85,7 +86,7 @@ const circleStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({styles, position, distance, theme, completed, story, index}) => (
+const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
       <Badge  value={'Completed: ' + completed} badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
@@ -93,6 +94,9 @@ const Header = ({styles, position, distance, theme, completed, story, index}) =>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
       <Text style={styles.complete}>Complete: {completed}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
       <Text style={styles.complete}>{(position && position.coords && position.coords) ? JSON.stringify(position.coords.accuracy) : ''}</Text>
+
+        <Button title="Go AR" onPress={() => switchToAR()} />
+        <Text>{isFocused ? 'Focused' : 'Not focused'}</Text>
     </ImageBackground>
   </View>
 );
@@ -121,7 +125,6 @@ class ToPath extends Component {
     const sid = this.props.navigation.getParam('story').id;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
 
-
     this.state = {
       prevLatLng: null,
       track: null,
@@ -133,7 +136,7 @@ class ToPath extends Component {
       destination: null,
       goto: null ,
       zoom: 18,
-      unset: false,
+      unset: (this.props.isFocused) ? false : true,
       followUserLocation: true,
       route: null,
       stages: stages,
@@ -154,6 +157,7 @@ class ToPath extends Component {
       fromLong: null,
       toLong: null,
       toLat: null,
+      count: 0,
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -177,6 +181,7 @@ class ToPath extends Component {
       location: [],
       position: {},
     };
+
     this.onStart = this.onStart.bind(this);
   }
   getNav = async () => {
@@ -228,10 +233,20 @@ class ToPath extends Component {
     routeSimulator.start();
     this.setState({routeSimulator});
   }
+  load = async () => {
+    this.setState({unset: false});
+    return await this.getNav();
+  }
   componentDidMount = async () => {
     try {
-      await this.offlineLoad();
+
+      const { navigation } = this.props;
+    //Adding an event listner om focus
+    //So whenever the screen will have focus it will set the state to zero
+      this.props.navigation.addListener('willFocus',this.load)
       await this.getNav();
+      await this.offlineLoad();
+
       MapboxGL.setTelemetryEnabled(false);
       await this.setItinerary();
       await this.audioPlay();
@@ -346,9 +361,8 @@ class ToPath extends Component {
     MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
 
     this.clearGPS();
-    if (routeSimulator) {
-      routeSimulator.stop();
-    }
+    if(routeSimulator) routeSimulator.stop();
+    if(this.focusListener) this.focusListener.remove();
     this.setState({unset: true});
   }
   clearGPS = () => {
@@ -545,8 +559,8 @@ class ToPath extends Component {
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
     this.clearGPS();
-    this.setState({unset: true});
-    if (timeout > 0) this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
+
+    if (timeout === 0) this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, debug: debug_mode, distance: distance});
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
@@ -767,10 +781,11 @@ class ToPath extends Component {
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
+    const { navigate } = this.props.navigation;
     const {unset, position, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
     console.log('unset',unset);
     console.log('index',index);
-    if(unset || index === null ) return null;
+    if(unset || index === null || !this.props.isFocused ) return null;
     const layerStyles = {
       origin: {
         circleRadius: 40,
@@ -882,12 +897,16 @@ class ToPath extends Component {
     });
     return (
       <Page {...this.props}>
+
         <Header
           distance={distance}
           theme={theme}
           completed={completed}
           story={story}
+          switchToAR={this.switchToAR}
+          isFocused={this.props.isFocused}
           position={position}
+          navigate={navigate}
           styles={styles}
           index={index}
           />
@@ -927,4 +946,4 @@ class ToPath extends Component {
   }
 }
 
-export default ToPath;
+export default withNavigationFocus(ToPath);
