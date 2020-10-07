@@ -550,11 +550,14 @@ class ToPath extends Component {
   }
   switchToAR = async () => {
     const {index, timeout, story, unset, debug_mode, selected, completed, distance} = this.state;
+    console.log('index', index);
+    console.log('timeout', timeout);
+    console.log('unset', unset);
     try {
       let newIndex =(index <= story.stages.length) ? (index+1) : story.stages.length;
       newIndex = (index === 0 && selected === 1 && completed === 0) ? 0 : newIndex;
-      await Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
-      this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, debug: debug_mode, distance: distance});
+      Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
+      this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
     } catch(e) {
       console.log(e.message);
     }

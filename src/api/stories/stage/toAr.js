@@ -112,7 +112,8 @@ class ToAR extends Component {
     const { navigation } = this.props;
     try {
       await KeepAwake.activate();
-      this.props.navigation.addListener('willFocus',this.load);
+      await navigation.addListener('willFocus',this.load);
+      await this.getNav();
       //await this.getCurrentLocation();
     } catch(e) {
       console.log(e);
@@ -132,16 +133,17 @@ class ToAR extends Component {
   getNav = async () => {
     const {story, appDir} = this.state;
       try {
+        console.log('getNav');
         const sid = story.id;
         const path = appDir + '/stories/'+sid+'/';
         console.log('path',path);
         const score = await getScore({sid, ssid, order, path});
-        const index = score.index;
+        const index = parseInt(score.index);
         console.log('score',score);
         const stage = story.stages[index];
-        const ssid = stage.id;
-        const order = stage.stageOrder;
-        const radius = stage.radius;
+        const ssid = parseInt(stage.id);
+        const order = parseInt(stage.stageOrder);
+        const radius = parseFloat(stage.radius);
         const scene_type = stage.scene_type;
         const scene_options = stage.scene_options;
 
@@ -153,8 +155,9 @@ class ToAR extends Component {
           timeout: 10000,
           scene_type,
           scene_options,
-          selected: score.selected,
-          completed: score.completed,
+          navigatorType: defaultNavigatorType,
+          selected: parseInt(score.selected),
+          completed: parseInt(score.completed),
           index
         });
         return score;
@@ -266,7 +269,8 @@ class ToAR extends Component {
   // if you are building a specific type of experience.
   render() {
     const { distance, debug_mode, imageTracking, finishAll, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
-    if(index === null) return null;
+    console.log('index',index);
+    if(index === null || !this.props.isFocused) return null;
     let params = {
       sharedProps: sharedProps,
       server: server,
