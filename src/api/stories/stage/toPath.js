@@ -104,7 +104,7 @@ class ToPath extends Component {
   };
   constructor(props) {
     super(props);
-    const index = this.props.navigation.getParam('index');
+
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
 
@@ -119,14 +119,9 @@ class ToPath extends Component {
     var mbbox = bbox(line);
 
     const sid = this.props.navigation.getParam('story').id;
-    const ssid = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].id;
-    const order = this.props.navigation.getParam('story').stages[this.props.navigation.getParam('index')].stageOrder;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
-    const prevIndex = (index > 0) ? (index-1) : null;
-    const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
-    const radius = parseFloat(stages[index].radius);
-    console.log('radius', radius);
-    console.log('index', index);
+
+
     this.state = {
       prevLatLng: null,
       track: null,
@@ -134,9 +129,9 @@ class ToPath extends Component {
       latitude: null,
       record: null,
       showUserLocation: true,
-      origin: origin,
-      destination: routes[index].coordinates,
-      goto: (location) ? location : routes[index].coordinates ,
+      origin: null,
+      destination: null,
+      goto: null ,
       zoom: 18,
       unset: false,
       followUserLocation: true,
@@ -153,7 +148,7 @@ class ToPath extends Component {
       },
       timeout: 5000,
       distance: this.props.navigation.getParam('distance'), // in kilometers
-      radius: radius, // in meters
+      radius: null, // in meters
       position: null,
       fromLat: null,
       fromLong: null,
@@ -169,15 +164,15 @@ class ToPath extends Component {
       storyDir: this.props.screenProps.AppDir + '/stories/',
       story: this.props.navigation.getParam('story'),
       order: this.props.navigation.getParam('order'),
-      index: index,
+      index: null,
       selected: null,
       completed: null,
       audioPaused: false,
       audioButton: false,
-      fromLat: origin[1],
-      fromLong: origin[0],
-      toLat: routes[index].coordinates[1],
-      toLong: routes[index].coordinates[0],
+      fromLat: null,
+      fromLong: null,
+      toLat: null,
+      toLong: null,
       theme: this.props.navigation.getParam('story').theme,
       location: [],
       position: {},
@@ -185,18 +180,42 @@ class ToPath extends Component {
     this.onStart = this.onStart.bind(this);
   }
   getNav = async () => {
-    const {story, AppDir} = this.state;
-
+    const {story, AppDir, routes, location} = this.state;
       try {
         const sid = story.id;
-        const ssid = 0;
-        const order =1;
         const path = AppDir + '/stories/'+sid+'/';
         console.log('path',path);
         const score = await getScore({sid, ssid, order, path});
         console.log('score',score);
-
-        this.setState({score, selected: score.selected, completed: score.completed, index: score.index});
+        const index= score.index;
+        const prevIndex = (index > 0) ? (index-1) : null;
+        const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
+        const radius = parseFloat(story.stages[index].radius);
+        const ssid = story.stages[index].id;
+        const order = story.stages[index].stageOrder;
+        const goto = routes[index].coordinates;
+        const destination = routes[index].coordinates;
+        const fromLat = origin[1];
+        const fromLong = origin[0];
+        const toLat= routes[index].coordinates[1];
+        const toLong= routes[index].coordinates[0];
+        this.setState({
+          prevIndex,
+          origin,
+          radius,
+          ssid,
+          goto,
+          destination,
+          fromLat,
+          fromLong,
+          toLat,
+          toLong,
+          order,
+          score,
+          selected: score.selected,
+          completed: score.completed,
+          index,
+        });
         return score;
       } catch(e) {
         console.log(e.message);
@@ -213,7 +232,6 @@ class ToPath extends Component {
     try {
       await this.offlineLoad();
       await this.getNav();
-
       MapboxGL.setTelemetryEnabled(false);
       await this.setItinerary();
       await this.audioPlay();
@@ -527,6 +545,7 @@ class ToPath extends Component {
     Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
     if(this.whoosh) this.whoosh.release();
     this.clearGPS();
+    this.setState({unset: true});
     if (timeout > 0) this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
@@ -749,7 +768,9 @@ class ToPath extends Component {
   }
   render() {
     const {unset, position, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
-    if(unset) return null;
+    console.log('unset',unset);
+    console.log('index',index);
+    if(unset || index === null ) return null;
     const layerStyles = {
       origin: {
         circleRadius: 40,

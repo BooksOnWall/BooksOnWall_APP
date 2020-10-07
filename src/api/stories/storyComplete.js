@@ -831,7 +831,7 @@ export default class StoryComplete extends Component {
     try {
       let sid = story.id;
       story.isComplete = false;
-      let complete = appDir + '/stories/' + sid + '/complete.txt';
+      let complete = appDir + '/stories/' + sid + '/nav.json';
       await RNFetchBlob.fs.unlink(complete).then(success => {
         Toast.showWithGravity(I18n.t("Story_reset_complete","Story reseted !"), Toast.short, Toast.TOP);
         return this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: story, index: 0});

@@ -226,7 +226,7 @@ export default class ToAR extends Component {
     const ssid = story.stages[index].id;
     const order = story.stages[index].stageOrder;
     const path = appDir + '/stories/' + story.id + '/';
-    completed = (newIndex+1);
+    completed = newIndex;
     console.log('completed', completed);
     console.log('index', index);
     if (newIndex) {
