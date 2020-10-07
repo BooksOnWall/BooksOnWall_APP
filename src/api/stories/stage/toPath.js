@@ -628,8 +628,8 @@ class ToPath extends Component {
     const storyMapDl = () => <Icon size={32} name='download' type='booksonWall' color='#fff' onPress={() => this.offlineSave()} />;
     let MenuButtons = [];
     MenuButtons.push({ element: storyLocation});
-    MenuButtons.push({ element: launchNavigation});
-    if (completed > 0) MenuButtons.push({ element: storyOrigin});
+    if(distance && distance > 1) MenuButtons.push({ element: launchNavigation});
+    if (index > 0) MenuButtons.push({ element: storyOrigin});
     MenuButtons.push({ element: storyDestination });
     if (debug_mode === true) MenuButtons.push({ element: launchAR });
     //MenuButtons.push({ element: storyMapDl});

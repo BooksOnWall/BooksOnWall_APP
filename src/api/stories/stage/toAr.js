@@ -314,7 +314,7 @@ class ToAR extends Component {
     const storyNext = () => <Icon size={30} name='rightArrow' type='booksonWall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [];
     arButtons.push({ element: storyReload });
-    arButtons.push({ element: storyReload });
+    
     if(debug_mode) arButtons.push({ element: storyMap });
     arButtons.push({ element: sound});
     arButtons.push({ element: storyNext});

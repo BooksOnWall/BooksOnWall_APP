@@ -630,8 +630,8 @@ class StoryMap extends Component {
   }
   render() {
 
-    const {index, routes , toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
-    if(!mapTheme || !this.props.isFocused ) return null;
+    const {index, routes , goto,  toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
+    if(!mapTheme || !this.props.isFocused || goto === null) return null;
     if(distance && distance !== null && (distance*1000 <= story.stages[index].radius)) this.launchAR();
     const storyPrev = () =>  <Icon size={30} name='leftArrow' type='booksonWall' color='#fff' onPress={() => this.prev()} />;
     const storyMapLine = () => <Icon size={30} name='mapLine' type='booksonWall' color='#fff' onPress={() => this.launchMap()} />
