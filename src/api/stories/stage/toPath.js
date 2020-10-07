@@ -154,7 +154,7 @@ class ToPath extends Component {
       fromLong: null,
       toLong: null,
       toLat: null,
-      count: 0,
+      score: null,
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
@@ -184,17 +184,17 @@ class ToPath extends Component {
   getNav = async () => {
     const {story, AppDir, routes, location} = this.state;
       try {
-        const sid = story.id;
+        const sid = parseInt(story.id);
         const path = AppDir + '/stories/'+sid+'/';
         console.log('path',path);
         const score = await getScore({sid, ssid, order, path});
         console.log('score',score);
-        const index= score.index;
+        const index= parseInt(score.index);
         const prevIndex = (index > 0) ? (index-1) : null;
         const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
         const radius = parseFloat(story.stages[index].radius);
-        const ssid = story.stages[index].id;
-        const order = story.stages[index].stageOrder;
+        const ssid = parseInt(story.stages[index].id);
+        const order = parseInt(story.stages[index].stageOrder);
         const goto = routes[index].coordinates;
         const destination = routes[index].coordinates;
         const fromLat = origin[1];
@@ -210,12 +210,14 @@ class ToPath extends Component {
           destination,
           fromLat,
           fromLong,
+          timeout: 3000,
+          unset: false,
           toLat,
           toLong,
           order,
           score,
-          selected: score.selected,
-          completed: score.completed,
+          selected: parseInt(score.selected),
+          completed: parseInt(score.completed),
           index,
         });
         return score;
@@ -230,10 +232,7 @@ class ToPath extends Component {
     routeSimulator.start();
     this.setState({routeSimulator});
   }
-  load = async () => {
-    this.setState({unset: false});
-    return await this.getNav();
-  }
+  load = async () => await this.getNav()
   componentDidMount = async () => {
     try {
 
@@ -313,10 +312,12 @@ class ToPath extends Component {
           };
         let units = I18n.t("kilometers","kilometers");
         let dis = distance(from, to, "kilometers");
+        console.log('timeout', timeout);
+        console.log('dis', dis);
         if (dis && timeout > 0) {
           this.setState({distance: dis.toFixed(3)});
         };
-        if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) this.switchToAR();
+        if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) return this.switchToAR();
     } catch(e) {
       console.log(e);
     }
@@ -325,7 +326,6 @@ class ToPath extends Component {
     const {story, index, timeout, radius, debug_mode} = this.state;
     console.log('Location index', index);
     try {
-
       // Instead of navigator.geolocation, just use Geolocation.
       Toast.showWithGravity(I18n.t("Getting_GPS","Please wait , Trying to get your position ..."), Toast.SHORT, Toast.TOP);
       await Geolocation.getCurrentPosition(
@@ -339,9 +339,7 @@ class ToPath extends Component {
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
         { timeout: timeout, maximumAge: 3000, enableHighAccuracy: true},
       );
-      this.watchID = await Geolocation.watchPosition(position => {
-          this.getDistance(position, index, story, debug_mode, radius, timeout);
-      },
+      this.watchID = await Geolocation.watchPosition(position => this.getDistance(position, index, story, debug_mode, radius, timeout),
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},
       );
@@ -350,22 +348,28 @@ class ToPath extends Component {
     }
   }
   watchID: ?number = null;
-  cancelTimeout = () => this.setState({timeout: 0})
-  componentWillUnmount() {
+  cancelTimeout = async () => await this.setState({timeout: 0})
+  componentWillUnmount = async () => {
     const {routeSimulator} = this.state;
-
-    (this.whoosh) ? this.whoosh.release() : '';
-    MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
-
-    this.clearGPS();
-    if(routeSimulator) routeSimulator.stop();
-    if(this.focusListener) this.focusListener.remove();
-    this.setState({unset: true});
+    try {
+      if(this.whoosh) await this.whoosh.release();
+      MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+      await this.clearGPS();
+      if(routeSimulator) await routeSimulator.stop();
+      if(this.focusListener) await this.focusListener.remove();
+    } catch(e) {
+      console.log(e.message);
+    }
   }
-  clearGPS = () => {
-    this.cancelTimeout();
-    Geolocation.clearWatch(this.watchID);
-    this.watchID = null;
+  clearGPS = async () => {
+    try {
+      await this.cancelTimeout();
+      await Geolocation.clearWatch(this.watchID);
+      return this.watchID = null;
+    } catch(e) {
+      console.log(e.message);
+    }
+
   }
   renderRoute = (layerStyles) => {
     const {route} = this.state;
@@ -544,20 +548,16 @@ class ToPath extends Component {
       console.log(e);
     }
   }
-  switchToAR = () => {
+  switchToAR = async () => {
     const {index, timeout, story, unset, debug_mode, selected, completed, distance} = this.state;
-    console.log('switch2ar', index);
-    let newIndex =(parseInt(index) <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
-    // if index === 0  && selected ===1 && completed === 0
-    console.log('selected', selected);
-    console.log('completed', completed);
-    newIndex = (index === 0 && selected === 1 && completed === 0) ? 0 : newIndex;
-    console.log('newIndex', newIndex);
-    Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
-    if(this.whoosh) this.whoosh.release();
-    this.clearGPS();
-
-    if (timeout === 0) this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, debug: debug_mode, distance: distance});
+    try {
+      let newIndex =(index <= story.stages.length) ? (index+1) : story.stages.length;
+      newIndex = (index === 0 && selected === 1 && completed === 0) ? 0 : newIndex;
+      await Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
+      this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, debug: debug_mode, distance: distance});
+    } catch(e) {
+      console.log(e.message);
+    }
   }
   showDistance = () => (this.state.distance) ? (this.state.distance*1000) : ''
   renderActions() {
@@ -780,9 +780,10 @@ class ToPath extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const {unset, position, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
+
+    if(unset || index === null || !this.props.isFocused ) return null;
     console.log('unset',unset);
     console.log('index',index);
-    if(unset || index === null || !this.props.isFocused ) return null;
     const layerStyles = {
       origin: {
         circleRadius: 40,

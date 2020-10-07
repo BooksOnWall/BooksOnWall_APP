@@ -99,6 +99,7 @@ class ToAR extends Component {
       scene_options: null,
       index: null,
       stage: null,
+      navigatorType : "AR",
       sharedProps : sharedProps
     }
   }
@@ -106,16 +107,12 @@ class ToAR extends Component {
     title: 'To Augmented Reality',
     headerShown: false
   };
-  load = async () => {
-    this.setState({navigatorType : AR});
-    return await this.getNav();
-  }
+  load = async () => await this.getNav()
   componentDidMount = async () => {
     const { navigation } = this.props;
     try {
       await KeepAwake.activate();
       this.props.navigation.addListener('willFocus',this.load);
-      await this.getNav();
       //await this.getCurrentLocation();
     } catch(e) {
       console.log(e);
@@ -147,13 +144,12 @@ class ToAR extends Component {
         const radius = stage.radius;
         const scene_type = stage.scene_type;
         const scene_options = stage.scene_options;
-        const unset = false;
+
         this.setState({
           score,
           order,
           stage,
           radius,
-          unset,
           timeout: 10000,
           scene_type,
           scene_options,
@@ -249,7 +245,7 @@ class ToAR extends Component {
         // clean audio
         this.setState({imageTracking: false,finishAll: false, navigatorType : UNSET, buttonaudioPaused: true, audioPaused: true, timeout: 0});
         if(this.woosh) this.woosh.release();
-        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, unset: false, distance: distance} );
+        return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story,  distance: distance} );
       } catch(e) {
         console.log(e);
       }

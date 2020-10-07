@@ -106,7 +106,13 @@ export default class Story extends Component {
         const score = await getScore({sid, ssid, order, path});
         console.log('score',score);
 
-        this.setState({score, selected: score.selected, completed: score.completed, index: score.index});
+        this.setState({
+          score,
+          timeout: 5000,
+          selected: parseInt(score.selected),
+          completed: parseInt(score.completed),
+          index: parseInt(score.index)
+        });
         return score;
       } catch(e) {
         console.log(e.message);
@@ -136,8 +142,8 @@ export default class Story extends Component {
   cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
-    this.cancelTimeout();
-    Geolocation.clearWatch(this.watchID);
+    await this.cancelTimeout();
+    await Geolocation.clearWatch(this.watchID);
     this.watchID = null;
   }
   networkCheck = () => {
@@ -146,33 +152,6 @@ export default class Story extends Component {
       // console.warn("Is connected?", state.isConnected);
       !state.isConnected ? Toast.showWithGravity(I18n.t("ERROR_NO_INTERNET","Error: No internet connection!"), Toast.LONG, Toast.TOP) : '';
     });
-  }
-  getSelected = async() => {
-    const {appDir, selected, index} = this.state;
-    let { story } = this.state;
-    console.log('index', index);
-    console.log('story', story);
-    const sid = story.id;
-    if(this.isInstalled(sid)) {
-      try {
-        // get history from file
-        const ssid = (story.stages && index) ? story.stages[index].id : 0;
-        const order = story.stages[index].stageOrder;
-        const path = appDir + '/stories/' + sid + '/';
-        const score =  await getScore(sid, ssid, order, path);
-        console.log('score',score);
-        if(score.completed) {
-          this.setState({completed: parseInt(score.completed), selected: parseInt(score.completed)});
-          if (parseInt(score.completed) === story.stages.length) {
-            story.isComplete = true;
-            this.setState({story: story});
-          }
-        }
-        return true;
-      } catch(e) {
-        console.log(e);
-      }
-    }
   }
   updateTransportIndex = (transportIndex) => this.setState({transportIndex})
   updateDlIndex = (dlIndex) => this.setState({dlIndex})
@@ -324,7 +303,7 @@ export default class Story extends Component {
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        if(timeout >0) {
+        if(timeout > 0) {
           let index = (selected >= 1) ? selected : 0;
           console.log('GPS index toPath', index);
           console.log('stages length', story.stages.length);
@@ -679,7 +658,7 @@ export default class Story extends Component {
     console.log('newIndex',newIndex);
     (story.isComplete)
     ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
-    : (completed > 0)
+    : (completed > 0 && debug_mode === false)
     ? this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance})
     : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance}) ;
   }
