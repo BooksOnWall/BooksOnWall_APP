@@ -393,8 +393,7 @@ class StoryMap extends Component {
     try {
       let newIndex = (index <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
       await Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
-
-      this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
+      this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
     } catch(e) {
       console.log(e.message);
     }
@@ -632,7 +631,7 @@ class StoryMap extends Component {
   render() {
 
     const {index, routes , toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
-    if(!mapTheme || !index || !this.props.isFocused ) return null;
+    if(!mapTheme || !this.props.isFocused() ) return null;
     if(distance && distance !== null && (distance*1000 <= story.stages[index].radius)) this.launchAR();
     const storyPrev = () =>  <Icon size={30} name='leftArrow' type='booksonWall' color='#fff' onPress={() => this.prev()} />;
     const storyMapLine = () => <Icon size={30} name='mapLine' type='booksonWall' color='#fff' onPress={() => this.launchMap()} />

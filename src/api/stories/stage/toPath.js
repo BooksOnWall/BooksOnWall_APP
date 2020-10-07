@@ -782,8 +782,7 @@ class ToPath extends Component {
     const {unset, position, completed, selected, theme, story, index, distance, radius, debug_mode} = this.state;
 
     if(unset || index === null || !this.props.isFocused ) return null;
-    console.log('unset',unset);
-    console.log('index',index);
+
     const layerStyles = {
       origin: {
         circleRadius: 40,
