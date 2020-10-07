@@ -93,7 +93,7 @@ const Header = ({styles, position, navigate, isFocused, switchToAR, distance, th
       <Text style={styles.texto} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
       <Text style={styles.complete}>Complete: {completed}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
-      <Text style={styles.complete}>{(position && position.coords && position.coords) ? JSON.stringify(position.coords.accuracy) : ''}</Text>
+      <Text style={styles.complete}>{(position && position.coords && position.coords) ? JSON.stringify(position.coords.accuracy.toFixed(2)) : ''}</Text>
     </ImageBackground>
   </View>
 );
