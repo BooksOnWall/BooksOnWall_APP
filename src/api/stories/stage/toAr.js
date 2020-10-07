@@ -106,9 +106,15 @@ class ToAR extends Component {
     title: 'To Augmented Reality',
     headerShown: false
   };
+  load = async () => {
+    this.setState({navigatorType : AR});
+    return await this.getNav();
+  }
   componentDidMount = async () => {
+    const { navigation } = this.props;
     try {
       await KeepAwake.activate();
+      this.props.navigation.addListener('willFocus',this.load);
       await this.getNav();
       //await this.getCurrentLocation();
     } catch(e) {
@@ -121,13 +127,13 @@ class ToAR extends Component {
       // await Geolocation.clearWatch(this.watchID);
       // this.watchID = null;
       await KeepAwake.deactivate();
+      if(this.focusListener) this.focusListener.remove();
     } catch(e) {
       console.log(e);
     }
   }
   getNav = async () => {
     const {story, appDir} = this.state;
-
       try {
         const sid = story.id;
         const path = appDir + '/stories/'+sid+'/';
@@ -148,6 +154,7 @@ class ToAR extends Component {
           stage,
           radius,
           unset,
+          timeout: 10000,
           scene_type,
           scene_options,
           selected: score.selected,
