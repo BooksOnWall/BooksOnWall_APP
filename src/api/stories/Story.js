@@ -6,6 +6,7 @@ import NavigationView from "./stage/NavigationView";
 import { NativeModules } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
 import { MAPBOX_KEY , DEBUG_MODE } from '@env';
+import { withNavigationFocus } from 'react-navigation';
 import  distance from '@turf/distance';
 import HTMLView from 'react-native-htmlview';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -47,14 +48,13 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
-export default class Story extends Component {
+class Story extends Component {
   static navigationOptions = {
     title: 'Story',
     headerShown: false
   };
   constructor(props) {
     super(props);
-
     this.loadStories = this.props.loadStories;
     let coordinates = (this.props.story) ? this.props.story.stages[0].geometry.coordinates : this.props.navigation.getParam('story').stages[0].geometry.coordinates;
     const stages = (this.props.story) ? this.props.story.stages : this.props.navigation.getParam('story').stages;
@@ -102,16 +102,15 @@ export default class Story extends Component {
         const ssid = 0;
         const order =1;
         const path = appDir + '/stories/'+sid+'/';
-        console.log('path',path);
         const score = await getScore({sid, ssid, order, path});
-        console.log('score',score);
+
 
         this.setState({
           score,
           timeout: 5000,
-          selected: parseInt(score.selected),
-          completed: parseInt(score.completed),
-          index: parseInt(score.index)
+          selected: score.selected,
+          completed: score.completed,
+          index: score.index
         });
         return score;
       } catch(e) {
@@ -655,12 +654,11 @@ export default class Story extends Component {
     const {index, story, completed, debug_mode, distance} = this.state;
     this.setState({timeout: 0});
     let newIndex = (completed && completed > 0 ) ? (completed+1) : 0;
-    console.log('newIndex',newIndex);
     (story.isComplete)
-    ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
+    ? this.props.navigation.push('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
     : (completed > 0 && debug_mode === false)
-    ? this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance})
-    : this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance}) ;
+    ? this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance})
+    : this.props.navigation.push('StoryMap', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance}) ;
   }
   toPath = () => {
     const {index, story, completed, selected, debug_mode, distance} = this.state;
@@ -672,7 +670,9 @@ export default class Story extends Component {
     (story.stages.length === completed) ? this.props.navigation.navigate('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0}) : this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: 0}) ;
   }
   render() {
+      const { navigate } = this.props.navigation;
       const {theme, themeSheet, story} = this.state;
+      if(!this.props.isFocused) return null;
       const size = (story.zipsize) ? ' • ' + story.zipsize : '';
       const Title = () => (
         <View style={styles.titleStyle}>
@@ -773,3 +773,4 @@ const styles = StyleSheet.create({
     padding: 0,
   }
 });
+export default withNavigationFocus(Story);

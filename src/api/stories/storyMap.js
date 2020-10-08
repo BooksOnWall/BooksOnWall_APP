@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {ButtonGroup, Button, Icon, Badge} from 'react-native-elements';
 import { withNavigationFocus } from 'react-navigation';
@@ -129,17 +129,13 @@ class StoryMap extends Component {
     title: 'Story Map',
     headerShown: false
   };
-
-
   constructor(props) {
     super(props);
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
     const routes = stages.map((stage, i) => {
-      console.log('init stage geo',stage.geometry);
       return {coordinates: stage.geometry.coordinates};
     });
-
     const storyPoints = stages.map((stage, i) => {
       return stage.geometry.coordinates;
     });
@@ -150,10 +146,11 @@ class StoryMap extends Component {
       featureCollection: featureCollection([]),
       latitude: null,
       record: null,
+      ssid: null,
       showUserLocation: true,
       origin: null,
       destination: null,
-      goto: null ,
+      goto: null,
       zoom: 15,
       followUserLocation: false,
       stages: stages,
@@ -169,16 +166,16 @@ class StoryMap extends Component {
       mapTheme: null,
       prevLatLng: null,
       track: null,
-      timeout: 5000,
-      initialPosition: null,
+      timeout: 0,
       fromLat: null,
       fromLong: null,
       toLong: null,
       toLat: null,
+      prevIndex: null,
       position: null,
       debug_mode:  (DEBUG_MODE === "true") ? true: false,
       distance: (this.props.navigation.getParam('distance')) ? this.props.navigation.getParam('distance') : null,
-      radius: 20,
+      radius: null,
       selected: null,
       completed: null,
       selectedMenu: 0,
@@ -196,77 +193,87 @@ class StoryMap extends Component {
       theme: this.props.navigation.getParam('story').theme,
       order: null,
       index: null,
-      location: [],
+      location: location,
       position: {},
     };
-    console.log('styleURL', this.state.styleURL);
     this.onStart = this.onStart.bind(this);
+    this.getNav = this.getNav.bind(this);
   }
   getNav = async () => {
-    const {story, AppDir, routes} = this.state;
+    const {story, AppDir, routes, location} = this.state;
       try {
-        const sid = parseInt(story.id);
+        console.log('routes',routes);
+        const sid = story.id;
         const path = AppDir + '/stories/'+sid+'/';
+        let ssid = null;
+        let order= 1;
         const score = await getScore({sid, ssid, order, path});
-        const index = parseInt(score.index);
+        const index = score.index;
         const toPath = (score.complete === routes.length) ? false : true;
         const prevIndex = (index > 0) ? (index-1) : null;
         const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
         const radius = parseFloat(story.stages[index].radius);
-        const ssid = parseInt(story.stages[index].id);
-        const order = parseInt(story.stages[index].stageOrder);
+        ssid = story.stages[index].id;
+        order = parseInt(story.stages[index].stageOrder);
         const goto = routes[index].coordinates;
         const destination = routes[index].coordinates;
         const fromLat = origin[1];
         const fromLong = origin[0];
         const toLat= routes[index].coordinates[1];
         const toLong= routes[index].coordinates[0];
-        console.log('score',score);
+        const timeout = 3000;
+        const selected = score.selected;
+        const completed = score.completed;
+
         this.setState({
-          toPath,
-          prevIndex,
-          origin,
-          radius,
-          ssid,
-          goto,
-          destination,
-          fromLat,
-          fromLong,
-          toLat,
-          toLong,
-          order,
-          unset: false,
-          score,
-          timeout: 5000,
-          selected: parseInt(score.selected),
-          completed: parseInt(score.completed),
-          index
+          index: index,
+          toPath: toPath,
+          prevIndex: prevIndex,
+          origin: origin,
+          radius: radius,
+          ssid: ssid,
+          goto: goto,
+          destination: destination,
+          fromLat: fromLat,
+          fromLong: fromLong,
+          toLat: toLat,
+          toLong: toLong,
+          order: order,
+          score: score,
+          timeout: timeout,
+          selected: selected,
+          completed:completed,
         });
-        if (score.index > 0)   this.goTo(routes[score.index].coordinates, false);
-        return score;
+        console.log('state',this.state);
+        //this.goTo(routes[index].coordinates, false);
+
       } catch(e) {
         console.log(e.message);
       }
   }
   showDistance = () => (this.state.distance) ? this.state.distance : ''
   getMapTheme = async () => {
-    const id = this.state.story.id;
-    const mapThemePath =  this.props.screenProps.AppDir+ '/stories/'+ id +'/map.json';
-    await RNFS.exists(mapThemePath)
-    .then( (exists) => {
-        if (exists) {
-            console.log("Map Theme File exist");
-            // get id from file
-            RNFetchBlob.fs.readFile(mapThemePath, 'utf8')
-            .then((data) => {
-              // handle the
-              const theme =  JSON.parse(data);
-              const style = theme.style;
-              this.setState({ mapTheme: style});
-              return style;
-            })
-        }
-    });
+    const {story, AppDir } = this.state;
+    try {
+      const sid = story.id;
+      const mapThemePath =  AppDir + '/stories/'+ sid +'/map.json';
+      return await RNFS.exists(mapThemePath)
+      .then( (exists) => {
+          if (exists) {
+              console.log("Map Theme File exist");
+              // get id from file
+              return RNFetchBlob.fs.readFile(mapThemePath, 'utf8')
+              .then((data) => {
+                // handle the
+                const theme =  JSON.parse(data);
+                const style = theme.style;
+                return this.setState({ mapTheme: style});
+              })
+          }
+      });
+    } catch(e) {
+      console.log(e.message);
+    }
   }
   onStart() {
     const {route} = this.state;
@@ -292,6 +299,7 @@ class StoryMap extends Component {
   componentDidMount = async () => {
     try {
       await this.getNav();
+      await this.getMapTheme();
       await this.offlineLoad();
       MapboxGL.setTelemetryEnabled(false);
       await this.setItinerary();
@@ -308,7 +316,7 @@ class StoryMap extends Component {
         }),
       );
       await this.getCurrentLocation();
-      await this.getMapTheme();
+
     } catch(e) {
       console.log(e);
     }
@@ -613,11 +621,12 @@ class StoryMap extends Component {
     this.goTo(this.state.routes[id].coordinates, false);
   }
   next = () => {
-    const max = this.state.routes.length;
-    const selected = (parseInt(this.state.selected) < max) ? (parseInt(this.state.selected) + 1) : max;
+    let {routes, selected} = this.state;
+    const max = routes.length;
+    selected = (parseInt(selected) < max) ? (parseInt(selected) + 1) : max;
     this.setState({selected: selected});
     const id = (selected -1);
-    const coords = this.state.routes[id].coordinates;
+    const coords = routes[id].coordinates;
     this.goTo(coords, false);
   }
   launchMap = () => {
@@ -629,10 +638,9 @@ class StoryMap extends Component {
     this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, distance: distance, index: (selected > 0) ? (selected - 1): 0});
   }
   render() {
-
-    const {index, routes , goto,  toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
-    if(!mapTheme || !this.props.isFocused || goto === null) return null;
-    if(distance && distance !== null && (distance*1000 <= story.stages[index].radius)) this.launchAR();
+    const { navigate } = this.props.navigation;
+    const {index, location, routes , goto,  toPath, toAR, distance, debug_mode, styleURL, selected, selectedMenu, completed, theme, story, mapTheme} = this.state;
+    if(!mapTheme || !this.props.isFocused ) return <ActivityIndicator style={{flex: 1, backgroundColor: theme.color2, justifyContent: 'center'}} size="large" color={theme.color1} />;
     const storyPrev = () =>  <Icon size={30} name='leftArrow' type='booksonWall' color='#fff' onPress={() => this.prev()} />;
     const storyMapLine = () => <Icon size={30} name='mapLine' type='booksonWall' color='#fff' onPress={() => this.launchMap()} />
     const launchAR = () => <Icon size={30} name='isologo' type='booksonWall' color='#fff' onPress={() => this.launchAR()} />
@@ -641,7 +649,7 @@ class StoryMap extends Component {
      if (selected > 0) MenuButtons.push({ element: storyPrev });
      if (debug_mode === true && toAR) MenuButtons.push({ element: launchAR });
      if (toPath) MenuButtons.push({ element: storyMapLine });
-     if (selected !== routes.length) MenuButtons.push({ element: storyNext});
+     if (selected !== (routes.length)) MenuButtons.push({ element: storyNext});
      const styles = StyleSheet.create({
        buttonCnt: {
          flexDirection: 'row',
@@ -729,6 +737,7 @@ class StoryMap extends Component {
           showDistance={this.showDistance}
           index={index}
         />
+
         <MapboxGL.MapView
           logoEnabled={false}
           compassEnabled={false}
@@ -754,6 +763,8 @@ class StoryMap extends Component {
           {this.renderRoute()}
           {/*this.renderProgressLine()*/}
         </MapboxGL.MapView>
+
+
         <Footer
           MenuButtons={MenuButtons}
           selectedMenu={selectedMenu}

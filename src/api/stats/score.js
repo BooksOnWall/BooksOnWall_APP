@@ -8,13 +8,11 @@ const getScore = async ({sid, ssid, order, path}) => {
   // // check if file exist
   try {
    const storyHF = path + 'nav.json';
-   console.log('path', storyHF);
    const nav = {
      index: (order > 0) ? (order-1) : 0,
      selected: (order) ? order : 1,
      completed: 0,
    };
-   console.log('nav',nav);
    return await RNFS.exists(storyHF)
    .then( (exists) => {
        if (exists) {
@@ -24,11 +22,10 @@ const getScore = async ({sid, ssid, order, path}) => {
              return JSON.parse(nav);
            })
        } else {
-         const navString = JSON.stringify(nav);
-         console.log('navString',navString);
-           return RNFetchBlob.fs.createFile(storyHF, navString, 'utf8').then((data)=>{
+          const navString = JSON.stringify(nav);
+          return RNFetchBlob.fs.createFile(storyHF, navString, 'utf8').then((data)=>{
              return nav;
-           });
+          });
        }
    });
   } catch(e) {
