@@ -49,7 +49,7 @@ ViroAnimations.registerAnimations({
   },
   hide: {
     properties:{
-      opacity:"-=0"
+      opacity:"=0"
     },
     duration: 2
   },
@@ -76,7 +76,7 @@ ViroAnimations.registerAnimations({
       positionY:"-=0.4",
       positionX: "-=0.4",
       scaleX: "+=3",
-      scaleY: "+=0.45",
+      scaleY: "+=0.3",
       positionZ: "+=0.5",
     },
     easing:"EaseInEaseOut",
@@ -115,7 +115,6 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
         position={[0,0,-2]}
         animation={animate}
         visible={finishAll}
-        opacity={1}
         onPress={() => next()}
         onClick={() => next()}
         rotation={[0, 0, 0]} >
@@ -127,7 +126,6 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
           resizeMode="ScaleToFit"
           source={Bubble2}
           animation={animate2}
-          style={{opacity: 0}}
           scale={[1,1,1]}
           onPress={() => next()}
           onClick={() => next()}
@@ -150,7 +148,6 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
     <ViroNode
         position={[0,0,-1]}
         visible={finishAll}
-        opacity={1}
         onPress={() => next()}
         onClick={() => next()}
         rotation={[0, 0, 0]} >
@@ -164,7 +161,6 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
           height={1}
           fontSize={10}
           style={{
-            opacity: 0,
             fontFamily: font,
             fontWeight: '400',
             color: textColor
