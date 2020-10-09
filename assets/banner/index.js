@@ -1,3 +1,3 @@
 export const Banner = {
-   banner_default: require('./banner_default.png'),
+   BannerDefault: require('./banner_default.png'),
 }

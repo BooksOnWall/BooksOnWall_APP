@@ -603,15 +603,15 @@ class Story extends Component {
         return (
           <View style={themeSheet.nav}>
           <TouchableOpacity style={{flex:1, flexGrow: 1, paddingHorizontal: 10}}  onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'BooksonWall', size: 32, color: 'white'}}/>
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'BooksonWall', size: 24, color: 'white', paddingVertical: 6}}/>
           </TouchableOpacity>
           {distance && (
-          <TouchableOpacity style={{flex:2, flexGrow: 2}} onPress={() => this.launchNavigation()}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'BooksonWall', size: 32, color: 'white'}} onPress={() => this.launchNavigation()} />
+          <TouchableOpacity style={{flex:2, flexGrow: 2,  paddingHorizontal: 3}} onPress={() => this.launchNavigation()}>
+            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'BooksonWall', size: 32, color: 'white', paddingVertical: 2}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
-          <TouchableOpacity style={{flex:2, flexGrow: 2}} onPress={() => this.storyMap()} >
-            <Button buttonStyle={themeSheet.button} icon={{name: 'play', type:'BooksonWall', size: 32, color: 'white'}} onPress={() => this.storyMap()}  />
+          <TouchableOpacity style={{flex:2, flexGrow: 2,  paddingHorizontal: 3}} onPress={() => this.storyMap()} >
+            <Button buttonStyle={themeSheet.button} icon={{name: 'play', type:'BooksonWall', size: 32, color: 'white', paddingVertical: 2}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
         );
@@ -622,7 +622,7 @@ class Story extends Component {
             {distance && (
               <Text style={themeSheet.distance}> {I18n.t("Distance_to_beginning", "Distance to the beginning of the story ")}: {distance} {I18n.t("Kilometers","kilometers")}</Text>
             )}
-            {(story.isInstalled) ? <ButtonGroup /> : <View style={themeSheet.nav}><TouchableOpacity style={{flex:1, flexGrow: 1}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button} loading={this.state.dlLoading} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonWall', size: 32, color: theme.color3}} title='Descargar esta historia' titleStyle={{color: theme.color1, fontSize: 12, textTransform: 'uppercase'}}/></TouchableOpacity></View> }
+            {(story.isInstalled) ? <ButtonGroup /> : <View style={themeSheet.nav}><TouchableOpacity style={{flex:1, flexGrow: 1}} onPress={() => this.downloadStory(story.id)}><Button buttonStyle={themeSheet.button} loading={this.state.dlLoading} loadingStyle={{ color: theme.color3, padding: 10}} rounded={true} type='clear' onPress={() => this.downloadStory(story.id)}  icon={{ name: 'download', type: 'booksonWall', size: 32, color: theme.color3, padding: 5}} title='Descargar esta historia' titleStyle={{color: theme.color1, fontSize: 12, textTransform: 'uppercase'}}/></TouchableOpacity></View> }
 
               <View style={themeSheet.sinopsys} >
                 <HTMLView paragraphBreak={"br"} lineBreak={"br"} addLineBreaks={false} value={story.sinopsys} stylesheet={sinopsysThemeSheet}/>

@@ -95,35 +95,34 @@ const Social = ({ resetStory, theme, themeSheet }) => {
       style={[{
         opacity: fadeAnim,         // Bind opacity to animated value
         height: slideIn,
-      }, styles.social , {backgroundColor: theme.color1, flex:1, flexGrow: 1, padding: 0} ]}
+      }, styles.social , {backgroundColor: theme.color1, flex:1, flexGrow: 1, padding: 20} ]}
     >
 
 
       <SocialIcon
-        light
         onPress={() => { Linking.openURL('https://twitter.com/booksonwall') }}
         type='twitter'
-        style={{flex:1, flexGrow: 1,}}
+        style={{flex:1, padding: 10}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://www.facebook.com/booksonwall/') }}
         type='facebook'
-        style={{flex:1, flexGrow: 1,}}
+        style={{flex:1, padding: 10}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://www.instagram.com/booksonwall/') }}
         type='instagram'
-        style={{flex:1, flexGrow: 1,}}
+        style={{flex:1, padding: 10}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://www.youtube.com/channel/UCNWiz7RDGgoM3HHgoYPAS3w/') }}
         type='youtube'
-        style={{flex:1, flexGrow: 1,}}
+        style={{flex:1, padding: 10}}
       />
       <SocialIcon
         onPress={() => { Linking.openURL('https://t.me/booksonwall') }}
         type='telegram'
-        style={{flex:1, flexGrow: 1,}}
+        style={{flex:1, padding: 10}}
       />
     </Animated.View>
   );
