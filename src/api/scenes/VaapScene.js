@@ -51,7 +51,7 @@ export default class VaapScene extends Component {
       animate: {name: 'movePicture'},
       message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
-      fontFamily: params.theme.font1,
+      fontFamily: params.theme.font3,
       color: params.theme.color2,
       audios: [],
       video: {},

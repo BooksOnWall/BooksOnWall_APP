@@ -51,7 +51,7 @@ export default class GpsScene extends Component {
       animate: {name: 'movePicture'},
       message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
-      fontFamily: params.theme.font1,
+      fontFamily: params.theme.font3,
       color: params.theme.color2,
       audios: [],
       video: {},
@@ -220,15 +220,18 @@ export default class GpsScene extends Component {
           />
         </ViroARPlane>
 
-          <Patricie
-            animate={{name: 'movePicture', run: finishAll, loop: false}}
-            finishAll={finishAll}
-            next={this.next}
-            message={message}
-            theme={theme}
-            font={font}
-            textColor={color}
-            />
+        <Patricie
+          animate={{name: 'movePicture', run: finishAll, loop: false}}
+          animate2={{name: 'moveBaloon', run: finishAll, loop: false}}
+          animate3={{name:  'moveText', run: finishAll, loop: false }}
+          finishAll={finishAll}
+          theme={theme}
+          next={this.next}
+          message={message}
+          theme={theme}
+          font={font}
+          textColor={color}
+          />
       </ViroARScene>
       </SafeAreaView>
     );
