@@ -103,9 +103,11 @@ class Story extends Component {
         const order =1;
         const path = appDir + '/stories/'+sid+'/';
         const score = await getScore({sid, ssid, order, path});
-
-
+        console.log("score", score);
+        if(score.completed === story.stages.length);
+        story.isComplete = true;
         this.setState({
+          story,
           score,
           timeout: 5000,
           selected: score.selected,
@@ -138,6 +140,7 @@ class Story extends Component {
       this.setState({story: this.props.story});
     }
   }
+
   cancelTimeout = () => this.setState({timeout: 0})
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
@@ -654,8 +657,9 @@ class Story extends Component {
     const {index, story, completed, debug_mode, distance} = this.state;
     this.setState({timeout: 0});
     let newIndex = (completed && completed > 0 ) ? (completed+1) : 0;
+    console.log('story is complete', story.isComplete);
     (story.isComplete)
-    ? this.props.navigation.push('StoryComplete', {screenProps: this.props.screenProps, story: story, index: 0, distance: distance})
+    ? this.props.navigation.push('StoryComplete', {screenProps: this.props.screenProps, story: story})
     : (completed > 0 && debug_mode === false)
     ? this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance})
     : this.props.navigation.push('StoryMap', {screenProps: this.props.screenProps, story: story, index: newIndex, distance: distance}) ;

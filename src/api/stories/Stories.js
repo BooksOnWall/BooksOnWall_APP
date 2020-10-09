@@ -57,7 +57,6 @@ ListStories = (props) => {
   };
  let stories = props.stories.map ((story) => {
      story['theme'] = (story.theme) ? story.theme : default_theme;
-     console.log(story.theme.banner);
      story['banner_default'] = (story.theme && story.theme.banner.filePath) ? {uri: story.theme.banner.filePath} : {source: Banner['BannerDefault']};
      return story;
  });
@@ -67,9 +66,7 @@ ListStories = (props) => {
       <View >
       {
         stories.map((story, i) => {
-
           const banner = story.design_options;
-          console.log(banner);
           return (
           <TouchableOpacity key={'tb'+i} onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}>
             <ImageBackground key={'b'+i} source={story.banner_default} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>

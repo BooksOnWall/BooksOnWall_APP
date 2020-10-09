@@ -25,7 +25,7 @@ const Blob = RNFetchBlob.polyfill.Blob;
 // import audio lib
 import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
-import {getScores} from '../stats/score';
+import {getScores, completeStory} from '../stats/score';
 import Leaf from '../../../assets/materials/leaf.png';
 
 registerCustomIconType('booksonWall', IconSet);
@@ -333,10 +333,12 @@ export default class StoryComplete extends Component {
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
   }
   componentDidMount = async () => {
+    const {story, appDir} = this.state;
     try {
       await KeepAwake.activate();
       await this.audioPlay();
-
+      const path = appDir + '/stories/'+story.id+'/';
+      await completeStory({story, path});
       if (!this.state.granted) {
         await this.requestFineLocationPermission();
       }
@@ -813,7 +815,7 @@ export default class StoryComplete extends Component {
     <View style={styles.statusBar} />
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.iconLeft} onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})}>
-        <Button onPress={() => this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: this.state.story, index: 0})} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+        <Button onPress={() => this.props.navigation.push('Story', {screenProps: this.props.screenProps, story: this.state.story})} type='clear' underlayColor='#FFFFFF' iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
       </TouchableOpacity>
     </View>
   </View>

@@ -8,14 +8,10 @@ const getScore = async ({sid, ssid, order, path}) => {
   // // check if file exist
   try {
    const storyHF = path + 'nav.json';
-   const nav = {
-     index: (order > 0) ? (order-1) : 0,
-     selected: (order) ? order : 1,
-     completed: 0,
-   };
-   console.log(nav);
+
    return await RNFS.exists(storyHF)
    .then( (exists) => {
+      console.log("nav exist", exists);
        if (exists) {
            // get nav from file
            return RNFetchBlob.fs.readFile(storyHF, 'utf8')
@@ -23,6 +19,12 @@ const getScore = async ({sid, ssid, order, path}) => {
              return JSON.parse(nav);
            })
        } else {
+         const nav = {
+           index: (order > 0) ? (order-1) : 0,
+           selected: (order) ? order : 1,
+           completed: 0,
+         };
+          console.log(nav);
           const navString = JSON.stringify(nav);
           return RNFetchBlob.fs.createFile(storyHF, navString, 'utf8').then((data)=>{
              return nav;
@@ -34,6 +36,32 @@ const getScore = async ({sid, ssid, order, path}) => {
   }
 
 }
+const completeStory = async ({story, path}) => {
+  try {
+    const sid = story.id;
+    const order = story.stages.length;
+    const ssid = story.stages[(order-1)].id;
+    let score = await getScore({sid,ssid,order,path})
+    score["completed"] = order;
+    console.log("score",score);
+    const storyHF = path + 'nav.json'
+    await RNFS.exists(storyHF)
+    .then( (exists) => {
+        if (exists) {
+            // get write new value to file
+            // rimraf file
+            return RNFetchBlob.fs.writeFile(storyHF, JSON.stringify(score), 'utf8').then(()=>{
+            });
+
+        } else {
+            console.log("alert no nav");
+        }
+    });
+  } catch(e) {
+    console.log(e.message);
+  }
+}
+
 const addNewIndex = async ({sid, ssid, order, path, newIndex, completed}) => {
   try {
     // // check if complete need to be updated
@@ -126,4 +154,4 @@ const storeTimestamp = async ({sid, ssid, order, path, newIndex }) => {
       console.log(e);
     }
 }
-export { getScore,getScores, addNewIndex, storeTimestamp, humanTime };
+export {completeStory, getScore,getScores, addNewIndex, storeTimestamp, humanTime };
