@@ -603,15 +603,15 @@ class Story extends Component {
         return (
           <View style={themeSheet.nav}>
           <TouchableOpacity style={{flex:1, flexGrow: 1, paddingHorizontal: 10}}  onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'BooksonWall', size: 32, color: 'white'}}/>
+            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'BooksonWall', size: 24, color: 'white', paddingVertical: 6}}/>
           </TouchableOpacity>
           {distance && (
-          <TouchableOpacity style={{flex:2, flexGrow: 2}} onPress={() => this.launchNavigation()}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'BooksonWall', size: 32, color: 'white'}} onPress={() => this.launchNavigation()} />
+          <TouchableOpacity style={{flex:2, flexGrow: 2,  paddingHorizontal: 3}} onPress={() => this.launchNavigation()}>
+            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'BooksonWall', size: 32, color: 'white', paddingVertical: 2}} onPress={() => this.launchNavigation()} />
           </TouchableOpacity>
           )}
-          <TouchableOpacity style={{flex:2, flexGrow: 2}} onPress={() => this.storyMap()} >
-            <Button buttonStyle={themeSheet.button} icon={{name: 'play', type:'BooksonWall', size: 32, color: 'white'}} onPress={() => this.storyMap()}  />
+          <TouchableOpacity style={{flex:2, flexGrow: 2,  paddingHorizontal: 3}} onPress={() => this.storyMap()} >
+            <Button buttonStyle={themeSheet.button} icon={{name: 'play', type:'BooksonWall', size: 32, color: 'white', paddingVertical: 2}} onPress={() => this.storyMap()}  />
           </TouchableOpacity>
           </View>
         );
