@@ -95,9 +95,8 @@ const Social = ({ resetStory, theme, themeSheet }) => {
       style={[{
         opacity: fadeAnim,         // Bind opacity to animated value
         height: slideIn,
-      }, styles.social , {backgroundColor: theme.color1, flex:1, flexGrow: 1, padding: 20} ]}
+      }, styles.social , {backgroundColor: theme.color1, flex:1, flexGrow: 1, paddingHorizontal: 30, paddingVertical:100} ]}
     >
-
 
       <SocialIcon
         onPress={() => { Linking.openURL('https://twitter.com/booksonwall') }}
@@ -800,7 +799,6 @@ export default class StoryComplete extends Component {
               <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} />
               <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
               <View style={themeSheet.credits} >
-
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
 
