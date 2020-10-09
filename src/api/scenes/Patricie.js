@@ -18,6 +18,7 @@ import KeepAwake from 'react-native-keep-awake';
 import Bubble from '../../../assets/materials/patricie.png';
 import Bubble2 from '../../../assets/materials/baloon.png';
 import Leaf from '../../../assets/materials/leaf.png';
+import Petal from '../../../assets/materials/petal.png';
 import I18n from "../../utils/i18n";
 
 
@@ -187,7 +188,7 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
         loop={finishAll}
         fixedToEmitter={true}
         image={{
-          source: Leaf,
+          source: Petal,
           height:0.05,
           width:0.05,
           bloomThreshold: 1.0
