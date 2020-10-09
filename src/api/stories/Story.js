@@ -104,8 +104,8 @@ class Story extends Component {
         const path = appDir + '/stories/'+sid+'/';
         const score = await getScore({sid, ssid, order, path});
         console.log("score", score);
-        if(score.completed === story.stages.length);
-        story.isComplete = true;
+        story.isComplete = (score.completed === story.stages.length) ? true : false;
+
         this.setState({
           story,
           score,
@@ -290,8 +290,34 @@ class Story extends Component {
       console.log(e);
     }
   }
+  getDistance = async (position, index, story, debug_mode, radius, timeout) => {
+    let toPath = Array.from(story.stages[index].geometry.coordinates);
+    this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
+    let from = {
+      "type": "Feature",
+      "properties": {},
+        "geometry": {
+          "type": "Point",
+          "coordinates": [this.state.fromLong,this.state.fromLat ]
+        }
+      };
+      let to = {
+        "type": "Feature",
+        "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": toPath
+          }
+        };
+      console.log('position from', from);
+      let units = I18n.t("kilometers","kilometers");
+      let dis = distance(from, to, "kilometers");
+      if (dis) {
+        this.setState({distance: dis.toFixed(3)});
+      };
+  }
   getCurrentLocation = async () => {
-    let {timeout, selected, completed , story} = this.state;
+    let {timeout, selected, completed , story, index} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(
@@ -300,46 +326,15 @@ class Story extends Component {
             position: position,
             fromLat: position.coords.latitude,
             fromLong: position.coords.longitude});
+            this.getDistance(position, index, story, debug_mode, radius, timeout);
         },
         error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
         { timeout: timeout, maximumAge: 1000, enableHighAccuracy: true},
       );
       this.watchID = await Geolocation.watchPosition(position => {
-        if(timeout > 0) {
-          let index = (selected >= 1) ? selected : 0;
-          console.log('GPS index toPath', index);
-          console.log('stages length', story.stages.length);
-          if (index && index !== story.stages.length ) {
-
-            let toPath = Array.from(story.stages[index].geometry.coordinates);
-            this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
-            let from = {
-              "type": "Feature",
-              "properties": {},
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [this.state.fromLong,this.state.fromLat ]
-                }
-              };
-              let to = {
-                "type": "Feature",
-                "properties": {},
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": toPath
-                  }
-                };
-              console.log('position from', from);
-              let units = I18n.t("kilometers","kilometers");
-              let dis = distance(from, to, "kilometers");
-              if (dis) {
-                this.setState({distance: dis.toFixed(3)});
-              };
-          }
-
+        if (index && index !== story.stages.length ) {
+            this.getDistance(position, index, story, debug_mode, radius, timeout);
         }
-
-
       },
       error => error => Toast.showWithGravity(I18n.t("POSITION_UNKNOWN","GPS position unknown, Are you inside a building ? Please go outside."), Toast.LONG, Toast.TOP),
       {timeout: timeout, maximumAge: 3000, enableHighAccuracy: true, distanceFilter: 1},
