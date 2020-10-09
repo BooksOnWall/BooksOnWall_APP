@@ -103,7 +103,7 @@ class Story extends Component {
         const order =1;
         const path = appDir + '/stories/'+sid+'/';
         const score = await getScore({sid, ssid, order, path});
-        console.log("score", score);
+
         story.isComplete = (score.completed === story.stages.length) ? true : false;
 
         this.setState({
