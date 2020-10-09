@@ -270,6 +270,7 @@ class ToAR extends Component {
   render() {
     const { distance, debug_mode, imageTracking, finishAll, selected,  buttonaudioPaused, audioPaused, audioMuted, sharedProps, server, story, stage, sceneType, index, appDir } = this.state;
     console.log('index',index);
+    const theme = story.theme;
     if(index === null || !this.props.isFocused) return null;
     let params = {
       sharedProps: sharedProps,
@@ -314,7 +315,7 @@ class ToAR extends Component {
     const storyNext = () => <Icon size={30} name='rightArrow' type='booksonWall' color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [];
     arButtons.push({ element: storyReload });
-    
+
     if(debug_mode) arButtons.push({ element: storyMap });
     arButtons.push({ element: sound});
     arButtons.push({ element: storyNext});
@@ -337,7 +338,7 @@ class ToAR extends Component {
       backgroundColor: 'transparent', borderWidth: 0, borderColor: '#4B4F53', margin: 0, minHeight: 44, maxHeight: 44
     };
     const selectedBtnStyle = {
-      backgroundColor: '#750000'
+      backgroundColor: theme.color1
     };
     const containerStyle = {
       flex: 1, borderWidth: 0, borderColor: '#4B4F53', minHeight: 44, maxHeight: 44, backgroundColor: '#750000', borderRadius: 0, margin: 0, padding: 0
