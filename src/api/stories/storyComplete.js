@@ -803,9 +803,9 @@ export default class StoryComplete extends Component {
               <View style={themeSheet.credits} >
               <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
               <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
-
+              <Sponsors gallery={gallery} storyDir={storyDir}/>
             </View>
-            <Sponsors gallery={gallery} storyDir={storyDir}/>
+
       </View>
       </>
     )
