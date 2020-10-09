@@ -13,6 +13,7 @@ const getScore = async ({sid, ssid, order, path}) => {
      selected: (order) ? order : 1,
      completed: 0,
    };
+   console.log(nav);
    return await RNFS.exists(storyHF)
    .then( (exists) => {
        if (exists) {
