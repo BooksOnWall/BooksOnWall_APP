@@ -353,7 +353,7 @@ export default class StoryComplete extends Component {
   }
   componentWillUnmount = async () => {
     await KeepAwake.deactivate();
-    await this.whoosh.release();
+    if(this.whoosh) await this.whoosh.release();
   }
   ratingCompleted = async (rating) => {
     await this.setState({vote: rating});
@@ -828,7 +828,7 @@ export default class StoryComplete extends Component {
       let complete = appDir + '/stories/' + sid + '/nav.json';
       await RNFetchBlob.fs.unlink(complete).then(success => {
         Toast.showWithGravity(I18n.t("Story_reset_complete","Story reseted !"), Toast.short, Toast.TOP);
-        return this.props.navigation.navigate('Story', {screenProps: this.props.screenProps, story: story, index: 0});
+        return this.props.navigation.push('Story', {screenProps: this.props.screenProps, story: story, index: 0});
       });
     } catch(e) {
       console.log(e.message);
