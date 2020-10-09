@@ -49,7 +49,7 @@ export default class PivScene extends Component {
       animate: {name: 'movePicture'},
       text : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
-      fontFamily: params.theme.font1,
+      fontFamily: params.theme.font3,
       color: params.theme.color2,
       audios: [],
       video: {},
@@ -201,7 +201,7 @@ export default class PivScene extends Component {
     console.log('audioPaused', audioPaused);
     console.log('index',index);
     //console.log('videoPosition.x', scene_options.pictures[pIndex].videoPosition.x);
-    const font = String(fontFamily);
+    const font = String(theme.font3,theme.font2,theme.font1);
     const textColor = String(color);
     return (
       <SafeAreaView>

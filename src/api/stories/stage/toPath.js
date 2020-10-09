@@ -288,10 +288,11 @@ class ToPath extends Component {
     }
   }
   getDistance = async (position, index, story, debug_mode, radius, timeout) => {
+    const { navigate } = this.props.navigation;
     try {
       // console.log('accuracy',position.coords.accuracy);
       // console.log('radius type of', typeof(radius));
-      const precision = (radius + 20);
+      const precision = (position.coords.accuracy && position.coords.accuracy <= 15) ?  (radius + position.coords.accuracy ) : (radius+10);
       // console.log('precision',precision);
       this.setState({position: position,fromLat: position.coords.latitude, fromLong: position.coords.longitude});
       let from = {
@@ -317,7 +318,7 @@ class ToPath extends Component {
         if (dis && timeout > 0) {
           this.setState({distance: dis.toFixed(3)});
         };
-        if (dis && radius > 0 && debug_mode === false && (dis*1000) <= radius && timeout > 0) return this.switchToAR();
+        if (this.props.isFocused && dis && radius > 0 && (dis*1000) <= precision && timeout > 0) return this.switchToAR();
     } catch(e) {
       console.log(e);
     }

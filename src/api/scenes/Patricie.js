@@ -16,7 +16,7 @@ import {
 } from 'react-viro';
 import KeepAwake from 'react-native-keep-awake';
 import Bubble from '../../../assets/materials/patricie.png';
-import Bubble2 from '../../../assets/materials/baloonBlanc.png';
+import Bubble2 from '../../../assets/materials/baloon.png';
 import Leaf from '../../../assets/materials/leaf.png';
 import I18n from "../../utils/i18n";
 
@@ -49,7 +49,7 @@ ViroAnimations.registerAnimations({
   },
   hide: {
     properties:{
-      opacity:"-=0"
+      opacity:"=0"
     },
     duration: 2
   },
@@ -63,9 +63,9 @@ ViroAnimations.registerAnimations({
   positionText: {
     properties:{
       opacity:"+=1",
-      positionY:"+=0.03",
-      positionX: "+=0.5",
-      positionZ: "+=0.15",
+      positionY:"-=0.045",
+      positionX: "+=0.3",
+      positionZ: "+=0.01",
     },
     easing:"EaseInEaseOut",
     duration: 300
@@ -73,10 +73,10 @@ ViroAnimations.registerAnimations({
   moveForward: {
     properties:{
       opacity:"+=1",
-      positionY:"-=0.4",
-      positionX: "-=0.4",
-      scaleX: "+=3",
-      scaleY: "+=0.45",
+      positionY:"-=0.3",
+      positionX: "-=0.3",
+      scaleX: "-=0.025",
+      scaleY: "-=0.025",
       positionZ: "+=0.5",
     },
     easing:"EaseInEaseOut",
@@ -115,19 +115,17 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
         position={[0,0,-2]}
         animation={animate}
         visible={finishAll}
-        opacity={1}
         onPress={() => next()}
         onClick={() => next()}
         rotation={[0, 0, 0]} >
 
         <ViroImage
-          width={.3}
-          height={.3}
+          width={.4}
+          height={.4}
           visible={finishAll}
           resizeMode="ScaleToFit"
           source={Bubble2}
           animation={animate2}
-          style={{opacity: 0}}
           scale={[1,1,1]}
           onPress={() => next()}
           onClick={() => next()}
@@ -148,28 +146,28 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
 
     </ViroNode >
     <ViroNode
-        position={[0,0,-1]}
+        position={[0,1.2,-1]}
         visible={finishAll}
-        opacity={1}
         onPress={() => next()}
         onClick={() => next()}
         rotation={[0, 0, 0]} >
         <ViroText
           text={message}
-          textAlign="left"
-          textAlignVertical="top"
+          textAlign="center"
+          textAlignVertical="bottom"
           textLineBreakMode="Justify"
           textClipMode="ClipToBounds"
-          width={1}
-          height={1}
-          fontSize={10}
+          width={.35}
+          height={2}
+          fontSize={7}
+          outerStroke={{type:"DropShadow", width:2, color:'#444444'}}
+          shadowCastingBitMask={2}
           style={{
-            opacity: 0,
             fontFamily: font,
             fontWeight: '400',
             color: textColor
           }}
-          extrusionDepth={2}
+          extrusionDepth={3}
           materials={["frontMaterial", "backMaterial", "sideMaterial"]}
           animation={animate3}
           position={[0, 0, -.4]}
@@ -190,13 +188,13 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
         fixedToEmitter={true}
         image={{
           source: Leaf,
-          height:0.1,
-          width:0.1,
+          height:0.05,
+          width:0.05,
           bloomThreshold: 1.0
         }}
         spawnBehavior={{
           particleLifetime:[4000,4000],
-          emissionRatePerSecond:[15, 20],
+          emissionRatePerSecond:[50, 80],
           spawnVolume:{
             shape:"box",
             params:[20, 1, 20],
