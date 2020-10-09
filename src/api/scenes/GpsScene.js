@@ -51,7 +51,7 @@ export default class GpsScene extends Component {
       animate: {name: 'movePicture'},
       message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
-      fontFamily: params.theme.font3,
+      fontFamily: params.theme.font3 ,
       color: params.theme.color2,
       audios: [],
       video: {},
@@ -186,7 +186,7 @@ export default class GpsScene extends Component {
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     console.log('MatchAudioPath',MatchAudioPath);
-    const font = String(fontFamily);
+    const font = String(theme.font3,theme.font2,theme.font1);
     const textColor = String(color);
     console.log('videoPath', videoPath);
     return (

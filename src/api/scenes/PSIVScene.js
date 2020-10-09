@@ -203,7 +203,7 @@ export default class PSIVScene extends Component {
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     console.log('index',index);
-    const font = String(fontFamily);
+    const font = String(theme.font3,theme.font2,theme.font1);
     const textColor = String(color);
     return (
       <SafeAreaView>

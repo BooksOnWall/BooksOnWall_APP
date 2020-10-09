@@ -221,7 +221,7 @@ export default class VipScene extends Component {
   render = () => {
     const {index, message,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
-    const font = String(fontFamily);
+    const font = String(theme.font3,theme.font2,theme.font1);
     const textColor = String(color);
     // <ViroARImageMarker onAnchorFound={() => this.stopAudio()} ...
     return (

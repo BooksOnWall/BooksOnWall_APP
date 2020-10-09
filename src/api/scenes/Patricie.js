@@ -160,6 +160,8 @@ const Patricie = ({animate, animate2, theme, animate3, finishAll, next, message,
           width={.35}
           height={2}
           fontSize={7}
+          outerStroke={{type:"DropShadow", width:2, color:'#444444'}}
+          shadowCastingBitMask={2}
           style={{
             fontFamily: font,
             fontWeight: '400',
