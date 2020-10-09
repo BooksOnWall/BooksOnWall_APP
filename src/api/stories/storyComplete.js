@@ -823,9 +823,6 @@ export default class StoryComplete extends Component {
   )
   storyMap = () => this.props.navigation.navigate('StoryMap', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
   launchAR = () => this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: 0})
-  resetStory = () => {
-    return true;
-  }
   resetStory = async () => {
     let { story, appDir } = this.state;
     try {
