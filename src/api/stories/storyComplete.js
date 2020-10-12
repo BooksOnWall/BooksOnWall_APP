@@ -55,7 +55,7 @@ const galleryPath = (storyDir, path) => {
   return 'file://' + storyDir + path.replace("assets/stories/", "");
 }
 //const Bubbles = ({theme, themeSheet, comment}) => return (comment);
-const Reset = ({resetStory, theme, themeSheet}) => (
+const MainMenu = ({resetStory, commentLoading, theme, themeSheet, toggleComment, openComment, saveComment}) => (
   <View style={themeSheet.nav}>
     <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => resetStory()}>
       <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
@@ -63,6 +63,18 @@ const Reset = ({resetStory, theme, themeSheet}) => (
     <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
       <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
     </TouchableOpacity>
+    {openComment && openComment === true ?
+      (<TouchableOpacity  onPress={()=> saveComment()}>
+        <Button
+          onPress={() => saveComment()}
+          buttonStyle={themeSheet.button}
+          title={I18n.t('Send', 'Send')}
+          loading={commentLoading}
+          color={theme.color3}
+          accessibilityLabel="Send"
+          />
+      </TouchableOpacity>)
+    : null}
   </View>
 );
 const Sponsors = ({gallery, storyDir, themeSheet}) => {
@@ -153,13 +165,11 @@ const Bubbles = ({comment, theme, themeSheet}) => {
     return (line.type === 'image') ? <Image style={[styles.bubble,styles.image]} key={line.key} source={{uri: line.content }} /> : <Text style={{color: theme.color3}} key={line.key}>{line.content}</Text>
   });
 }
-const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
+const Comments = ({theme, themeSheet, openComment, commentLoading, handleCommentLine, addToComment, saveComment, saveLine, comment, commentLine }) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState(null);
-  const [openComment, setOpenComment] = useState(false);
-  const toggleComment = () => {
-    (!openComment) ? slideIn() : slideOut();
-    (!openComment) ? fadeIn() : fadeOut();
-    setOpenComment(!openComment);
+  const animate = () => {
+    (openComment) ? slideIn() : slideOut();
+    (openComment) ? fadeIn() : fadeOut();
   };
   const _onImageChange = useCallback(async ({nativeEvent}) => {
     try  {
@@ -175,11 +185,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
     }
   }, []);
 
-  const _save = async () => {
-    await saveComment();
-    await setOpenComment(false);
-    await slideOut();
-  };
+
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -214,28 +220,9 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
       duration: 1000,
     }).start();
   };
-
+  animate();
   return (
     <>
-    <View style={styles.feed , { flex:1, flexGrow: 1, padding: 40}} >
-      <TouchableOpacity  onPress={()=> toggleComment()}>
-        <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
-      </TouchableOpacity>
-      {openComment && openComment === true ?
-        (<TouchableOpacity  onPress={()=>  _save()}>
-          <Button
-            onPress={() => _save() }
-            buttonStyle={themeSheet.button}
-            title={I18n.t('Send', 'Send')}
-            loading={commentLoading}
-            color={theme.color3}
-            accessibilityLabel="Send"
-            />
-        </TouchableOpacity>)
-      : null}
-
-    </View>
-
     {commentLoading ?  <View ><ActivityIndicator size="large" color="#" animating={true}/></View> : null }
     <Animated.View   // Special animatable View
       style={[{
@@ -417,7 +404,7 @@ export default class StoryComplete extends Component {
       extra.comment = comment;
       extra.vote = vote;
       await setStat(name, sid, ssid , debug_mode, server, appDir, position, extra);
-      await this.setState({comment: [], commentLine: '', commentLoading: false});
+      await this.setState({comment: [], commentLine: '', commentLoading: false, openComment: false});
     } catch(e) {
       console.log(e);
     }
@@ -793,27 +780,10 @@ export default class StoryComplete extends Component {
           marginBottom: 1,
         },
       });
-      const ButtonGroup = () => {
-        return (
-          <View style={themeSheet.nav}>
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.deleteStory(story.id)} >
-            <Button buttonStyle={themeSheet.button} onPress={() => this.deleteStory(story.id)} icon={{name: 'trash', type:'booksonWall', size: 24, color: 'white'}}/>
-          </TouchableOpacity>
-          {distance && (
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.launchNavigation()}>
-            <Button buttonStyle={themeSheet.button} icon={{name: 'navi',  type:'booksonWall', size: 24, color: 'white'}} onPress={() => this.launchNavigation()} />
-          </TouchableOpacity>
-          )}
-          <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => this.storyMap()} >
-            <Button buttonStyle={themeSheet.button}  icon={{name: 'play', type:'booksonWall', size: 24, color: 'white'}} onPress={() => this.storyMap()}  />
-          </TouchableOpacity>
-          </View>
-        );
-      };
+
     return (
       <>
-      <Reset resetStory={this.resetStory} theme={theme} themeSheet={themeSheet} />
-
+      <MainMenu saveComment={this.saveComment} commentLoading={commentLoading} toggleComment={this.toggleComment} openComment={openComment} resetStory={this.resetStory} theme={theme} themeSheet={themeSheet} />
       <View style={themeSheet.card } >
         {commentLoading ?  <View ><ActivityIndicator size="large" color={theme.color2} animating={true}/></View> : null }
               <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
@@ -833,7 +803,18 @@ export default class StoryComplete extends Component {
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
               </View>
-              <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} />
+              <Comments
+                addToComment={this.addToComment}
+                commentLoading={commentLoading}
+                saveLine={this.saveLine}
+                theme={theme}
+                openComment={openComment}
+                themeSheet={themeSheet}
+                saveComment={this.saveComment}
+                handleCommentLine={this.handleCommentLine}
+                comment={comment}
+                commentLine={commentLine}
+              />
               <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
               <View style={themeSheet.credits} >
                 <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Credits", "Credits")}</Text>
