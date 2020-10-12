@@ -26,7 +26,7 @@ const Blob = RNFetchBlob.polyfill.Blob;
 import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores, completeStory} from '../stats/score';
-import Leaf from '../../../assets/materials/leaf.png';
+import Heart from '../../../assets/materials/heart.png';
 
 registerCustomIconType('booksonWall', IconSet);
 
@@ -56,17 +56,24 @@ const galleryPath = (storyDir, path) => {
 }
 //const Bubbles = ({theme, themeSheet, comment}) => return (comment);
 const Reset = ({resetStory, theme, themeSheet}) => (
-  <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => resetStory()}>
-    <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
-  </TouchableOpacity>
+  <View style={themeSheet.nav}>
+    <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => resetStory()}>
+      <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
+    </TouchableOpacity>
+    <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
+      <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
+    </TouchableOpacity>
+  </View>
 );
-const Sponsors = ({gallery, storyDir}) => {
+const Sponsors = ({gallery, storyDir, themeSheet}) => {
   const image1 = (gallery[0]) ? galleryPath(storyDir,gallery[0].path) : null;
   const image2 = (gallery[1]) ? galleryPath(storyDir,gallery[1].path) : null;
   return (
-    <View style={{backgroundColor: "#000"}}>
-        {gallery[0] && <Image style={{width: '100%', height: 150}} source={{uri: image1}} />}
-        {gallery[1] && <Image style={{width: '100%', height: 150}}  source={{uri: image2}} />}
+    <View style={{paddingVertical: 20, flex: 1}}>
+        <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Sponsor", "Supported by")}</Text>
+        {gallery[0] && <Image style={{flexGrow: 1, width: '100%', height: 100, paddingHorizontal: 0, resizeMode: 'contain'}} source={{uri: image1}} />}
+        <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Collaborators", "Collaborated by")}</Text>
+        {gallery[1] && <Image style={{flexGrow: 1, width: '100%', height: 100, paddingHorizontal: 0, resizeMode: 'contain'}}  source={{uri: image2}} />}
     </View>
   );
 };
@@ -210,7 +217,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
 
   return (
     <>
-    <View style={styles.feed , {backgroundColor: theme.color3, flex:1, flexGrow: 1, padding: 40}} >
+    <View style={styles.feed , { flex:1, flexGrow: 1, padding: 40}} >
       <TouchableOpacity  onPress={()=> toggleComment()}>
         <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
       </TouchableOpacity>
@@ -219,7 +226,7 @@ const Comments = ({theme, themeSheet, commentLoading, handleCommentLine, addToCo
           <Button
             onPress={() => _save() }
             buttonStyle={themeSheet.button}
-            title="Send"
+            title={I18n.t('Send', 'Send')}
             loading={commentLoading}
             color={theme.color3}
             accessibilityLabel="Send"
@@ -608,8 +615,17 @@ export default class StoryComplete extends Component {
         paddingTop: 40,
         paddingHorizontal: 40,
       },
+      rateTitle: {
+        fontSize: 18,
+        paddingHorizontal: 40,
+        paddingTop: 40,
+        color: story.theme.color2,
+        flexGrow: 1,
+        alignSelf: 'center',
+        textAlign: 'center',
+      },
       card:{
-        backgroundColor: story.theme.color3,
+        backgroundColor: '#ffffff',
       },
       credits: {
         backgroundColor: story.theme.color2,
@@ -633,6 +649,27 @@ export default class StoryComplete extends Component {
         textTransform: 'uppercase',
         fontFamily: 'Roboto-bold',
         color: story.theme.color3,
+      },
+      subtitleCredits:
+      {
+        fontWeight: 'bold',
+        padding: 0,
+        marginTop: 0,
+        marginBottom: 50,
+        fontSize: 12,
+        textTransform: 'uppercase',
+        fontFamily: 'Roboto-bold',
+        color: story.theme.color3,
+      },
+      creditsSubtitle:{
+        fontWeight: 'bold',
+        padding: 0,
+        marginTop: 0,
+        marginBottom: 50,
+        fontSize: 12,
+        textTransform: 'uppercase',
+        fontFamily: 'Roboto-bold',
+        color: story.theme.color1,
       },
       NavButton: {
         backgroundColor: story.theme.color2,
@@ -677,7 +714,7 @@ export default class StoryComplete extends Component {
       },
       b: { fontFamily: 'Roboto-bold'
       },
-      nav: { flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 6, paddingVertical: 6 },
+      nav: { backgroundColor: story.theme.color1, flex: 1, justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap-reverse', flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 12},
       button: { marginHorizontal: 3, backgroundColor: story.theme.color2}
       });
     const creditsThemeSheet = StyleSheet.create({
@@ -780,32 +817,29 @@ export default class StoryComplete extends Component {
       <View style={themeSheet.card } >
         {commentLoading ?  <View ><ActivityIndicator size="large" color={theme.color2} animating={true}/></View> : null }
               <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
-                <Text h1 style={themeSheet.title}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
+                <Text h1 style={themeSheet.rateTitle}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
                 <Rating
-                  showRating
                   fractions={1}
                   startingValue={vote}
                   type='custom'
-                  ratingColor={theme.color2}
+                  ratingColor='#E02020'
                   ratingTextColor={theme.color1}
                   reviews={["Terrible", "Bad", "Meh", "OK", "Good", "Hmm...", "Very Good", "Wow", "Amazing", "Unbelievable", "Jesus"]}
-                  ratingImage={Leaf}
+                  ratingImage={Heart}
                   ratingBackgroundColor='transparent'
                   ratingCount={7}
                   imageSize={45}
                   onFinishRating={this.ratingCompleted}
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
-
               </View>
               <Comments addToComment={this.addToComment} commentLoading={commentLoading} saveLine={this.saveLine} theme={theme} themeSheet={themeSheet} saveComment={this.saveComment} handleCommentLine={this.handleCommentLine} comment={comment} commentLine={commentLine} />
               <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
               <View style={themeSheet.credits} >
-              <Text h2 style={themeSheet.subtitle}>{I18n.t("Credits", "Credits")}</Text>
-              <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
-              <Sponsors gallery={gallery} storyDir={storyDir}/>
-            </View>
-
+                <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Credits", "Credits")}</Text>
+                <HTMLView  value={"<span>"+ story.credits +"</span>"} stylesheet={creditsThemeSheet} />
+                <Sponsors theme={theme} themeSheet={themeSheet} gallery={gallery} storyDir={storyDir}/>
+              </View>
       </View>
       </>
     )
@@ -841,7 +875,7 @@ export default class StoryComplete extends Component {
 
       const Title = ({story}) => (
         <View style={styles.titleStyle}>
-          <Text h1 style={{fontSize: 45, color: "#fff", textShadowRadius: 2 , textShadowOffset: {width: 1, height: 1}, textShadowColor: 'rgba(0, 0, 0, 0.85)', letterSpacing: 1, fontFamily: story.theme.font1}}>{I18n.t("The_end", "The End")}</Text>
+          <Text h1 style={{fontSize: 45, color: "#fff", textShadowRadius: 2 , textShadowOffset: {width: 1, height: 1}, textShadowColor: 'rgba(0, 0, 0, 0.85)', letterSpacing: 1 , textTransform: 'uppercase'}}>{I18n.t("The_end", "The End")}</Text>
           <Text style={{
             fontSize: 20,
             letterSpacing: 1,
@@ -881,7 +915,7 @@ export default class StoryComplete extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D8D8D8',
+    backgroundColor: '#fff',
     padding: 0,
     margin: 0,
   },
@@ -936,11 +970,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   feed:{
-    backgroundColor: '#C8C1B8',
+    backgroundColor: '#fff',
     padding: 40,
   },
   containerStyle: {
-    backgroundColor: '#C8C1B8',
+    backgroundColor: '#fff',
     justifyContent: 'space-around',
     borderWidth: 0,
     paddingTop: 25,
