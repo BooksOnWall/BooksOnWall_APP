@@ -784,8 +784,22 @@ export default class StoryComplete extends Component {
     return (
       <>
       <MainMenu saveComment={this.saveComment} commentLoading={commentLoading} toggleComment={this.toggleComment} openComment={openComment} resetStory={this.resetStory} theme={theme} themeSheet={themeSheet} />
+      <Comments
+        addToComment={this.addToComment}
+        commentLoading={commentLoading}
+        saveLine={this.saveLine}
+        theme={theme}
+        openComment={openComment}
+        themeSheet={themeSheet}
+        saveComment={this.saveComment}
+        handleCommentLine={this.handleCommentLine}
+        comment={comment}
+        commentLine={commentLine}
+      />
       <View style={themeSheet.card } >
+
         {commentLoading ?  <View ><ActivityIndicator size="large" color={theme.color2} animating={true}/></View> : null }
+
               <View className={themeSheet.rate} style={ commentLoading ? {position: 'absolute', top: -200} : {}} >
                 <Text h1 style={themeSheet.rateTitle}>{I18n.t("Rate_this", "Rate this Experience")}</Text>
                 <Rating
@@ -803,18 +817,7 @@ export default class StoryComplete extends Component {
                   style={{ backgroundColor: 'transparent', paddingVertical: 30 }}
                 />
               </View>
-              <Comments
-                addToComment={this.addToComment}
-                commentLoading={commentLoading}
-                saveLine={this.saveLine}
-                theme={theme}
-                openComment={openComment}
-                themeSheet={themeSheet}
-                saveComment={this.saveComment}
-                handleCommentLine={this.handleCommentLine}
-                comment={comment}
-                commentLine={commentLine}
-              />
+
               <Social theme={theme} themeSheet={themeSheet} resetStory={this.resetStory}/>
               <View style={themeSheet.credits} >
                 <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Credits", "Credits")}</Text>
