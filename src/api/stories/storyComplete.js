@@ -70,9 +70,9 @@ const Sponsors = ({gallery, storyDir, themeSheet}) => {
   const image2 = (gallery[1]) ? galleryPath(storyDir,gallery[1].path) : null;
   return (
     <View style={{paddingVertical: 20, flex: 1}}>
-        <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Sponsor", "Supported by")}</Text>
+        <Text h2 style={themeSheet.creditsSubtitle}>{I18n.t("Sponsor", "Supported by")}</Text>
         {gallery[0] && <Image style={{flexGrow: 1, width: '100%', height: 100, paddingHorizontal: 0, resizeMode: 'contain'}} source={{uri: image1}} />}
-        <Text h2 style={themeSheet.subtitleCredits}>{I18n.t("Collaborators", "Collaborated by")}</Text>
+        <Text h2 style={themeSheet.creditsSubtitle}>{I18n.t("Collaborator", "Collaborated by")}</Text>
         {gallery[1] && <Image style={{flexGrow: 1, width: '100%', height: 100, paddingHorizontal: 0, resizeMode: 'contain'}}  source={{uri: image2}} />}
     </View>
   );
@@ -650,22 +650,11 @@ export default class StoryComplete extends Component {
         fontFamily: 'Roboto-bold',
         color: story.theme.color3,
       },
-      subtitleCredits:
-      {
-        fontWeight: 'bold',
-        padding: 0,
-        marginTop: 0,
-        marginBottom: 50,
-        fontSize: 12,
-        textTransform: 'uppercase',
-        fontFamily: 'Roboto-bold',
-        color: story.theme.color3,
-      },
       creditsSubtitle:{
         fontWeight: 'bold',
         padding: 0,
-        marginTop: 0,
-        marginBottom: 50,
+        marginTop: 30,
+        marginBottom: 10,
         fontSize: 12,
         textTransform: 'uppercase',
         fontFamily: 'Roboto-bold',
