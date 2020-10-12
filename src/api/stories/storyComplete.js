@@ -954,8 +954,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   feed:{
-    backgroundColor: '#fff',
-    padding: 40,
+    zIndex: 2,
+    margin:0,
+    padding: 0,
+    // padding: 40,
   },
   containerStyle: {
     backgroundColor: '#fff',
@@ -981,6 +983,7 @@ const styles = StyleSheet.create({
   },
   bubbles :{
     flex: 1,
+    zIndex: 1,
     margin: 10,
     flexDirection:'column',
     alignItems:'center',
