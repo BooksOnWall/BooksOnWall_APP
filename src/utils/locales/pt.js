@@ -54,4 +54,6 @@ export default {
   Leave_a_message: "Leave a message",
   The_end: "The End",
   Send: "Send",
+  Sponsor: "Support by",
+  Collaborator: "collaborated by",
 };
