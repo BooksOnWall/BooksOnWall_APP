@@ -27,6 +27,8 @@ import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores, completeStory} from '../stats/score';
 import Heart from '../../../assets/materials/heart.png';
+import BorderImage from '../../../assets/story/Rectangle.svg';
+
 
 registerCustomIconType('booksonWall', IconSet);
 
@@ -58,10 +60,10 @@ const galleryPath = (storyDir, path) => {
 const MainMenu = ({resetStory, commentLoading, theme, themeSheet, toggleComment, openComment, saveComment}) => (
   <View style={themeSheet.nav}>
     <TouchableOpacity style={{flex:1, flexGrow: 1,}} onPress={() => resetStory()}>
-      <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:24, color:'#fff', type:'booksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
+      <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:32, color:'#fff', type:'BooksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
     </TouchableOpacity>
     <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
-      <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
+      <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} underlayColor='#FFFFFF' icon={{name:'comment', size:32, color:'#fff', type:'BooksonWall'}} title={I18n.t("Leave_a_message", "Leave a message")} />
     </TouchableOpacity>
     {openComment && openComment === true ?
       (<TouchableOpacity  onPress={()=> saveComment()}>
@@ -236,6 +238,7 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
         height: slideAnim,
       }, styles.feed , {backgroundColor: theme.color2, flex:1, flexGrow: 0, paddingHorizontal: 40, borderRadius: 8} ]}
       >
+      <Image source={{uri: selectedMediaUri}} style={styles.borderImage} />
       <View style={styles.commentContainer}>
         {selectedMediaUri && (
           <Image source={{uri: selectedMediaUri}} style={styles.image} />
