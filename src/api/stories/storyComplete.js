@@ -29,7 +29,6 @@ import {getScores, completeStory} from '../stats/score';
 import Heart from '../../../assets/materials/heart.png';
 import BorderImage from '../../../assets/story/Rectangle.svg';
 
-
 registerCustomIconType('booksonWall', IconSet);
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -238,7 +237,7 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
         height: slideAnim,
       }, styles.feed , {backgroundColor: theme.color2, flex:1, flexGrow: 0, paddingHorizontal: 40, borderRadius: 8} ]}
       >
-      <Image source={{uri: selectedMediaUri}} style={styles.borderImage} />
+      <Image source={BorderImage} style={styles.borderImage} />
       <View style={styles.commentContainer}>
         {selectedMediaUri && (
           <Image source={{uri: selectedMediaUri}} style={styles.image} />
@@ -1021,5 +1020,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 0
-  }
+  },
+  borderImage:{
+    flexGrow: 1,
+    width: 'inherit',
+    minHeight: 20,
+    height: 20,
+  },
 });
