@@ -317,7 +317,7 @@ class Story extends Component {
       };
   }
   getCurrentLocation = async () => {
-    let {timeout, selected, completed , story, index} = this.state;
+    let {timeout, selected, debug_mode, radius, completed , story, index} = this.state;
     try {
       // Instead of navigator.geolocation, just use Geolocation.
       await Geolocation.getCurrentPosition(

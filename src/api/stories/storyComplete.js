@@ -27,7 +27,7 @@ import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores, completeStory} from '../stats/score';
 import Heart from '../../../assets/materials/heart.png';
-import BorderImage from '../../../assets/story/Rectangle.svg';
+//import BorderImage from '../../../assets/story/Rectangle.svg';
 
 registerCustomIconType('booksonWall', IconSet);
 
@@ -224,8 +224,10 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
   animate();
   return (
     <>
+
     {commentLoading ?  <View ><ActivityIndicator size="large" color="#" animating={true}/></View> : null }
-    <Animated.View   // Special animatable View
+
+      <Animated.View   // Special animatable View
       style={[{
         opacity: fadeAnim, // Bind opacity to animated value
         transform: [{
@@ -237,7 +239,7 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
         height: slideAnim,
       }, styles.feed , {backgroundColor: theme.color2, flex:1, flexGrow: 0, paddingHorizontal: 40, borderRadius: 8} ]}
       >
-      <Image source={BorderImage} style={styles.borderImage} />
+
       <View style={styles.commentContainer}>
         {selectedMediaUri && (
           <Image source={{uri: selectedMediaUri}} style={styles.image} />
