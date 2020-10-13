@@ -1,4 +1,6 @@
 rootProject.name = 'BooksOnWall'
+include ':react-native-svg'
+project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 include ':react-native-image-keyboard'
 project(':react-native-image-keyboard').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-keyboard/android')
 include ':react-native-image-keyboard'

@@ -56,6 +56,7 @@
     "react-native-simple-toast": "^1.0.0",
     "react-native-sound": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",
+    "react-native-svg": "^12.1.0",
     "react-native-typography": "^1.4.1",
     "react-native-vector-icons": "^6.6.0",
     "react-native-zip-archive": "4.1.5",

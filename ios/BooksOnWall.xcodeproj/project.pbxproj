@@ -118,6 +118,8 @@
 		E24A862B411D49C19EC2B87E /* libRNCToolbarAndroid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85AD21FCDB34976B92FD0E6 /* libRNCToolbarAndroid.a */; };
 		3A1D0033843E4E5F9F63585D /* libMediaInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3366DFEA500E4AB797E3AC4D /* libMediaInput.a */; };
 		0250B0EA6F5E4C0C90FB3C4B /* BooksonWall.svg in Resources */ = {isa = PBXBuildFile; fileRef = 27E63496AA7040E9A976301E /* BooksonWall.svg */; };
+		486E1AD9C12144089D92E261 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A409822AB9BE464A975A88C1 /* libRNSVG.a */; };
+		AF947B6B5FA944F6B29B8000 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AFF2CBD08E045E88D79144F /* libRNSVG-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -715,6 +717,9 @@
 		AA47924470FD41F4BC92E3A8 /* MediaInput.xcodeproj */ = {isa = PBXFileReference; name = "MediaInput.xcodeproj"; path = "../node_modules/react-native-image-keyboard/ios/MediaInput.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		3366DFEA500E4AB797E3AC4D /* libMediaInput.a */ = {isa = PBXFileReference; name = "libMediaInput.a"; path = "libMediaInput.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		27E63496AA7040E9A976301E /* BooksonWall.svg */ = {isa = PBXFileReference; name = "BooksonWall.svg"; path = "../assets/nav/BooksonWall.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		898DE597B180433A914C8871 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; name = "RNSVG.xcodeproj"; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		A409822AB9BE464A975A88C1 /* libRNSVG.a */ = {isa = PBXFileReference; name = "libRNSVG.a"; path = "libRNSVG.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		7AFF2CBD08E045E88D79144F /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -768,6 +773,7 @@
 				73D1CD3549424BCB8805AA43 /* libRNSound.a in Frameworks */,
 				E24A862B411D49C19EC2B87E /* libRNCToolbarAndroid.a in Frameworks */,
 				3A1D0033843E4E5F9F63585D /* libMediaInput.a in Frameworks */,
+				486E1AD9C12144089D92E261 /* libRNSVG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -791,6 +797,7 @@
 				ECB9085A86744B03B9404B78 /* libRNLocalize-tvOS.a in Frameworks */,
 				9EE7ED4F865E48E0A1F97392 /* libRNCNetInfo-tvOS.a in Frameworks */,
 				04A432D2C1554C758205CEEE /* libRNDeviceInfo-tvOS.a in Frameworks */,
+				AF947B6B5FA944F6B29B8000 /* libRNSVG-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -989,6 +996,7 @@
 				825205D6DF1D496CA43405E3 /* RNSound.xcodeproj */,
 				CDA82ED10C334BE4869F8DB8 /* RNCToolbarAndroid.xcodeproj */,
 				AA47924470FD41F4BC92E3A8 /* MediaInput.xcodeproj */,
+				898DE597B180433A914C8871 /* RNSVG.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -2189,12 +2197,15 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWallTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2263,12 +2274,15 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWallTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2338,6 +2352,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2380,6 +2395,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = BooksOnWall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2429,11 +2445,14 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2511,11 +2530,14 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2592,11 +2614,14 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2673,11 +2698,14 @@
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 					"$(SRCROOT)/../node_modules/@react-native-community/toolbar-android/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-keyboard/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = "BooksOnWall-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
