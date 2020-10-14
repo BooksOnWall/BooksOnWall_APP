@@ -28,7 +28,7 @@ import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores, completeStory} from '../stats/score';
 import Heart from '../../../assets/materials/heart.png';
-import BorderImage from '../../../assets/story/Rectangle.png';
+import BorderImage from '../../../assets/story/borderImageMask.png';
 
 registerCustomIconType('booksonWall', IconSet);
 
@@ -63,7 +63,7 @@ const MainMenu = ({resetStory, commentLoading, theme, themeSheet, toggleComment,
       <Button buttonStyle={themeSheet.button} onPress={() => resetStory()} underlayColor='#FFFFFF' icon={{name:'reload', size:32, color:'#fff', type:'BooksonWall'}} title={I18n.t("Start_again", "Start Again")}/>
     </TouchableOpacity>
     <TouchableOpacity style={{flex:1, flexGrow: 1,}}>
-      <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} underlayColor='#FFFFFF' title={I18n.t("Leave_a_message", "Leave a message")} />
+      <Button buttonStyle={themeSheet.button} onPress={()=> toggleComment()} title={I18n.t("Leave_a_message", "Leave a message")} />
     </TouchableOpacity>
     {openComment && openComment === true ?
       (<TouchableOpacity  onPress={()=> saveComment()}>
