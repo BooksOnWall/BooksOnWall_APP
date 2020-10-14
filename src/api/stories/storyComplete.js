@@ -27,7 +27,7 @@ import Sound from 'react-native-sound';
 import {setStat} from "../stats/stats";
 import {getScores, completeStory} from '../stats/score';
 import Heart from '../../../assets/materials/heart.png';
-//import BorderImage from '../../../assets/story/Rectangle.svg';
+import BorderImage from '../../../assets/story/Rectangle.png';
 
 registerCustomIconType('booksonWall', IconSet);
 
@@ -222,6 +222,7 @@ const Comments = ({theme, themeSheet, openComment, commentLoading, handleComment
     }).start();
   };
   animate();
+  //  <View><Image source={BorderImage} style={styles.borderImage}/></View>
   return (
     <>
 
