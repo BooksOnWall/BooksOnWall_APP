@@ -882,7 +882,7 @@ export default class StoryComplete extends Component {
              alignItems: 'center'
            }}
          >
-        
+         <Image source={BorderImage} styles={styles.borderImage} />
          </View>
        }
      >
