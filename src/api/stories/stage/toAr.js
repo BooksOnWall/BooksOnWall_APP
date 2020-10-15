@@ -217,7 +217,7 @@ class ToAR extends Component {
   reload = () => {
     this.togglePlaySound();
     this.setState({ imageTracking: false, timeout: 0, finishAll: false, navigatorType : UNSET });
-    this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
+    this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: this.state.index} );
   }
   map = () => {
     this.togglePlaySound();

@@ -24,7 +24,7 @@ import openIcon from '../../../../assets/nav/point1.png';
 import completeIcon from '../../../../assets/nav/point2.png';
 import unknownIcon from '../../../../assets/nav/point3.png';
 
-import {getScore} from '../../stats/score';
+import {getScore, addNewIndex} from '../../stats/score';
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
@@ -318,7 +318,15 @@ class ToPath extends Component {
         if (dis && timeout > 0) {
           this.setState({distance: dis.toFixed(3)});
         };
-        if (this.props.isFocused && dis && radius > 0 && (dis*1000) <= precision && timeout > 0) return this.switchToAR();
+        if (this.props.isFocused && dis && radius > 0 && (dis*1000) <= precision && timeout > 0) {
+          // clear everything
+          if(this.whoosh) await this.whoosh.release();
+          MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+          await this.clearGPS();
+
+          if(this.focusListener) await this.focusListener.remove();
+          return this.switchToAR();
+        }
     } catch(e) {
       console.log(e);
     }
@@ -549,6 +557,30 @@ class ToPath extends Component {
       console.log(e);
     }
   }
+  jumpToNext = async () => {
+    const {story, AppDir, index,selected,completed, debug_mode, distance} = this.state;
+    try {
+      const sid = story.id;
+      const ssid = null;
+      let order = 1;
+      const path = AppDir + '/stories/'+sid+'/';
+      // get score and addNewIndex to jump to the next stage without using the AR
+      let score = await getScore({sid, ssid, order, path});
+      score.completed=(score.completed +1);
+      score.selected=(score.selected +1);
+      score.index=(score.index +1);
+      await addNewIndex({sid, ssid, order: score.selected, path, newIndex: score.index, completed: score.completed});
+      // clear everything
+      if(this.whoosh) await this.whoosh.release();
+      MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+      await this.clearGPS();
+      if(this.focusListener) await this.focusListener.remove();
+      return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, index: score.index, debug: debug_mode, distance: distance});
+    } catch(e) {
+      console.log(e.message);
+    }
+
+  }
   switchToAR = async () => {
     const {index, timeout, story, unset, debug_mode, selected, completed, distance} = this.state;
     console.log('index', index);
@@ -558,6 +590,11 @@ class ToPath extends Component {
       let newIndex =(index <= story.stages.length) ? (index+1) : story.stages.length;
       newIndex = (index === 0 && selected === 1 && completed === 0) ? 0 : newIndex;
       Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
+      // clear everything
+      if(this.whoosh) await this.whoosh.release();
+      MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+      await this.clearGPS();
+      if(this.focusListener) await this.focusListener.remove();
       this.props.navigation.push('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
     } catch(e) {
       console.log(e.message);
@@ -615,6 +652,7 @@ class ToPath extends Component {
     const storyDestination = () => <Icon size={32} name='destiny' type='booksonWall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyOrigin = () =>  <Icon size={32} name='origin' type='booksonWall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
     const launchAR = () =>  <Icon size={32} name='isologo' type='booksonWall' color='#fff' onPress={() => this.switchToAR()} />;
+    const jumpToNext = () =>  <Icon size={32} name='check' type='booksonWall' color='#fff' onPress={() => this.jumpToNext()} />;
     const launchNavigation = () => <Icon size={32} name='navi' type='booksonWall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
         if(audioButton && audioPaused) {
@@ -635,7 +673,7 @@ class ToPath extends Component {
     if (debug_mode === true) MenuButtons.push({ element: launchAR });
     //MenuButtons.push({ element: storyMapDl});
     if(sound !== null) MenuButtons.push({element: sound});
-
+    if (debug_mode === true) MenuButtons.push({ element: jumpToNext });
 
     return (
       <View style={rstyles.footer}>
@@ -778,7 +816,6 @@ class ToPath extends Component {
   }
   togglePlaySound = () => {
     this.setState({audioPaused: !this.state.audioPaused});
-    console.log(this.state.audioPaused);
     return (!this.state.audioPaused) ? this.whoosh.pause() : this.whoosh.play();
   }
   render() {
