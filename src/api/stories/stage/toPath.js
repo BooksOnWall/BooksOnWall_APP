@@ -189,7 +189,9 @@ class ToPath extends Component {
         console.log('path',path);
         const score = await getScore({sid, ssid, order, path});
         console.log('score',score);
-        const index= parseInt(score.index);
+        let index= parseInt(score.index);
+        const newIndex = this.props.navigation.getParam('index');
+        index = (newIndex && (newIndex+1) < score.completed) ? newIndex : index;
         const prevIndex = (index > 0) ? (index-1) : null;
         const origin = (prevIndex) ? routes[prevIndex].coordinates: location;
         const radius = parseFloat(story.stages[index].radius);
@@ -201,6 +203,9 @@ class ToPath extends Component {
         const fromLong = origin[0];
         const toLat= routes[index].coordinates[1];
         const toLong= routes[index].coordinates[0];
+        console.log('newIndex',newIndex);
+        console.log('index', index);
+
         this.setState({
           prevIndex,
           origin,
@@ -216,8 +221,8 @@ class ToPath extends Component {
           toLong,
           order,
           score,
-          selected: parseInt(score.selected),
-          completed: parseInt(score.completed),
+          selected: (newIndex && newIndex != index) ? (newIndex+1): score.selected,
+          completed: score.completed,
           index,
         });
         return score;
@@ -568,14 +573,18 @@ class ToPath extends Component {
       let score = await getScore({sid, ssid, order, path});
       score.completed=(score.completed +1);
       score.selected=(score.selected +1);
-      score.index=(score.index +1);
+      score.index=(score.completed < story.stages.length) ? (score.index +1) : score.index;
       await addNewIndex({sid, ssid, order: score.selected, path, newIndex: score.index, completed: score.completed});
       // clear everything
       if(this.whoosh) await this.whoosh.release();
       MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
       await this.clearGPS();
       if(this.focusListener) await this.focusListener.remove();
-      return await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, index: score.index, debug: debug_mode, distance: distance});
+      return (score.completed < story.stages.length)
+      ?
+      await this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, index: score.index, debug: debug_mode, distance: distance})
+      :
+      await this.props.navigation.push('StoryComplete', {screenProps: this.props.screenProps, story: story, index: score.index, debug: debug_mode, distance: distance});
     } catch(e) {
       console.log(e.message);
     }

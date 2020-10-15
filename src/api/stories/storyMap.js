@@ -404,6 +404,7 @@ class StoryMap extends Component {
       this.cancelTimeout();
       await Geolocation.clearWatch(this.watchID);
       this.watchID = null;
+      console.log(newIndex);
       if (routeSimulator) {
         await routeSimulator.stop();
       }
@@ -518,14 +519,18 @@ class StoryMap extends Component {
   onUserLocationUpdate = (newUserLocation) => {
     this.setState({position: newUserLocation})
   }
-  enterStage = (e) => {
+  enterStage = async (e) => {
     const {distance} = this.state;
-    const feature = e.nativeEvent.payload;
-    const index = feature.properties.index;
-    this.goTo(feature.geometry.coordinates);
-    //this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
-    Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
-    this.launchMap();
+    try {
+      const feature = e.nativeEvent.payload;
+      const index = feature.properties.index;
+      await this.goTo(feature.geometry.coordinates);
+      //this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
+      Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
+      this.launchMap(index);
+    } catch(e) {
+      console.log(e.message);
+    }
   }
   renderStages = () => {
     const {theme, completed, selected, routes, index, images} = this.state;
@@ -636,9 +641,23 @@ class StoryMap extends Component {
     const coords = routes[id].coordinates;
     this.goTo(coords, false);
   }
-  launchMap = () => {
-    const {distance , story, selected, index} = this.state;
-    this.props.navigation.navigate('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index: (selected > 0) ? (selected - 1): 0});
+  launchMap = async (newIndex) => {
+    const {distance , story, selected,index, completed } = this.state;
+    //if(!index) index = this.state.index;
+    try {
+      await MapboxGL.offlineManager.unsubscribe('story'+story.id);
+      this.cancelTimeout();
+      console.log('newIndex', newIndex);
+      console.log('complete',completed);
+      await Geolocation.clearWatch(this.watchID);
+      this.watchID = null;
+      newIndex = (newIndex && newIndex < (completed -1)) ? newIndex : index;
+      console.log('newIndex', newIndex);
+      console.log('index', index);
+      this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index: newIndex});
+    } catch(e) {
+      console.log(e.message);
+    }
   }
   launchAR = () => {
     const {distance , story, selected, index} = this.state;
