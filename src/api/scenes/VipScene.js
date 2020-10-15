@@ -59,6 +59,7 @@ export default class VipScene extends Component {
       audioLoop: false,
       videoPath: "",
       videoLoop: false,
+      lockVideo: false,
       onZoneEnter: params.onZoneEnter,
       onZoneLeave: params.onZoneLeave,
       onPictureMatch: params.onPictureMatch
@@ -88,7 +89,9 @@ export default class VipScene extends Component {
   }
   goToNext = () => {
     this.setState({animate: 'rotate'});
-    setTimeout(() => {  return this.props.sceneNavigator.viroAppProps.goToNext(); }, 5000);
+    setTimeout(() => {
+      return this.props.sceneNavigator.viroAppProps.goToNext();
+    }, 5000);
 
   }
   onInitialized(state, reason) {
@@ -197,6 +200,17 @@ export default class VipScene extends Component {
     this.toggleButtonAudio();
     console.log("Sound terminated");
   }
+  onAnchorFound = e => {
+    const {lockVideo} = this.state;
+    if(!lockVideo) {
+      this.setState({lockVideo: true});
+      this.toggleButtonAudio();
+    }
+    console.log(e);
+  }
+  onBufferStart = () => {
+    console.log("On Buffer Start");
+  }
   onFinishVideo = () => {
     this.setState({imageTracking:  false});
     this.loadAndPlayAudio('onPictureMatch');
@@ -236,7 +250,7 @@ export default class VipScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARImageMarker visible={imageTracking} target={"targetVIP"}   >
+      <ViroARImageMarker visible={imageTracking} target={"targetVIP"} onAnchorFound={this.onAnchorFound}  >
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"
@@ -250,6 +264,7 @@ export default class VipScene extends Component {
               position={[0,0,0]}
               rotation={[-90,0,0]}
               opacity={1}
+              onBufferStart={this.onBufferStart}
               onFinish={this.onFinishVideo}
               onError={this.onVideoError}
               materials={["chromaKeyFilteredVideo"]}

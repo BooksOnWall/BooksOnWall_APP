@@ -400,6 +400,13 @@ class StoryMap extends Component {
     const {index, story, unset, debug_mode, distance} = this.state;
     try {
       let newIndex = (index <= story.stages.length) ? (parseInt(index)+1) : story.stages.length;
+      await MapboxGL.offlineManager.unsubscribe('story'+story.id);
+      this.cancelTimeout();
+      await Geolocation.clearWatch(this.watchID);
+      this.watchID = null;
+      if (routeSimulator) {
+        await routeSimulator.stop();
+      }
       await Toast.showWithGravity(I18n.t("Entering_ar","Entering in Augmented Reality ..."), Toast.SHORT, Toast.TOP);
       this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: story, index: newIndex, debug: debug_mode, distance: distance});
     } catch(e) {
@@ -496,7 +503,7 @@ class StoryMap extends Component {
   }
   goTo = async (coordinates,followUserLocation ) => {
     try {
-      (this.state.followUserLocation !== followUserLocation) ? await this.followUserLocationToggle() : null;
+      (followUserLocation && this.state.followUserLocation  && this.state.followUserLocation !== followUserLocation) ? await this.followUserLocationToggle() : null;
       await this.setState({zoom: 20});
       await this.setState({goto: coordinates});
     } catch(e) {

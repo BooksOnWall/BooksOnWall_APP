@@ -58,6 +58,7 @@ export default class GpsScene extends Component {
       audioLoop: false,
       videoPath: "",
       videoLoop: false,
+      lockVideo: false,
       onZoneEnter: params.onZoneEnter,
       onZoneLeave: params.onZoneLeave,
       onPictureMatch: params.onPictureMatch
@@ -158,11 +159,25 @@ export default class GpsScene extends Component {
   }
   toggleButtonAudio = async () => this.props.sceneNavigator.viroAppProps.toggleButtonAudio()
   onFinishAll = () => this.setState({finishAll: true})
+  onAnchorFound = e => {
+    const {lockVideo} = this.state;
+    console.log('lockVideo',lockVideo);
+    if(!lockVideo) {
+      this.setState({lockVideo: true});
+      this.toggleButtonAudio();
+    }
+    console.log(e);
+  }
   onFinishSound = () => {
     this.toggleButtonAudio();
     console.log("Sound terminated");
   }
+  onBufferStart = () => {
+
+    console.log("On Buffer Start");
+  }
   onFinishVideo = () => {
+    this.setState({imageTracking:  false});
     this.loadAndPlayAudio('onPictureMatch');
     console.log("Video terminated");
   }
@@ -214,6 +229,7 @@ export default class GpsScene extends Component {
             position={[0,0,0]}
             rotation={[-90,0,0]}
             opacity={1}
+            onBufferStart={this.onBufferStart}
             onFinish={this.onFinishVideo}
             onError={this.onVideoError}
             materials={["chromaKeyFilteredVideo"]}

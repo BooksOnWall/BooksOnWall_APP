@@ -58,6 +58,7 @@ export default class VaampScene extends Component {
       audioLoop: false,
       videoPath: "",
       videoLoop: false,
+      lockVideo: false,
       onZoneEnter: params.onZoneEnter,
       onZoneLeave: params.onZoneLeave,
       onPictureMatch: params.onPictureMatch
@@ -170,10 +171,25 @@ export default class VaampScene extends Component {
       console.log(e);
     }
   }
+  onFinishAll = () => this.setState({finishAll: true})
+  onAnchorFound = e => {
+    const {lockVideo} = this.state;
+    if(!lockVideo) {
+      this.setState({lockVideo: true});
+      this.toggleButtonAudio();
+    }
+    console.log(e);
+  }
   onFinishSound = () => {
+    this.toggleButtonAudio();
     console.log("Sound terminated");
   }
+  onBufferStart = () => {
+
+    console.log("On Buffer Start");
+  }
   onFinishVideo = () => {
+    this.setState({imageTracking:  false});
     this.loadAndPlayAudio('onPictureMatch');
     console.log("Video terminated");
   }
@@ -224,6 +240,7 @@ export default class VaampScene extends Component {
                 position={[parseFloat(scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
                 rotation={[-90,0,0]}
                 opacity={1}
+                onBufferStart={this.onBufferStart}
                 onError={this.onVideoError}
                 onFinish={this.onFinishVideo}
                 materials={["chromaKeyFilteredVideo"]}
