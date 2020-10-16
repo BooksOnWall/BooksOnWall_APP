@@ -651,7 +651,7 @@ class StoryMap extends Component {
       console.log('complete',completed);
       await Geolocation.clearWatch(this.watchID);
       this.watchID = null;
-      newIndex = (newIndex && newIndex < (completed -1)) ? newIndex : index;
+      newIndex = (newIndex && newIndex <= (completed -1)) ? newIndex : index;
       console.log('newIndex', newIndex);
       console.log('index', index);
       this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index: newIndex});

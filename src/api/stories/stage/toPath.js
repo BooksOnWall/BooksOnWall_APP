@@ -740,7 +740,7 @@ class ToPath extends Component {
             return;
           }
           // loaded successfully
-          console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
+          //console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
           // Loop indefinitely until stop() is called
 
           // Play the sound with an onEnd callback
@@ -788,7 +788,7 @@ class ToPath extends Component {
             return;
           }
           // loaded successfully
-          console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
+          //console.log('duration in seconds: ' + this.whoosh.getDuration() + 'number of channels: ' + this.whoosh.getNumberOfChannels());
 
           // Play the sound with an onEnd callback
           this.whoosh.play((success) => {

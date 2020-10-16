@@ -241,7 +241,7 @@ export default class PivScene extends Component {
               paused={false}
               visible={true}
               loop={videoLoop}
-              position={[parseFloat(scene_options.videos[0].x),parseFloat(scene_options.videos[0].y),parseFloat(scene_options.videos[0].z)]}
+              position={[parseFloat(-scene_options.pictures[0].x),parseFloat(scene_options.pictures[0].y),parseFloat(scene_options.pictures[0].z)]}
               rotation={[-90,0,0]}
               opacity={1}
               onBufferStart={this.onBufferStart}
