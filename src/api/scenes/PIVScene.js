@@ -47,7 +47,7 @@ export default class PivScene extends Component {
       MatchAudioLoop: false,
       finishAll: false,
       animate: {name: 'movePicture'},
-      text : I18n.t("NextPath", "Go to the next point"),
+      message : I18n.t("NextPath", "Go to the next point"),
       theme: params.theme,
       fontFamily: params.theme.font3,
       color: params.theme.color2,
@@ -211,7 +211,7 @@ export default class PivScene extends Component {
       this.setState({ buttonStateTag: "onTap" });
   }
   render = () => {
-    const {index, message,animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop } = this.state;
+    const {index, animate, fontFamily, color, imageTracking, finishAll, theme, pIndex, scene_options, MatchAudioPath, MatchAudioLoop, MatchAudioPaused, MatchAudioMuted, audioPath, audioLoop, videoPath, videoLoop, message } = this.state;
     const {audioPaused, audioMuted} = this.props.sceneNavigator.viroAppProps;
     console.log('audioPaused', audioPaused);
     console.log('index',index);
