@@ -86,7 +86,7 @@ const circleStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index}) => (
+const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index, navigation}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
       <Badge  value={'Completed: ' + completed} badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
