@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {NativeModules,Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
+import {TouchableOpacity, NativeModules,Animated, ImageBackground, Dimensions, Platform, View, StyleSheet, Text} from 'react-native';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {Button, ButtonGroup, Icon, Badge} from 'react-native-elements';
 import { withNavigationFocus } from 'react-navigation';
@@ -89,6 +89,9 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
+    <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => this.props.navigation.goBack()}>
+      <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+    </TouchableOpacity>
       <Badge  value={'Completed: ' + completed} badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
       <Text style={styles.texto} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
