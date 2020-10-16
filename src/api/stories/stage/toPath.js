@@ -944,6 +944,14 @@ class ToPath extends Component {
         width: 3,
         color:theme.color2,
       },
+      iconLeft: {
+        width: 45,
+        height: 45,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 0,
+      }
     });
     return (
       <Page {...this.props}>

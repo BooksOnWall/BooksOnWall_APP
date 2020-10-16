@@ -16,6 +16,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
 
+
 import openIcon from '../../../assets/nav/point1.png';
 import completeIcon from '../../../assets/nav/point2.png';
 import unknownIcon from '../../../assets/nav/point3.png';
@@ -93,6 +94,9 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
   return (
     <View style={styles.header}>
       <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
+      <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => this.props.navigation.goBack()}>
+        <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+      </TouchableOpacity>
       <Badge size="large" badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
         <Text style={{
           fontSize: 26,
@@ -750,6 +754,14 @@ class StoryMap extends Component {
        },
        badgeTextStyle: {
          fontSize: 9,
+       },
+       iconLeft: {
+         width: 45,
+         height: 45,
+         borderRadius: 30,
+         justifyContent: 'center',
+         alignItems: 'center',
+         padding: 0,
        }
      });
     return (
