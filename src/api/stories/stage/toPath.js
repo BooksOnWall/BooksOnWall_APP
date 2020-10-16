@@ -89,8 +89,8 @@ MapboxGL.setAccessToken(MAPBOX_KEY);
 const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index, navigation}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-    <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => this.props.navigation.goBack()}>
-      <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+    <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => navigation.goBack()}>
+      <Button onPress={() => navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
     </TouchableOpacity>
       <Badge  value={'Completed: ' + completed} badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
       <Text style={styles.texto} >{story.title}</Text>
@@ -965,6 +965,7 @@ class ToPath extends Component {
           isFocused={this.props.isFocused}
           position={position}
           navigate={navigate}
+          navigation={this.props.navigation}
           styles={styles}
           index={index}
           />
