@@ -40,6 +40,7 @@ import PORTAL from '../../scenes/PortalScene';
 import PIV from '../../scenes/PIVScene';
 import PSIV from '../../scenes/PSIVScene';
 import GPS from '../../scenes/GpsScene';
+import TOTEM from '../../scenes/TotemScene';
 /*
  TODO: Insert your API key below unneeded since v.2.17
  */
@@ -52,7 +53,7 @@ let UNSET = "UNSET";
 // This determines which type of experience to launch in, or UNSET, if the user should
 // be presented with a choice of AR or VR. By default, we offer the user a choice.
 let defaultNavigatorType = "AR";
-const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal', 'PIV', 'PSIV', '3D', 'GPS'];
+const sceneTypes = ['Scene types', 'VIP', 'VAAP', 'VAAMP', 'Portal', 'PIV', 'PSIV', '3D', 'GPS', 'TOTEM'];
 
 const DebugArea = ({distance, debug}) => {
   console.log(distance);
@@ -328,7 +329,7 @@ class ToAR extends Component {
       'psiv': { scene: PSIV},
       'gps': { scene: GPS}
     };
-    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv', '3D','gps'];
+    let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv', '3D','gps', 'totem'];
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
     console.log(type);
     console.log(arScene[type]);
