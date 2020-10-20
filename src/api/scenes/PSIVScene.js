@@ -232,7 +232,7 @@ export default class PSIVScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-        <ViroARImageMarker target={"targetOne"} >
+        <ViroARImageMarker target={"targetOne"} onAnchorFound={this.onAnchorFound}>
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"

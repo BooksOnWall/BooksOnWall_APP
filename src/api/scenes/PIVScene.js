@@ -230,7 +230,7 @@ export default class PivScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARImageMarker target={"targetPIV"} >
+      <ViroARImageMarker target={"targetPIV"} onAnchorFound={this.onAnchorFound}>
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"

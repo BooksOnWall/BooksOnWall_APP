@@ -189,7 +189,7 @@ export default class PortalScene extends Component {
     const textColor = String(color);
     return (
       <SafeAreaView>
-      <ViroARScene onTrackingUpdated={this.onInitialized}  >
+      <ViroARScene onTrackingUpdated={this.onInitialized} onAnchorFound={this.onAnchorFound} >
         <ViroSound
            paused={false}
            muted={false}

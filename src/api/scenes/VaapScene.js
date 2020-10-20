@@ -231,7 +231,7 @@ export default class VaapScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARImageMarker target={"targetVAP"} >
+      <ViroARImageMarker target={"targetVAP"} onAnchorFound={this.onAnchorFound}>
             <ViroVideo
               source={{uri: videoPath}}
               dragType="FixedToWorld"

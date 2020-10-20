@@ -226,7 +226,7 @@ export default class VaampScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARImageMarker target={"targetVAMP"} >
+      <ViroARImageMarker target={"targetVAMP"} onAnchorFound={this.onAnchorFound} >
               <ViroVideo
                 source={{uri: videoPath}}
                 dragType="FixedToWorld"
