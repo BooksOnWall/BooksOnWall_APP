@@ -107,7 +107,7 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
           textShadowRadius: 2,
           fontFamily: theme.font1}} >{story.title}</Text>
         <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-        <Text style={styles.complete}>Complete: {(index+1)}/{story.stages.length}</Text>
+        <Text style={styles.complete}>Complete: {completed}/{story.stages.length}</Text>
         <Text style={styles.complete}>{(dis && dis !=='') ? 'Next in '+dis+' km': ' '}</Text>
       </ImageBackground>
     </View>
@@ -528,6 +528,7 @@ class StoryMap extends Component {
     try {
       const feature = e.nativeEvent.payload;
       const index = feature.properties.index;
+      console.log('index', index);
       await this.goTo(feature.geometry.coordinates);
       //this.props.navigation.navigate('ToAr', {screenProps: this.props.screenProps, story: this.state.story, index: index, distance: distance});
       Toast.showWithGravity('Enter: '+feature.properties.label, Toast.SHORT, Toast.TOP);
@@ -648,16 +649,12 @@ class StoryMap extends Component {
   launchMap = async (newIndex) => {
     const {distance , story, selected,index, completed } = this.state;
     //if(!index) index = this.state.index;
+    console.log('selected index', newIndex);
     try {
       await MapboxGL.offlineManager.unsubscribe('story'+story.id);
       this.cancelTimeout();
-      console.log('newIndex', newIndex);
-      console.log('complete',completed);
       await Geolocation.clearWatch(this.watchID);
       this.watchID = null;
-      newIndex = (newIndex && newIndex <= (completed -1)) ? newIndex : index;
-      console.log('newIndex', newIndex);
-      console.log('index', index);
       this.props.navigation.push('ToPath', {screenProps: this.props.screenProps, story: story, distance: distance, index: newIndex});
     } catch(e) {
       console.log(e.message);
