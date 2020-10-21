@@ -671,11 +671,12 @@ class Story extends Component {
         <View style={styles.navContainer}>
           <View style={styles.statusBar} />
           <View style={styles.navBar}>
-            <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => this.props.navigation.goBack()}>
-              <Button onPress={() => this.props.navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+            <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => this.props.navigation.push('Stories', {screenProps: this.props.screenProps})}>
+              <Button onPress={() => this.props.navigation.push('Stories', {screenProps: this.props.screenProps})} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
             </TouchableOpacity>
           </View>
         </View>
+        //
       )
     }
   storyMap = () => {
