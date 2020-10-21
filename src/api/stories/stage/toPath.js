@@ -86,11 +86,11 @@ const circleStyles = {
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
-const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index, navigation}) => (
+const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index, goToStoryMap}) => (
   <View style={styles.header}>
     <ImageBackground source={{uri: theme.banner.filePath}} style={styles.headerBackground}>
-    <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => navigation.goBack()}>
-      <Button onPress={() => navigation.goBack()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
+    <TouchableOpacity style={[styles.iconLeft, {backgroundColor: theme.color2, opacity: .8}]}  onPress={() => goToStoryMap()}>
+      <Button onPress={() => goToStoryMap()} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
     </TouchableOpacity>
       <Badge  value={'Completed: ' + completed} badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
       <Text style={styles.texto} >{story.title}</Text>
@@ -239,6 +239,20 @@ class ToPath extends Component {
     routeSimulator.addListener(currentPoint => this.setState({currentPoint}));
     routeSimulator.start();
     this.setState({routeSimulator});
+  }
+  goToStoryMap = async () => {
+    const {index, story, selected, completed} = this.state;
+    try {
+      // clear everything
+      if(this.whoosh) await this.whoosh.release();
+      MapboxGL.offlineManager.unsubscribe('story'+this.state.story.id);
+      await this.clearGPS();
+      if(this.focusListener) await this.focusListener.remove();
+      return this.props.navigation.push('StoryMap', {screenProps: this.props.screenProps, story: story, index: index}) ;
+    } catch(e) {
+      console.log(e.message);
+    }
+
   }
   load = async () => await this.getNav()
   componentDidMount = async () => {
@@ -965,7 +979,7 @@ class ToPath extends Component {
           isFocused={this.props.isFocused}
           position={position}
           navigate={navigate}
-          navigation={this.props.navigation}
+          goToStoryMap={this.goToStoryMap}
           styles={styles}
           index={index}
           />
