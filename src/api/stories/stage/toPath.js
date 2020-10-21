@@ -685,7 +685,7 @@ class ToPath extends Component {
     if (debug_mode === true) MenuButtons.push({ element: launchAR });
     //MenuButtons.push({ element: storyMapDl});
     if(sound !== null) MenuButtons.push({element: sound});
-    if (debug_mode === true) MenuButtons.push({ element: jumpToNext });
+    MenuButtons.push({ element: jumpToNext });
 
     return (
       <View style={rstyles.footer}>

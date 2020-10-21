@@ -166,11 +166,25 @@ class Story extends Component {
     Toast.showWithGravity(I18n.t("Start_downloading","Start Downloading."), Toast.SHORT, Toast.TOP);
     const data = getStat("Install story", sid, null, debug_mode, server, appDir, position);
     const body = JSON.stringify({sid: sid, name: 'Download story', ssid: null, values: null, data: data });
+    // check first that there is no old zip in download directory
+    const DownloadDir = RNFetchBlob.fs.dirs.DownloadDir;
+    const FileName =  'Story_'+ sid + '.zip';
+    const archive = DownloadDir+'/'+FileName;
+    RNFetchBlob.fs.exists(archive)
+    .then((exist) => {
+      if (exist) {
+        RNFetchBlob.fs.unlink(archive)
+        .then(() => {
+            console.log(archive+' deleted !');
+          })
+          .catch((err) => { console.log(err); })
+      }
+    });
     const downloadUrl = (debug_mode && debug_mode === false) ? server + '/zip/' + sid : server + '/download/'+sid;
     RNFetchBlob
     .config({
         addAndroidDownloads : {
-            title : 'Story_'+ sid + '.zip',
+            title : FileName,
             useDownloadManager : true, // <-- this is the only thing required
             // Optional, override notification setting (default to true)
             notification : true,
@@ -179,7 +193,7 @@ class Story extends Component {
             mime : 'application/zip',
             description : I18n.t("Story_downloaded","Story downloaded by BooksOnWall."),
             mediaScannable: true,
-            path : appDir + '/stories/Story_'+ sid + '.zip'
+            path : appDir + '/stories/'+FileName
         }
     })
     .fetch('POST', downloadUrl)
@@ -207,6 +221,7 @@ class Story extends Component {
     const sourcePath = path;
     const charset = 'UTF-8';
     const storyExists = targetPath+sid;
+
     // if story exist and that we are in update mode
     // Delete story first
     RNFetchBlob.fs.exists(storyExists)
@@ -225,7 +240,22 @@ class Story extends Component {
     unzip(sourcePath, targetPath, charset)
     .then((path) => {
       console.log(`unzip completed at ${path}`);
-      //remove zip file
+      // remove zip file in download folder
+      const DownloadDir = RNFetchBlob.fs.dirs.DownloadDir;
+      console.log(RNFetchBlob.fs.dirs);
+      const FileName =  'Story_'+ sid + '.zip';
+      const archive = DownloadDir+'/'+FileName;
+      RNFetchBlob.fs.exists(archive)
+      .then((exist) => {
+        if (exist) {
+          RNFetchBlob.fs.unlink(archive)
+          .then(() => {
+              console.log(archive+' deleted !');
+            })
+            .catch((err) => { console.log(err); })
+        }
+      });
+      //remove zip file in BooksOnWall
       RNFetchBlob.fs.unlink(sourcePath)
       .then(() => {
           // TOAST message installation complete :
