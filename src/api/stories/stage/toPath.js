@@ -678,7 +678,7 @@ class ToPath extends Component {
     const storyDestination = () => <Icon size={32} name='destiny' type='booksonWall' color='#fff' onPress={() => this.goTo(this.state.destination, false)} />;
     const storyOrigin = () =>  <Icon size={32} name='origin' type='booksonWall' color='#fff' onPress={() => this.goTo(this.state.origin, false)} />;
     const launchAR = () =>  <Icon size={32} name='isologo' type='booksonWall' color='#fff' onPress={() => this.switchToAR()} />;
-    const jumpToNext = () =>  <Icon size={32} name='check' type='booksonWall' color='#fff' onPress={() => this.jumpToNext()} />;
+  const jumpToNext = () =>  <Icon size={32} name='skip-next' type='Feather' color='#fff' onPress={() => this.jumpToNext()} />;
     const launchNavigation = () => <Icon size={32} name='navi' type='booksonWall' color='#fff' onPress={() => this.launchNavigation()} />;
     const sound = () => {
         if(audioButton && audioPaused) {
