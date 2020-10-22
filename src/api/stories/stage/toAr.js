@@ -13,7 +13,7 @@ import { DEBUG_MODE } from '@env';
 import KeepAwake from 'react-native-keep-awake';
 import { withNavigationFocus } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
-import { ButtonGroup } from 'react-native-elements';
+import { ButtonGroup, Icon as Flicon } from 'react-native-elements';
 import Icon from "../../../utils/Icon";
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
@@ -313,7 +313,7 @@ class ToAR extends Component {
       }
     };
     const storyMap = () =>  <Icon size={30} name='geopoint' type='booksonWall' color='#fff' onPress={() => this.map()} /> ;
-    const storyNext = () => <Icon size={30} name='skip-next' type='Feather'  color='#fff' onPress={(e) => this.next()} />;
+  const storyNext = () => <Flicon size={30} name='skip-next' type='Feather'  color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [];
     arButtons.push({ element: storyReload });
 

@@ -38,7 +38,7 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
-ListStories = (props) => {
+ListStories = ({navigation, storiesUpdate, loadStories, storeStories, stories }) => {
   // if theme or banner are empty and for dev purpose put default banner
   const default_theme = {
     font1: 'TrashHand',
@@ -55,7 +55,7 @@ ListStories = (props) => {
     color2: '#4B4F53',
     color3: '#D1D2D3'
   };
- let stories = props.stories.map ((story) => {
+ stories = stories.map ((story) => {
      story['theme'] = (story.theme) ? story.theme : default_theme;
      story['banner_default'] = (story.theme && story.theme.banner.filePath) ? {uri: story.theme.banner.filePath} : {source: Banner['BannerDefault']};
      return story;
@@ -68,7 +68,7 @@ ListStories = (props) => {
         stories.map((story, i) => {
           const banner = story.design_options;
           return (
-          <TouchableOpacity key={'tb'+i} onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}>
+          <TouchableOpacity key={'tb'+i} onPress={() => navigation.push('Story', {story: story, storiesUpdate})}>
             <ImageBackground key={'b'+i} source={story.banner_default} imageStyle={{opacity: .6}} style={{width: '100%', height: 'auto', backgroundColor: story.theme.color1}}>
               <ListItem
                 containerStyle={{backgroundColor: 'transparent', flex: 1, justifyContent: 'center', alignItems: 'center', margin: 0, alignContent: 'flex-start', backgroundColor: 'transparent', }}
@@ -78,7 +78,7 @@ ListStories = (props) => {
                 titleStyle={{ color: 'white', fontFamily: story.theme.font1, fontSize: 28, textAlign: 'center', letterSpacing: 1, margin: 0, paddingBottom:0, paddingLeft: 35, textShadowColor: 'rgba(0, 0, 0, 0.8)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 2}}
                 subtitle={story.city+' • '+story.state}
                 subtitleStyle={{ color: 'white', fontFamily: "ATypewriterForMe", fontSize: 12, textAlign: 'center', letterSpacing: 0, margin: 0, paddingLeft:35, textShadowColor: 'rgba(0, 0, 0, 0.8)', textShadowOffset: {width: 1, height: 1}, textShadowRadius: 1 }}
-                onPress={() => props.navigate('Story', {story: story, storiesUpdate: props.storiesUpdate})}
+                onPress={() => navigation.push('Story', {story: story, storiesUpdate})}
                 bottomDivider
                 chevron
               />
@@ -124,7 +124,7 @@ export default class Stories extends Component {
       this.setState({isLandscape: false});
     } else {
       this.setState({isLandscape: true});
-      (this.state.isTablet && this.state.isLandscape) ? this.props.navigation.navigate('TabletLayout') : null;
+      (this.state.isTablet && this.state.isLandscape) ? this.props.navigation.push('TabletLayout') : null;
     }
   }
   componentDidMount = async () => {
@@ -143,7 +143,7 @@ export default class Stories extends Component {
       console.log('is tablet',this.props.screenProps.isTablet);
       console.log('is landscape',this.state.isLandscape);
 
-      (this.state.isTablet && this.state.isLandscape) ? this.props.navigation.navigate('TabletLayout') : null;
+      (this.state.isTablet && this.state.isLandscape) ? this.props.navigation.push('TabletLayout') : null;
 
       await KeepAwake.activate();
       // await this.getCurrentLocation();
@@ -278,6 +278,7 @@ export default class Stories extends Component {
         console.log(err.message);
       });
       this.setState({stories: sts, reloadLoading: false});
+      this.props.navigation.push('Stories', {});
       return sts;
     } catch(e) {
       console.log(e.message);
@@ -296,7 +297,7 @@ export default class Stories extends Component {
   render() {
 
     const {stories} = this.state;
-    const {navigate} = this.props.navigation;
+    const {navigation} = this.props;
     if (!stories) {
       return (
           <SafeAreaView style={styles.container}>
@@ -322,7 +323,7 @@ export default class Stories extends Component {
           <Card style={styles.card} containerStyle={{padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent'}}>
           <ScrollView refreshControl={<RefreshControl progressBackgroundColor={'#8C1B8'} progressViewOffset={25} refreshing={this.state.reloadLoading} onRefresh={this.storiesUpdate} /> } style={styles.scrollView} onScrollToTop={() => this.storiesUpdate()}>
             <View style={styles.wrapList} >
-              <ListStories storiesUpdate={this.storiesUpdate} loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigate={navigate} />
+              <ListStories storiesUpdate={this.storiesUpdate} loadStories={this.loadStories} storeStories={this.storeStories} stories={stories} navigation={navigation} />
               </View>
           </ScrollView>
           </Card>
