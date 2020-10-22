@@ -13,7 +13,7 @@ import { DEBUG_MODE } from '@env';
 import KeepAwake from 'react-native-keep-awake';
 import { withNavigationFocus } from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
-import { ButtonGroup } from 'react-native-elements';
+import { ButtonGroup, Icon as Ficon } from 'react-native-elements';
 import Icon from "../../../utils/Icon";
 import RNFetchBlob from 'rn-fetch-blob';
 import * as RNFS from 'react-native-fs';
@@ -313,7 +313,7 @@ class ToAR extends Component {
       }
     };
     const storyMap = () =>  <Icon size={30} name='geopoint' type='booksonWall' color='#fff' onPress={() => this.map()} /> ;
-    const storyNext = () => <Icon size={30} name='skip-next' type='Feather'  color='#fff' onPress={(e) => this.next()} />;
+    const storyNext = () => <Ficon size={30} name='skip-next' type='Feather'  color='#fff' onPress={(e) => this.next()} />;
     const arButtons = [];
     arButtons.push({ element: storyReload });
 
@@ -327,7 +327,9 @@ class ToAR extends Component {
       'portal':  { scene: PORTAL},
       'piv': { scene: PIV},
       'psiv': { scene: PSIV},
-      'gps': { scene: GPS}
+      'gps': { scene: GPS},
+      'totem': { scene: TOTEM}
+
     };
     let types = ['null','vip', 'vaap', 'vaamp', 'portal', 'piv', 'psiv', '3D','gps', 'totem'];
     let type = (stage.scene_type) ? types[stage.scene_type] : 'vip';
@@ -347,6 +349,7 @@ class ToAR extends Component {
     const innerBorderStyle = {
       color: '#570402'
     };
+    console.log('scene', arScene[type]);
     // options shadowsEnabled={true} bloomEnabled={true} hdrEnabled={true} bugged on my LG Q6
     // ref={(component) => {this.nav = component}} do we need ref ?
     // //  {debug_mode && 1===2 && <DebugArea style={{position: 'absolute', zIndex: 1001}} distance={distance} debug={debug_mode} />}
@@ -354,7 +357,12 @@ class ToAR extends Component {
     return (
 
       <SafeAreaView style={styles.mainContainer}>
-        <ViroARSceneNavigator hdrEnabled {...this.state.sharedProps} viroAppProps={params} initialScene={arScene[type]} style={styles.viroContainer}/>
+        <ViroARSceneNavigator
+          hdrEnabled {...this.state.sharedProps}
+          viroAppProps={params}
+          initialScene={arScene[type]}
+          style={styles.viroContainer}
+        />
         <ButtonGroup
           onPress={this.updateDlIndex}
           selectedIndex={this.state.arIndex}
