@@ -216,7 +216,7 @@ export default class GpsScene extends Component {
            onFinish={this.onFinishSound}
            onError={this.onErrorSound}
         />
-      <ViroARPlane width={parseFloat(scene_options.videos[0].width)} minHeight={parseFloat(scene_options.videos[0].height)} minWidth={parseFloat(scene_options.videos[0].width)} alignment={"Horizontal"}>
+
           <ViroVideo
             source={{uri: videoPath}}
             dragType="FixedToWorld"
@@ -226,15 +226,14 @@ export default class GpsScene extends Component {
             muted={false}
             paused={false}
             loop={videoLoop}
-            position={[0,0,0]}
-            rotation={[-90,0,0]}
+            position={[0,0,-2.5]}
+            rotation={[0,0,0]}
             opacity={1}
             onBufferStart={this.onBufferStart}
             onFinish={this.onFinishVideo}
             onError={this.onVideoError}
             materials={["chromaKeyFilteredVideo"]}
           />
-        </ViroARPlane>
 
         <Patricie
           animate={{name: 'movePicture', run: finishAll, loop: false}}

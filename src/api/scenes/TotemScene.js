@@ -15,7 +15,7 @@ import {
 import KeepAwake from 'react-native-keep-awake';
 import I18n from "../../utils/i18n";
 import { Patricie } from './Patricie';
-import TOTEM from '../../../assets/object/TOBAL v1.obj';
+import TOTEM from '../../../assets/object/TOBAL_v1.obj';
 
 
 export default class TotemScene extends Component {
