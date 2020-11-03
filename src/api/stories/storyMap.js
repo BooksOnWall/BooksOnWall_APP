@@ -33,59 +33,6 @@ const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
-const circleStyles = {
-  innerCircle: {
-    circleStrokeWidth: 1,
-    circleStrokeColor: '#FFF',
-    circleRadius: 10,
-    circleColor: '#000',
-    circleBlur: 0,
-    circleOpacity: .3,
-  },
-  innerCirclePulse: {
-    circleStrokeWidth: 1,
-    circleStrokeColor: '#8F2913',
-    circleRadius: 20,
-    circleColor: '#fff',
-    circleBlur: 0,
-    circleOpacity: 0,
-  },
-  outerCircle: {
-    circleStrokeWidth: 1,
-    circleStrokeColor: '#8F2913',
-    circleRadius: 30,
-    circleColor: '#fff',
-    circleBlur: 0,
-    circleOpacity: 0,
-  }
-};
-
-const layerStyles = {
-  origin: {
-    circleRadius: 40,
-    circleColor: '#750000',
-    circleBlur: .8,
-    circleOpacity: .9,
-
-  },
-  destination: {
-    circleRadius: 40,
-    circleColor: 'black',
-    circleBlur: .8,
-    circleOpacity: .9,
-
-  },
-  route: {
-    lineColor: 'white',
-    lineCap: MapboxGL.LineJoin.Round,
-    lineWidth: 3,
-    lineOpacity: 0.84,
-  },
-  progress: {
-    lineColor: '#8F2913',
-    lineWidth: 3,
-  },
-};
 
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
@@ -146,6 +93,59 @@ class StoryMap extends Component {
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
     const id = this.props.navigation.getParam('story').id;
+    const theme = this.props.navigation.getParam('story').theme;
+    const circleStyles = {
+      innerCircle: {
+        circleStrokeWidth: 3,
+        circleStrokeColor: theme.color2,
+        circleRadius: 5,
+        circleColor: theme.color2,
+        circleBlur: .8,
+        circleOpacity: .9
+      },
+      innerCirclePulse: {
+          circleStrokeWidth: 3,
+          circleStrokeColor: theme.color2,
+          circleRadius: 2,
+          circleColor: theme.color2,
+          circleBlur: .8,
+          circleOpacity: .9,
+      },
+      outerCircle: {
+        circleRadius: 2,
+        circleStrokeWidth: 1,
+        circleStrokeColor: theme.color2,
+        circleColor: theme.color1,
+        circleBlur: .8,
+        circleOpacity: .9
+      }
+    };
+
+    const layerStyles = {
+      origin: {
+        circleRadius: 40,
+        circleColor: theme.color1,
+        circleBlur: .8,
+        circleOpacity: .9,
+
+      },
+      destination: {
+        circleRadius: 40,
+        circleColor: 'black',
+        circleBlur: .8,
+        circleOpacity: .9,
+      },
+      route: {
+        lineColor: theme.color1,
+        lineCap: MapboxGL.LineJoin.Round,
+        lineWidth: 3,
+        lineOpacity: 0.84,
+      },
+      progress: {
+        lineColor: theme.color1,
+        lineWidth: 3,
+      },
+    };
     this.state = {
       featureCollection: featureCollection([]),
       latitude: null,
@@ -155,6 +155,7 @@ class StoryMap extends Component {
       origin: null,
       destination: null,
       goto: null,
+      layerStyles: layerStyles,
       zoom: 15,
       followUserLocation: false,
       stages: stages,
@@ -186,6 +187,7 @@ class StoryMap extends Component {
       offlinePack: null,
       routeSimulator: null,
       route: null,
+      circleStyles: circleStyles,
       score: null,
       currentPoint: null,
       styleURL: MapboxGL.StyleURL.Dark, // todo import story map styles
@@ -194,7 +196,7 @@ class StoryMap extends Component {
       AppDir: this.props.screenProps.AppDir,
       storyDir: this.props.screenProps.AppDir + '/stories/',
       story: this.props.navigation.getParam('story'),
-      theme: this.props.navigation.getParam('story').theme,
+      theme: theme,
       order: null,
       index: null,
       location: location,
@@ -421,7 +423,8 @@ class StoryMap extends Component {
   }
   watchID: ?number = null;
   renderRoute() {
-    const {route} = this.state;
+    const {route, layerStyles} = this.state;
+
     if (!route) {
       return null;
     }
@@ -451,7 +454,7 @@ class StoryMap extends Component {
   }
 
   renderProgressLine() {
-    const {currentPoint, index, route} = this.state;
+    const {currentPoint, index, route, layerStyles} = this.state;
     if (!currentPoint || !route) {
       return null;
     }
@@ -538,7 +541,7 @@ class StoryMap extends Component {
     }
   }
   renderStages = () => {
-    const {theme, completed, selected, routes, index, images} = this.state;
+    const {theme, circleStyles, completed, selected, routes, index, images} = this.state;
     const id = (selected -1);
     let features = {
       type: 'FeatureCollection',
@@ -576,7 +579,7 @@ class StoryMap extends Component {
           iconOptional: true,
           textIgnorePlacement: true,
           textField: '{label}',
-          textSize: 30,
+          textSize: 20,
           textMaxWidth: 50,
           textColor: '#FFF',
           textAnchor: 'center',
@@ -597,7 +600,7 @@ class StoryMap extends Component {
          shape={features}
          id="pulse"
          onPress={this.enterStage}
-         radius={30}
+         radius={40}
          pulseRadius={20}
          duration={600}
          innerCircleStyle={circleStyles.innerCircle}
@@ -746,11 +749,11 @@ class StoryMap extends Component {
          flex: 0,
          padding: 40,
        },
-       badgeStyle:{
+       badgeStyle: {
          backgroundColor: theme.color1
        },
        badgeTextStyle: {
-         fontSize: 9,
+         fontSize: 9
        },
        iconLeft: {
          width: 45,
@@ -758,9 +761,10 @@ class StoryMap extends Component {
          borderRadius: 30,
          justifyContent: 'center',
          alignItems: 'center',
-         padding: 0,
+         padding: 0
        }
      });
+
     return (
       <Page {...this.props}>
         <Header
