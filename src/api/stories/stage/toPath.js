@@ -32,6 +32,58 @@ const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 24) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 64;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
+
+const iconstyles = {
+  icon: {
+    iconImage: ['get', 'icon'],
+    iconOptional: true,
+    textIgnorePlacement: true,
+    textField: '{label}',
+    textSize: 40,
+    textMaxWidth: 50,
+    textColor: '#FFF',
+    textAnchor: 'center',
+    // textTranslate: [22, -22],
+    textAllowOverlap: true,
+    iconSize: [
+      'match',
+      ['get', 'icon'],
+      'completeIcon',
+      1.4,
+      /* default */ 1.4,
+    ],
+  },
+};
+
+const circleStyles = {
+  innerCircle: {
+    circleStrokeWidth: 3,
+    circleStrokeColor: '#750000',
+    circleRadius: 5,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+
+  },
+  innerCirclePulse: {
+    circleStrokeWidth: 3,
+    circleStrokeColor: '#750000',
+    circleRadius: 2,
+    circleColor: '#750000',
+    circleBlur: .8,
+    circleOpacity: .9,
+
+  },
+  outerCircle: {
+    circleRadius: 2,
+    circleStrokeWidth: 1,
+    circleStrokeColor: '#750000',
+    circleColor: '#FFF',
+    circleBlur: .8,
+    circleOpacity: .9,
+  }
+};
+
 MapboxGL.setAccessToken(MAPBOX_KEY);
 
 const Header = ({styles, position, navigate, isFocused, switchToAR, distance, theme, completed, story, index, goToStoryMap}) => (
@@ -56,68 +108,23 @@ class ToPath extends Component {
   };
   constructor(props) {
     super(props);
+
     const location = (this.props.navigation.getParam('story')) ? this.props.navigation.getParam('story').geometry.coordinates: null;
     const stages = this.props.navigation.getParam('story').stages;
+
     const routes = stages.map((stage, i) => {
       return {coordinates: stage.geometry.coordinates};
     });
     const storyPoints = stages.map((stage, i) => {
       return stage.geometry.coordinates;
     });
+
     var line = makeLineString(storyPoints);
     var mbbox = bbox(line);
+
     const sid = this.props.navigation.getParam('story').id;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
-    const theme = this.props.navigation.getParam('story').theme;
-    const iconstyles = {
-      icon: {
-        iconImage: ['get', 'icon'],
-        iconOptional: true,
-        textIgnorePlacement: true,
-        textField: '{label}',
-        textSize: 40,
-        textMaxWidth: 50,
-        textColor: '#FFF',
-        textAnchor: 'center',
-        // textTranslate: [22, -22],
-        textAllowOverlap: true,
-        iconSize: [
-          'match',
-          ['get', 'icon'],
-          'completeIcon',
-          1.4,
-          /* default */ 1.4,
-        ],
-      },
-    };
-    const circleStyles = {
-      innerCircle: {
-        circleStrokeWidth: 3,
-        circleStrokeColor: theme.color2,
-        circleRadius: 5,
-        circleColor: theme.color2,
-        circleBlur: .5,
-        circleOpacity: .9,
 
-      },
-      innerCirclePulse: {
-        circleStrokeWidth: 3,
-        circleStrokeColor: theme.color2,
-        circleRadius: 2,
-        circleColor: theme.color2,
-        circleBlur: .5,
-        circleOpacity: .8,
-
-      },
-      outerCircle: {
-        circleRadius: 2,
-        circleStrokeWidth: 1,
-        circleStrokeColor: theme.color2,
-        circleColor: '#FFF',
-        circleBlur: .5,
-        circleOpacity: .8,
-      }
-    };
     this.state = {
       prevLatLng: null,
       track: null,
@@ -131,7 +138,6 @@ class ToPath extends Component {
       zoom: 18,
       unset: (this.props.isFocused) ? false : true,
       followUserLocation: true,
-      circleStyles: circleStyles,
       route: null,
       stages: stages,
       debug_mode: (DEBUG_MODE === 'true') ? true : false,
@@ -155,7 +161,6 @@ class ToPath extends Component {
       offlinePack: null,
       currentPoint: null,
       routeSimulator: null,
-      iconstyles: iconstyles,
       styleURL: MapboxGL.StyleURL.Dark, // todo import story map styles
       server: this.props.screenProps.server,
       appName: this.props.screenProps.appName,
@@ -456,7 +461,7 @@ class ToPath extends Component {
 
   renderMarkers = (layerStyles) => {
 
-    const {index, currentPoint, images, circleStyles, iconstyles} = this.state;
+    const {index, currentPoint, images} = this.state;
     let backgroundColor = '#750000';
     if (currentPoint) {
       backgroundColor = '#314ccd';
