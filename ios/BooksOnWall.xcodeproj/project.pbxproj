@@ -120,6 +120,9 @@
 		0250B0EA6F5E4C0C90FB3C4B /* BooksonWall.svg in Resources */ = {isa = PBXBuildFile; fileRef = 27E63496AA7040E9A976301E /* BooksonWall.svg */; };
 		486E1AD9C12144089D92E261 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A409822AB9BE464A975A88C1 /* libRNSVG.a */; };
 		AF947B6B5FA944F6B29B8000 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AFF2CBD08E045E88D79144F /* libRNSVG-tvOS.a */; };
+		9A6BC139E55D4F3EA52BCF5F /* p1.png in Resources */ = {isa = PBXBuildFile; fileRef = CA5A978174EC446585D14CA9 /* p1.png */; };
+		D874A0071DC8435391EB7EDF /* p2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1727C443293C4A4B879A0835 /* p2.png */; };
+		3FD1FB46997F43CC887B98AD /* p3.png in Resources */ = {isa = PBXBuildFile; fileRef = 195DCB22E1CB404F86172908 /* p3.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -720,6 +723,9 @@
 		898DE597B180433A914C8871 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; name = "RNSVG.xcodeproj"; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		A409822AB9BE464A975A88C1 /* libRNSVG.a */ = {isa = PBXFileReference; name = "libRNSVG.a"; path = "libRNSVG.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		7AFF2CBD08E045E88D79144F /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		CA5A978174EC446585D14CA9 /* p1.png */ = {isa = PBXFileReference; name = "p1.png"; path = "../assets/nav/p1.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1727C443293C4A4B879A0835 /* p2.png */ = {isa = PBXFileReference; name = "p2.png"; path = "../assets/nav/p2.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		195DCB22E1CB404F86172908 /* p3.png */ = {isa = PBXFileReference; name = "p3.png"; path = "../assets/nav/p3.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1087,6 +1093,9 @@
 				5026B391FCDD4A9182B32B05 /* BooksonWall.ttf */,
 				CB5C0143C7234E52AFE82634 /* BooksonWall.otf */,
 				27E63496AA7040E9A976301E /* BooksonWall.svg */,
+				CA5A978174EC446585D14CA9 /* p1.png */,
+				1727C443293C4A4B879A0835 /* p2.png */,
+				195DCB22E1CB404F86172908 /* p3.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2052,6 +2061,9 @@
 				9861C4231D9445E8AAF391F0 /* BooksonWall.ttf in Resources */,
 				B0B0252D6E804CC3819F2DBD /* BooksonWall.otf in Resources */,
 				0250B0EA6F5E4C0C90FB3C4B /* BooksonWall.svg in Resources */,
+				9A6BC139E55D4F3EA52BCF5F /* p1.png in Resources */,
+				D874A0071DC8435391EB7EDF /* p2.png in Resources */,
+				3FD1FB46997F43CC887B98AD /* p3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

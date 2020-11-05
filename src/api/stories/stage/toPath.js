@@ -20,9 +20,9 @@ import Geolocation from '@react-native-community/geolocation';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
-import openIcon from '../../../../assets/nav/point1.png';
-import completeIcon from '../../../../assets/nav/point2.png';
-import unknownIcon from '../../../../assets/nav/point3.png';
+import openIcon from '../../../../assets/nav/p1.png';
+import completeIcon from '../../../../assets/nav/p2.png';
+import unknownIcon from '../../../../assets/nav/p3.png';
 
 import {getScore, addNewIndex} from '../../stats/score';
 
@@ -49,8 +49,8 @@ const iconstyles = {
       'match',
       ['get', 'icon'],
       'completeIcon',
-      1.4,
-      /* default */ 1.4,
+      .6,
+      /* default */ .7,
     ],
   },
 };
@@ -96,7 +96,6 @@ const Header = ({styles, position, navigate, isFocused, switchToAR, distance, th
       <Text style={styles.texto} >{story.title}</Text>
       <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
       <Text style={styles.complete}>Complete: {completed}/{story.stages.length} {(parseFloat(distance)*1000)}m</Text>
-      <Text style={styles.complete}>{(position && position.coords && position.coords) ? JSON.stringify(position.coords.accuracy.toFixed(2)) : ''}</Text>
     </ImageBackground>
   </View>
 );

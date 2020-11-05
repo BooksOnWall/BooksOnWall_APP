@@ -1,5 +1,5 @@
 export default {
-  Welcome: "¡Bienvenido!",
+  Welcome: "¡Hola!",
   Invite: "Te invitamos a explorar y recorrer cuentos por la ciudad...",
   Each_story: "...en cada cuento hay muchos murales para descubrir...",
   discover: "Próximamente en tu ciudad",

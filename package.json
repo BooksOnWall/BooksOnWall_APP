@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.8.3",
-    "@babel/runtime": "7.8.3",
+    "@babel/runtime": "^7.12.5",
     "@bam.tech/react-native-make": "^1.0.3",
     "@jumpn/react-native-jetifier": "^0.1.4",
     "babel-jest": "25.1.0",

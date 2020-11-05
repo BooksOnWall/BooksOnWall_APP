@@ -17,9 +17,9 @@ import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
 
 
-import openIcon from '../../../assets/nav/point1.png';
-import completeIcon from '../../../assets/nav/point2.png';
-import unknownIcon from '../../../assets/nav/point3.png';
+import openIcon from '../../../assets/nav/p1.png';
+import completeIcon from '../../../assets/nav/p2.png';
+import unknownIcon from '../../../assets/nav/p3.png';
 import  distance from '@turf/distance';
 import Geolocation from '@react-native-community/geolocation';
 import {featureCollection, feature} from '@turf/helpers';
@@ -585,8 +585,8 @@ class StoryMap extends Component {
             'match',
             ['get', 'icon'],
             'unknownIcon',
-            1.4,
-            /* default */ 1.2,
+            .6,
+            /* default */ .7,
           ],
         },
       };
