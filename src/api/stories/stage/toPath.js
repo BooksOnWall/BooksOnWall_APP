@@ -20,6 +20,10 @@ import Geolocation from '@react-native-community/geolocation';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
 import openIcon from '../../../../assets/nav/p1.png';
 import completeIcon from '../../../../assets/nav/p2.png';
 import unknownIcon from '../../../../assets/nav/p3.png';
@@ -123,6 +127,47 @@ class ToPath extends Component {
 
     const sid = this.props.navigation.getParam('story').id;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
+<<<<<<< HEAD
+=======
+    const theme = this.props.navigation.getParam('story').theme;
+    const iconstyles = {
+      icon: {
+        iconImage: ['get', 'icon'],
+        iconOptional: true,
+        textIgnorePlacement: true,
+        textField: '{label}',
+        textSize: 23,
+        textMaxWidth: 50,
+        textColor: '#FFF',
+        textAnchor: 'center',
+        textAllowOverlap: true,
+        iconSize: [
+          'match',
+          ['get', 'icon'],
+          'completeIcon',
+          .6,
+          /* default */ .5,
+        ],
+      },
+    };
+    const circleStyles = {
+      innerCircle: {
+        circleStrokeWidth: 3,
+        circleStrokeColor: theme.color2,
+        circleRadius: 5,
+        circleColor: theme.color2,
+        circleBlur: .5,
+        circleOpacity: .9,
+
+      },
+      innerCirclePulse: {
+        circleStrokeWidth: 3,
+        circleStrokeColor: theme.color2,
+        circleRadius: 2,
+        circleColor: theme.color2,
+        circleBlur: .5,
+        circleOpacity: .8,
+>>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
 
     this.state = {
       prevLatLng: null,
