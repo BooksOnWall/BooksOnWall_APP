@@ -17,9 +17,9 @@ import * as RNFS from 'react-native-fs';
 import PulseCircleLayer from './stage/mapbox-gl/showDirection/PulseCircleLayer';
 
 
-import openIcon from '../../../assets/nav/point1.png';
-import completeIcon from '../../../assets/nav/point2.png';
-import unknownIcon from '../../../assets/nav/point3.png';
+import openIcon from '../../../assets/nav/p1.png';
+import completeIcon from '../../../assets/nav/p2.png';
+import unknownIcon from '../../../assets/nav/p3.png';
 import  distance from '@turf/distance';
 import Geolocation from '@react-native-community/geolocation';
 import {featureCollection, feature} from '@turf/helpers';
@@ -45,6 +45,7 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
         <Button onPress={() => navigation.push('Story', {screenProps, story})} type='clear' underlayColor={theme.color1} iconContainerStyle={{ marginLeft: 2}} icon={{name:'leftArrow', size:24, color:'#fff', type:'booksonWall'}} />
       </TouchableOpacity>
       <Badge size="large" badgeStyle={styles.badgeStyle} textStyle={styles.badgeTextStyle} status="success" value={'Completed: ' + completed} containerStyle={{ position: 'absolute', top: 20, right: 20 }}/>
+        <View style={styles.headerText}>
         <Text style={{
           fontSize: 26,
           letterSpacing: 1,
@@ -53,9 +54,10 @@ const Header = ({styles, distance, theme, completed, story,  index, showDistance
           textShadowOffset: {width: 1, height: 1},
           textShadowRadius: 2,
           fontFamily: theme.font1}} >{story.title}</Text>
-        <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
-        <Text style={styles.complete}>Complete: {completed}/{story.stages.length}</Text>
-        <Text style={styles.complete}>{(dis && dis !=='') ? 'Next in '+dis+' km': ' '}</Text>
+          <Text style={styles.location}>{story.city + ' • ' + story.state}</Text>
+          <Text style={styles.complete}>Complete: {completed}/{story.stages.length}</Text>
+          <Text style={styles.complete}>{(dis && dis !=='') ? 'Next in '+dis+' km': ' '}</Text>
+        </View>
       </ImageBackground>
     </View>
   );
@@ -579,7 +581,7 @@ class StoryMap extends Component {
           iconOptional: true,
           textIgnorePlacement: true,
           textField: '{label}',
-          textSize: 20,
+          textSize: 23,
           textMaxWidth: 50,
           textColor: '#FFF',
           textAnchor: 'center',
@@ -588,8 +590,8 @@ class StoryMap extends Component {
             'match',
             ['get', 'icon'],
             'unknownIcon',
-            1.4,
-            /* default */ 1.2,
+            .6,
+            /* default */ .5,
           ],
         },
       };
@@ -697,7 +699,6 @@ class StoryMap extends Component {
        header: {
          flex: 0,
          flexDirection:'column',
-         alignItems:'stretch',
          minHeight: STATUS_BAR_HEIGHT,
          backgroundColor: theme.color1,
          alignContent: 'stretch',
@@ -734,7 +735,7 @@ class StoryMap extends Component {
        },
        innerLine: {
          width: 3,
-         color:theme.color2,
+         color: theme.color2,
        },
        menu: {
          backgroundColor: theme.color1,
@@ -746,10 +747,20 @@ class StoryMap extends Component {
          color: "#FFF",
        },
        headerBackground: {
-         flex: 0,
-         padding: 40,
+         flex: 1,
+         padding: 20,
+         justifyContent: 'space-between',
+         alignItems: 'center',
+       },
+       headerText: {
+         width: '80vw',
+         justifyContent: 'center',
+         alignSelf: 'center',
+         flex: 1,
+         flexWrap: 'nowrap',
        },
        badgeStyle: {
+         display: 'none',
          backgroundColor: theme.color1
        },
        badgeTextStyle: {

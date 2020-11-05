@@ -20,9 +20,10 @@ import Geolocation from '@react-native-community/geolocation';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
-import openIcon from '../../../../assets/nav/point1.png';
-import completeIcon from '../../../../assets/nav/point2.png';
-import unknownIcon from '../../../../assets/nav/point3.png';
+
+import openIcon from '../../../../assets/nav/p1.png';
+import completeIcon from '../../../../assets/nav/p2.png';
+import unknownIcon from '../../../../assets/nav/p3.png';
 
 import {getScore, addNewIndex} from '../../stats/score';
 
@@ -75,18 +76,17 @@ class ToPath extends Component {
         iconOptional: true,
         textIgnorePlacement: true,
         textField: '{label}',
-        textSize: 40,
+        textSize: 23,
         textMaxWidth: 50,
         textColor: '#FFF',
         textAnchor: 'center',
-        // textTranslate: [22, -22],
         textAllowOverlap: true,
         iconSize: [
           'match',
           ['get', 'icon'],
           'completeIcon',
-          1.4,
-          /* default */ 1.4,
+          .6,
+          /* default */ .5,
         ],
       },
     };
