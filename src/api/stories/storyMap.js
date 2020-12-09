@@ -578,11 +578,7 @@ class StoryMap extends Component {
           iconOptional: true,
           textIgnorePlacement: true,
           textField: '{label}',
-<<<<<<< HEAD
           textSize: 30,
-=======
-          textSize: 23,
->>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
           textMaxWidth: 50,
           textColor: '#FFF',
           textAnchor: 'center',
@@ -592,11 +588,7 @@ class StoryMap extends Component {
             ['get', 'icon'],
             'unknownIcon',
             .6,
-<<<<<<< HEAD
-            /* default */ .7,
-=======
             /* default */ .5,
->>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
           ],
         },
       };
@@ -764,12 +756,8 @@ class StoryMap extends Component {
          flex: 1,
          flexWrap: 'nowrap',
        },
-<<<<<<< HEAD
-       badgeStyle:{
-=======
        badgeStyle: {
          display: 'none',
->>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
          backgroundColor: theme.color1
        },
        badgeTextStyle: {

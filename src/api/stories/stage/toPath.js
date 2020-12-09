@@ -20,10 +20,7 @@ import Geolocation from '@react-native-community/geolocation';
 // import PulseCircle from './mapbox-gl/PulseCircleLayer';
 // import audio lib
 import Sound from 'react-native-sound';
-<<<<<<< HEAD
-=======
 
->>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
 import openIcon from '../../../../assets/nav/p1.png';
 import completeIcon from '../../../../assets/nav/p2.png';
 import unknownIcon from '../../../../assets/nav/p3.png';
@@ -127,8 +124,7 @@ class ToPath extends Component {
 
     const sid = this.props.navigation.getParam('story').id;
     const path = this.props.screenProps.AppDir + '/stories/'+sid+'/';
-<<<<<<< HEAD
-=======
+
     const theme = this.props.navigation.getParam('story').theme;
     const iconstyles = {
       icon: {
@@ -167,7 +163,8 @@ class ToPath extends Component {
         circleColor: theme.color2,
         circleBlur: .5,
         circleOpacity: .8,
->>>>>>> 7cf1cb98dc2359be4c6480df9e4e7d6071c017fc
+      },
+    }
 
     this.state = {
       prevLatLng: null,

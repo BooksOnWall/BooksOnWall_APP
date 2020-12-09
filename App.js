@@ -321,7 +321,8 @@ export default class App extends Component {
       .then(data => {
           if(data) {
             Toast.showWithGravity(I18n.t("Receiving_data", "Receiving data"), Toast.SHORT, Toast.TOP);
-            return this.storeStories(data.stories);
+            console.log('stories', data.stories);
+            return this.storeStories({stories: data.stories});
           } else {
             Toast.showWithGravity(I18n.t("NO_DATA", "No Data received from the server"), Toast.LONG, Toast.TOP);
           }
@@ -334,8 +335,11 @@ export default class App extends Component {
       console.warn(e);
     }
   }
-  storeStories = async (stories) => {
+  storeStories = async ({stories}) => {
+
     try {
+      console.log('stories type', typeof(stories));
+      console.log('stories', stories);
       // create banner folder
       const bannerPath = this.state.AppDir+'/banner';
       let sts = [];
@@ -356,6 +360,7 @@ export default class App extends Component {
 
       stories.map((story, i) => {
         let st = story;
+        console.log('story', story);
         if (story.design_options) {
           let theme = JSON.parse(story.design_options);
           theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
@@ -382,6 +387,7 @@ export default class App extends Component {
         }
         sts.push(st);
       });
+      console.log('sts', sts);
       // store stories list in Stories.json file
       await RNFS.writeFile(this.state.AppDir+'/Stories.json', JSON.stringify(sts), 'utf8')
       .then((success) => {
