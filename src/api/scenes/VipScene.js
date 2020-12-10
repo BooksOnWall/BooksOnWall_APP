@@ -24,6 +24,7 @@ export default class VipScene extends Component {
     let params = this.props.sceneNavigator.viroAppProps;
     // Set initial state here
     console.log('theme',params.theme);
+    let scene_options = JSON.parse(params.stage.scene_options);
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     this.next = params.next;
@@ -35,9 +36,9 @@ export default class VipScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: JSON.parse(params.stage.scene_options),
+      scene_options: scene_options,
       stage: params.stage,
-      pictures: params.pictures,
+      pictures: JSON.parse(params.pictures),
       picturePath: "",
       audioPath: "",
       paused: (params.paused) ? params.paused : false,
@@ -60,9 +61,9 @@ export default class VipScene extends Component {
       videoPath: "",
       videoLoop: false,
       lockVideo: false,
-      onZoneEnter: JSON.parse(params.onZoneEnter),
-      onZoneLeave: JSON.parse(params.onZoneLeave),
-      onPictureMatch: JSON.parse(params.onPictureMatch)
+      onZoneEnter: params.onZoneEnter,
+      onZoneLeave: params.onZoneLeave,
+      onPictureMatch: params.onPictureMatch
     };
     this.onInitialized = this.onInitialized.bind(this);
     this.buildTrackingTargets = this.buildTrackingTargets.bind(this);
@@ -110,6 +111,7 @@ export default class VipScene extends Component {
   buildTrackingTargets = async () => {
     const {pIndex, stage, pictures, storyDir, scene_options} = this.state;
     try {
+      console.log('path', pictures[0].path);
         let path = pictures[0].path.replace(" ", "\ ");
         let radius = stage.radius;
         console.log('vip',scene_options.videos[0]);

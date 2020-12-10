@@ -38,7 +38,7 @@ export default class PortalScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: params.stage.scene_options,
+      scene_options: JSON.parse(params.stage.scene_options),
       stage: params.stage,
       pictures: params.pictures,
       picturePath: "",

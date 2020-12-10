@@ -24,6 +24,7 @@ export default class VaapScene extends Component {
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     this.next = params.next;
+    let scene_options = JSON.parse(params.stage.scene_options);
     // Set initial state here
     this.state = {
       server: params.server,
@@ -33,7 +34,7 @@ export default class VaapScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: params.stage.scene_options,
+      scene_options: scene_options,
       stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
