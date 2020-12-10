@@ -248,7 +248,7 @@ export default class Stories extends Component {
       stories.map((story, i) => {
         let st = story;
         if (story.design_options) {
-          let theme = JSON.parse(story.design_options);
+          let theme = story.design_options;
           theme = (typeof(theme) === 'string') ? JSON.parse(theme) : theme;
           st['theme'] = theme;
           const path = theme.banner.path;

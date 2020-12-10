@@ -750,7 +750,7 @@ class StoryMap extends Component {
          alignItems: 'center',
        },
        headerText: {
-         width: '80vw',
+         width: '80%',
          justifyContent: 'center',
          alignSelf: 'center',
          flex: 1,

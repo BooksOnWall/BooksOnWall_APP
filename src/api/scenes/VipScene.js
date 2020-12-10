@@ -35,7 +35,7 @@ export default class VipScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: params.stage.scene_options,
+      scene_options: JSON.parse(params.stage.scene_options),
       stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
@@ -60,9 +60,9 @@ export default class VipScene extends Component {
       videoPath: "",
       videoLoop: false,
       lockVideo: false,
-      onZoneEnter: params.onZoneEnter,
-      onZoneLeave: params.onZoneLeave,
-      onPictureMatch: params.onPictureMatch
+      onZoneEnter: JSON.parse(params.onZoneEnter),
+      onZoneLeave: JSON.parse(params.onZoneLeave),
+      onPictureMatch: JSON.parse(params.onPictureMatch)
     };
     this.onInitialized = this.onInitialized.bind(this);
     this.buildTrackingTargets = this.buildTrackingTargets.bind(this);
