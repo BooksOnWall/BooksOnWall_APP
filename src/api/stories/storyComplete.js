@@ -501,8 +501,9 @@ export default class StoryComplete extends Component {
       const {story, index, storyDir} = this.state;
       // if we arrive in first stage , no audio can be played as there is no previous onZoneLeave
       const maxIndex = (story.stages.length - 1);
-      const stage = story.stages[maxIndex];
+      let stage = story.stages[maxIndex];
       if (stage) {
+        stage.onZoneLeave = (typeof(stage.onZoneLeave) === 'string') ? JSON.parse(stage.onZoneLeave) : stage.onZoneLeave;
         const audios = (stage.onZoneLeave && stage.onZoneLeave.length > 0) ? stage.onZoneLeave.filter(item => (item.type === 'audio')) : [];
         const count =  audios.length;
         this.setState({audioButton: true});

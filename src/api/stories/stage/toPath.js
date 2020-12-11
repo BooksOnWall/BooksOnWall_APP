@@ -775,7 +775,8 @@ class ToPath extends Component {
     const {story, index, storyDir} = this.state;
     // if we arrive in first stage , no audio can be played as there is no previous onZoneLeave
     const prevIndex = index -1;
-    const stage = (index === 0) ? null : story.stages[prevIndex];
+    let stage = (index === 0) ? null : story.stages[prevIndex];
+    stage.onZoneLeave = (typeof(stage.onZoneLeave) === 'string') ? JSON.parse(stage.onZoneLeave): stage.onZoneLeave;
     if (stage) {
       const count =  (stage && stage.onZoneLeave) ? stage.onZoneLeave.length : 0;
       this.setState({audioButton: true});

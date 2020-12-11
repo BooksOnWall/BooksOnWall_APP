@@ -24,6 +24,8 @@ export default class VaampScene extends Component {
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     this.next = params.next;
+    let scene_options = (typeof(params.stage.scene_options) === 'string') ? JSON.parse(params.stage.scene_options) : params.stage.scene_options;
+
     // Set initial state here
     this.state = {
       server: params.server,
@@ -33,7 +35,7 @@ export default class VaampScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: JSON.parse(params.stage.scene_options),
+      scene_options: scene_options,
       stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
@@ -126,9 +128,12 @@ export default class VaampScene extends Component {
   dispatchMedia = async () => {
     try  {
       const {story, index, storyDir} = this.state;
-      const stage =  story.stages[index];
+      let stage =  story.stages[index];
+      stage.onZoneEnter = (typeof(stage.onZoneEnter) === 'string') ? JSON.parse(stage.onZoneEnter) : stage.onZoneEnter;
+      stage.onPictureMatch = (typeof(stage.onPictureMatch) === 'string') ? JSON.parse(stage.onPictureMatch) : stage.onPictureMatch;
       let audios = [];
       let videos = [];
+
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
       audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
@@ -138,14 +143,14 @@ export default class VaampScene extends Component {
       if (audios['onPictureMatch'] && audios['onPictureMatch'].length > 0 ) {
         let MatchAudio = audios['onPictureMatch'][0];
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
-        Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
+        Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories/", "");
         let Matchloop = MatchAudio.loop;
         this.setState({MatchAudioPath: Matchpath,MatchAudioLoop: Matchloop });
       }
       if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
         let audio = audios['onZoneEnter'][0];
         let path = audio.path.replace(" ", "\ ");
-        path = 'file://'+ storyDir + path.replace("assets/stories", "");
+        path = 'file://'+ storyDir + path.replace("assets/stories/", "");
         let loop = audio.loop;
         this.setState({'audioPath': path,'audioLoop': loop });
       }
@@ -156,14 +161,14 @@ export default class VaampScene extends Component {
   }
   setVideoComponent = () => {
     let path = this.state.stage.onPictureMatch[0].path;
-    path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
+    path = 'file://' + this.state.storyDir + path.replace("assets/stories/", "");
     let loop = this.state.stage.onPictureMatch[0].loop;
     this.setState({'videoPath': path, 'videoLoop': loop});
   }
   loadAndPlayAudio = async () => {
     try {
       let path = this.state.stage.onZoneEnter[0].path;
-      path = 'file://'+this.state.storyDir + path.replace("assets/stories", "");
+      path = 'file://'+this.state.storyDir + path.replace("assets/stories/", "");
       let loop = this.state.stage.onZoneEnter[0].loop;
       this.setState({'audioPath': path,'audioLoop': loop });
     } catch(e) {

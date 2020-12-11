@@ -30,6 +30,8 @@ export default class PortalScene extends Component {
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     // Set initial state here
+    let scene_options = (typeof(params.stage.scene_options) === 'string') ? JSON.parse(params.stage.scene_options) : params.stage.scene_options;
+
     this.state = {
       server: params.server,
       appName: params.appName,
@@ -38,7 +40,7 @@ export default class PortalScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: JSON.parse(params.stage.scene_options),
+      scene_options: scene_options,
       stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
@@ -130,7 +132,7 @@ export default class PortalScene extends Component {
   }
   setVideoComponent = () => {
     let path = this.state.stage.onPictureMatch[0].path;
-    path = 'file://' + this.state.storyDir + path.replace("assets/stories", "");
+    path = 'file://' + this.state.storyDir + path.replace("assets/stories/", "");
     let loop = this.state.stage.onPictureMatch[0].loop;
     this.setState({'videoPath': path, 'videoLoop': loop});
   }

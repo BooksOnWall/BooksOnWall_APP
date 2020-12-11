@@ -24,7 +24,7 @@ export default class VipScene extends Component {
     let params = this.props.sceneNavigator.viroAppProps;
     // Set initial state here
     console.log('theme',params.theme);
-    let scene_options = JSON.parse(params.stage.scene_options);
+    let scene_options = (typeof(params.stage.scene_options) === 'string') ? JSON.parse(params.stage.scene_options) : params.stage.scene_options;
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     this.next = params.next;
@@ -38,7 +38,7 @@ export default class VipScene extends Component {
       pIndex: 0,
       scene_options: scene_options,
       stage: params.stage,
-      pictures: JSON.parse(params.pictures),
+      pictures: params.pictures,
       picturePath: "",
       audioPath: "",
       paused: (params.paused) ? params.paused : false,
@@ -147,7 +147,9 @@ export default class VipScene extends Component {
   dispatchMedia = async () => {
     try  {
       const {story, index, storyDir} = this.state;
-      const stage =  story.stages[index];
+      let stage =  story.stages[index];
+      stage.onZoneEnter = (typeof(stage.onZoneEnter) === 'string') ? JSON.parse(stage.onZoneEnter) : stage.onZoneEnter;
+      stage.onPictureMatch = (typeof(stage.onPictureMatch) === 'string') ? JSON.parse(stage.onPictureMatch) : stage.onPictureMatch;
       let audios = [];
       let videos = [];
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
@@ -182,7 +184,7 @@ export default class VipScene extends Component {
       const video =  videos.onPictureMatch[0];
       if (video) {
         let path = video.path.replace(" ", "\ ");
-        path = 'file://' + storyDir + path.replace("assets/stories", "");
+        path = 'file://' + storyDir + path.replace("assets/stories/", "");
         let loop = video.loop;
         this.setState({'videoPath': path, 'videoLoop': loop});
       }

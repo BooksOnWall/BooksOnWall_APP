@@ -288,10 +288,10 @@ class ToAR extends Component {
       distance: distance, // en kilometers
       radius: stage.radius, // en meters
       buttonaudioPaused: buttonaudioPaused,
-      pictures: stage.pictures,
-      onZoneEnter: stage.onZoneEnter,
-      onZoneLeave: stage.onZoneLeave,
-      onPictureMatch: stage.onPictureMatch,
+      pictures: (typeof(stage.pictures) === 'string') ? JSON.parse(stage.pictures) : stage.pictures,
+      onZoneEnter: (typeof(stage.onZoneEnter) === 'string') ? JSON.parse(stage.onZoneEnter) : stage.onZoneEnter,
+      onZoneLeave: (typeof(stage.onZoneLeave) === 'string') ? JSON.parse(stage.onZoneLeave) : stage.onZoneLeave,
+      onPictureMatch: (typeof(stage.onPictureMatch) === 'string') ? JSON.parse(stage.onPictureMatch) : stage.onPictureMatch,
       appDir: appDir,
       goToMap: this.map,
       imageTracking: imageTracking,

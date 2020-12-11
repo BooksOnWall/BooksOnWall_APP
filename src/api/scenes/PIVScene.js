@@ -24,6 +24,7 @@ export default class PivScene extends Component {
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.goToMap = params.goToMap;
     this.next = params.next;
+    let scene_options = (typeof(params.stage.scene_options) === 'string') ? JSON.parse(params.stage.scene_options) : params.stage.scene_options;
     // Set initial state here
     this.toogleButtonAudio = params.toggleButtonAudio;
     this.state = {
@@ -34,7 +35,7 @@ export default class PivScene extends Component {
       story: params.story,
       index: params.index,
       pIndex: 0,
-      scene_options: JSON.parse(params.stage.scene_options),
+      scene_options: scene_options,
       stage: params.stage,
       pictures: params.pictures,
       picturePath: "",
@@ -123,9 +124,12 @@ export default class PivScene extends Component {
   dispatchMedia = async () => {
     try  {
       const {story, index, storyDir} = this.state;
-      const stage =  story.stages[index];
+      let stage =  story.stages[index];
+      stage.onZoneEnter = (typeof(stage.onZoneEnter) === 'string') ? JSON.parse(stage.onZoneEnter) : stage.onZoneEnter;
+      stage.onPictureMatch = (typeof(stage.onPictureMatch) === 'string') ? JSON.parse(stage.onPictureMatch) : stage.onPictureMatch;
       let audios = [];
       let videos = [];
+      console.log(stage.onPictureMatch);
       audios['onZoneEnter'] = (stage.onZoneEnter && stage.onZoneEnter.length > 0 ) ? stage.onZoneEnter.filter(item => item.type === 'audio'): null;
       audios['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'audio') : null;
       videos['onPictureMatch'] = (stage.onPictureMatch && stage.onPictureMatch.length > 0) ? stage.onPictureMatch.filter(item => item.type === 'video') : null;
@@ -137,12 +141,14 @@ export default class PivScene extends Component {
         let Matchpath = MatchAudio.path.replace(" ", "\ ");
         Matchpath = 'file://'+ storyDir + Matchpath.replace("assets/stories", "");
         let Matchloop = MatchAudio.loop;
+        console.log('Matchpath', Matchpath);
         this.setState({MatchAudioPath: Matchpath,MatchAudioLoop: Matchloop });
       }
       if (audios['onZoneEnter'] && audios['onZoneEnter'].length > 0 ) {
         let audio = audios['onZoneEnter'][0];
         let path = audio.path.replace(" ", "\ ");
         path = 'file://'+ storyDir + path.replace("assets/stories", "");
+        console.log('path', path);
         let loop = audio.loop;
         this.setState({'audioPath': path,'audioLoop': loop });
       }
@@ -158,7 +164,7 @@ export default class PivScene extends Component {
       const video =  videos.onPictureMatch[0];
       if (video) {
         let path = video.path.replace(" ", "\ ");
-        path = 'file://' + storyDir + path.replace("assets/stories", "");
+        path = 'file://' + storyDir + path.replace("assets/stories/", "");
         let loop = video.loop;
         this.setState({'videoPath': path, 'videoLoop': loop});
       }
