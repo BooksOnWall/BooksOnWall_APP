@@ -1,7 +1,15 @@
 {
   "name": "BooksOnWall",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "private": true,
+  "licence": "AGPL",
+  "author": "Tom Bouillut",
+  "contributors": [
+    { "name" : "Cristobal Severin",
+      "email" : "cs@booksonwall.art",
+      "url" : "https://www.booksonwall.art"
+    }
+  ],
   "scripts": {
     "syncFromCli": "cp -r ../data/src/api ../data/src/App.js ../data/src/utils src/.",
     "syncToCli": "cp -r src/* ../data/src/.",
