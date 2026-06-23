@@ -76,7 +76,7 @@
     "rn-fetch-blob": "0.10.15"
   },
   "devDependencies": {
-    "@babel/core": "7.8.3",
+    "@babel/core": "7.29.6",
     "@babel/runtime": "^7.12.5",
     "@bam.tech/react-native-make": "^1.0.3",
     "@jumpn/react-native-jetifier": "^0.1.4",
